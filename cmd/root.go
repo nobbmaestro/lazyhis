@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,13 +11,19 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "lazyhis",
 	Short: "Command history with a database twist",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hello, World!")
-	},
 }
 
 func SetVersionInfo(version, commit, date string) {
-	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
+	rootCmd.Version = fmt.Sprintf(
+		"%s (Built on %s from Git SHA %s)",
+		version,
+		date,
+		commit,
+	)
+}
+
+func SetContext(ctx context.Context) {
+	rootCmd.SetContext(ctx)
 }
 
 func Execute() {
