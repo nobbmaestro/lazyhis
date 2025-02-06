@@ -1,18 +1,27 @@
 package db
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var dbPath = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
 
 func CreateDatabase() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\n", log.LstdFlags),
+		logger.Config{
+			LogLevel: logger.Silent,
+		},
+	)
+
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		return nil, err
 	}
