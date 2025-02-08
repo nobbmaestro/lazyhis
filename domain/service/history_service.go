@@ -7,6 +7,7 @@ import (
 
 	"github.com/nobbmaestro/lazyhis/domain/model"
 	"github.com/nobbmaestro/lazyhis/domain/repository"
+	"gorm.io/gorm"
 )
 
 type HistoryService struct {
@@ -28,6 +29,31 @@ func NewHistoryService(
 		pathRepo:    pathRepo,
 		tmuxRepo:    tmuxRepo,
 	}
+}
+
+func (s *HistoryService) AddHistoryIfUnique(
+	command []string,
+	exitCode *int,
+	executedIn *int,
+	path *string,
+	tmuxSession *string,
+) (*model.History, error) {
+	commandRecord, err := s.commandRepo.Get(
+		&model.Command{Command: strings.Join(command, " ")},
+	)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	} else if commandRecord != nil {
+		return nil, nil
+	}
+
+	return s.AddHistory(
+		command,
+		exitCode,
+		executedIn,
+		path,
+		tmuxSession,
+	)
 }
 
 func (s *HistoryService) AddHistory(
