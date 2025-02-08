@@ -1,13 +1,16 @@
 package repository
 
 import (
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"gorm.io/gorm"
 )
 
 type CommandRepository struct {
-	db *gorm.DB
+	*BaseRepository[model.Command]
 }
 
 func NewCommandRepository(db *gorm.DB) *CommandRepository {
-	return &CommandRepository{db: db}
+	return &CommandRepository{
+		BaseRepository: &BaseRepository[model.Command]{db: db},
+	}
 }

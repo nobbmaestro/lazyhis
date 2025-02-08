@@ -1,13 +1,14 @@
 package repository
 
 import (
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"gorm.io/gorm"
 )
 
 type PathRepository struct {
-	db *gorm.DB
+	*BaseRepository[model.Path]
 }
 
 func NewPathRepository(db *gorm.DB) *PathRepository {
-	return &PathRepository{db: db}
+	return &PathRepository{BaseRepository: &BaseRepository[model.Path]{db: db}}
 }

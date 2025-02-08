@@ -1,13 +1,16 @@
 package repository
 
 import (
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"gorm.io/gorm"
 )
 
 type TmuxSessionRepository struct {
-	db *gorm.DB
+	*BaseRepository[model.TmuxSession]
 }
 
 func NewTmuxSessionRepository(db *gorm.DB) *TmuxSessionRepository {
-	return &TmuxSessionRepository{db: db}
+	return &TmuxSessionRepository{
+		BaseRepository: &BaseRepository[model.TmuxSession]{db: db},
+	}
 }
