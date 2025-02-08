@@ -99,3 +99,19 @@ func (s *HistoryService) AddPath(path *string) (*model.Path, error) {
 	}
 	return s.pathRepo.GetOrCreate(&model.Path{Path: *path})
 }
+
+func (s *HistoryService) GetAllHistory() ([]model.History, error) {
+	return s.historyRepo.GetAll()
+}
+
+func (s *HistoryService) GetAllCommands() ([]model.Command, error) {
+	return s.commandRepo.GetAll()
+}
+
+func (s *HistoryService) GetAllTmuxSessions() ([]model.TmuxSession, error) {
+	return s.tmuxRepo.GetAll()
+}
+
+func (s *HistoryService) GetAllPaths() ([]model.Path, error) {
+	return s.pathRepo.GetAll()
+}

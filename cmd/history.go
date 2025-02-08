@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
@@ -29,6 +30,12 @@ var historyAddCmd = &cobra.Command{
 	Run:   runHistoryAdd,
 }
 
+var historyListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all items in history",
+	Run:   runHistoryList,
+}
+
 func init() {
 	currentPath, err := os.Getwd()
 	if err != nil {
@@ -50,6 +57,7 @@ func init() {
 		StringVarP(&historyOpts.tmuxSession, "tmux-session", "s", currentTmuxSession, "Tmux session context")
 
 	historyCmd.AddCommand(historyAddCmd)
+	historyCmd.AddCommand(historyListCmd)
 	rootCmd.AddCommand(historyCmd)
 }
 
@@ -66,5 +74,19 @@ func runHistoryAdd(cmd *cobra.Command, args []string) {
 	)
 	if err != nil {
 		return
+	}
+}
+
+func runHistoryList(cmd *cobra.Command, args []string) {
+	serviceCtx := cmd.Context().Value(service.ServiceCtxKey).(*service.ServiceContext)
+	historyService := serviceCtx.HistoryService
+
+	commands, err := historyService.GetAllCommands()
+	if err != nil {
+		return
+	}
+
+	for _, command := range commands {
+		fmt.Println(command.Command)
 	}
 }
