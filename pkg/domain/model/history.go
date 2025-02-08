@@ -1,15 +1,10 @@
 package model
 
-import (
-	"time"
-
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type History struct {
 	gorm.Model
 	ExitCode      *int
-	ExecutedAt    time.Time
 	ExecutedIn    *int
 	CommandID     *uint
 	Command       *Command `gorm:"foreignKey:CommandID"`
