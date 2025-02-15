@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
@@ -28,6 +29,29 @@ func NewHistoryService(
 		pathRepo:    pathRepo,
 		tmuxRepo:    tmuxRepo,
 	}
+}
+
+func (s *HistoryService) SearchHistory(
+	keywords []string,
+	exitCode int,
+	path string,
+	tmuxSession string,
+	limit int,
+	offset int,
+) ([]model.History, error) {
+	results, err := s.historyRepo.QueryHistory(
+		keywords,
+		exitCode,
+		path,
+		tmuxSession,
+		limit,
+		offset,
+	)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return results, nil
 }
 
 func (s *HistoryService) AddHistoryIfUnique(

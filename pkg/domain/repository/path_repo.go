@@ -12,3 +12,11 @@ type PathRepository struct {
 func NewPathRepository(db *gorm.DB) *PathRepository {
 	return &PathRepository{BaseRepository: &BaseRepository[model.Path]{db: db}}
 }
+
+func (r *PathRepository) QueryPaths(path string) ([]model.Path, error) {
+	var paths []model.Path
+	err := r.db.Model(&model.Path{}).
+		Where("path LIKE ?", path).
+		Find(&paths).Error
+	return paths, err
+}
