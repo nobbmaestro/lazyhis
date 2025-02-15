@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/nobbmaestro/lazyhis/cmd/history"
+	"github.com/nobbmaestro/lazyhis/cmd/initialize"
 	"github.com/nobbmaestro/lazyhis/cmd/search"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"gopkg.in/yaml.v3"
@@ -77,5 +78,6 @@ func init() {
 		BoolVarP(&printConfigPath, "config-dir", "C", false, "print the config directory")
 
 	rootCmd.AddCommand(history.HistoryCmd)
+	rootCmd.AddCommand(initialize.InitCmd)
 	rootCmd.AddCommand(search.SearchCmd)
 }

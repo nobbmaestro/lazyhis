@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -105,7 +106,7 @@ func searchInteractive(
 
 	if m, ok := result.(gui.Model); ok {
 		if record := m.GetSelectedRecord(); record.Command != nil {
-			fmt.Printf("__lazyhis_accept__:%s\n", record.Command.Command)
+			fmt.Fprintf(os.Stderr, "__lazyhis_accept__:%s\n", record.Command.Command)
 		}
 	}
 }
