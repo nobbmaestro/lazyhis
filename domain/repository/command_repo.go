@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"strings"
+
 	"github.com/nobbmaestro/lazyhis/domain/model"
 	"gorm.io/gorm"
 )
@@ -13,4 +15,12 @@ func NewCommandRepository(db *gorm.DB) *CommandRepository {
 	return &CommandRepository{
 		BaseRepository: &BaseRepository[model.Command]{db: db},
 	}
+}
+
+func (r *HistoryRepository) QueryCommands(keywords []string) ([]model.Command, error) {
+	var commands []model.Command
+	err := r.db.Model(&model.Command{}).
+		Where("command LIKE ?", "%"+strings.Join(keywords, " ")+"%").
+		Find(&commands).Error
+	return commands, err
 }
