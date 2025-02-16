@@ -1,10 +1,10 @@
 package main
 
 import (
-	"context"
-
 	"github.com/nobbmaestro/lazyhis/cmd"
+	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
+	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 )
 
@@ -19,13 +19,22 @@ func main() {
 	if err != nil {
 		return
 	}
-	serviceCtx := service.NewServiceContext(database)
 
-	cmd.SetContext(context.WithValue(
-		context.Background(),
-		service.ServiceCtxKey,
-		serviceCtx),
+	historyRepo := repository.NewHistoryRepository(database)
+	commandRepo := repository.NewCommandRepository(database)
+	pathRepo := repository.NewPathRepository(database)
+	tmuxRepo := repository.NewTmuxSessionRepository(database)
+
+	historyService := service.NewHistoryService(
+		historyRepo,
+		commandRepo,
+		pathRepo,
+		tmuxRepo,
 	)
+
+	ctx := context.NewContext()
+	ctx = context.WithService(ctx, historyService)
+	cmd.SetContext(ctx)
 	cmd.SetVersionInfo(version, commit, date)
 
 	cmd.Execute()

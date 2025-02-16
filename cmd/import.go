@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/spf13/cobra"
 )
 
@@ -19,8 +19,8 @@ var importCmd = &cobra.Command{
 }
 
 func runImport(cmd *cobra.Command, args []string) {
-	serviceCtx := cmd.Context().Value(service.ServiceCtxKey).(*service.ServiceContext)
-	historyService := serviceCtx.HistoryService
+	ctx := cmd.Context()
+	historyService := context.GetService(ctx)
 
 	file, err := os.Open(args[0])
 	if err != nil {

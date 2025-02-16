@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +25,8 @@ var searchCmd = &cobra.Command{
 }
 
 func runSearch(cmd *cobra.Command, args []string) {
-	serviceCtx := cmd.Context().Value(service.ServiceCtxKey).(*service.ServiceContext)
-	historyService := serviceCtx.HistoryService
+	ctx := cmd.Context()
+	historyService := context.GetService(ctx)
 
 	records, err := historyService.SearchHistory(
 		args,
