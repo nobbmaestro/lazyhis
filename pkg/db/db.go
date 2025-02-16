@@ -11,7 +11,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var dbPath = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
+var dbPath string
+
+func init() {
+	dbPath = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
+}
 
 func CreateDatabase() (*gorm.DB, error) {
 	newLogger := logger.New(
