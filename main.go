@@ -7,6 +7,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/db"
 	"github.com/nobbmaestro/lazyhis/domain/repository"
 	"github.com/nobbmaestro/lazyhis/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/ctxreg"
 )
 
@@ -17,6 +18,11 @@ var (
 )
 
 func main() {
+	cfg, err := config.LoadUserConfig()
+	if err != nil {
+		return
+	}
+
 	database, err := db.NewDatabaseConnection()
 	if err != nil {
 		return
@@ -36,6 +42,8 @@ func main() {
 
 	ctx := context.Background()
 	ctx = ctxreg.WithService(ctx, historyService)
+	ctx = ctxreg.WithConfig(ctx, cfg)
+
 	cmd.SetContext(ctx)
 	cmd.SetVersionInfo(version, commit, date)
 
