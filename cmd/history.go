@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nobbmaestro/lazyhis/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/ctxreg"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"github.com/spf13/cobra"
 )
@@ -62,8 +62,8 @@ func init() {
 }
 
 func runHistoryAdd(cmd *cobra.Command, args []string) {
-	serviceCtx := cmd.Context().Value(service.ServiceCtxKey).(*service.ServiceContext)
-	historyService := serviceCtx.HistoryService
+	ctx := cmd.Context()
+	historyService := ctxreg.GetService(ctx)
 
 	_, err := historyService.AddHistory(
 		args,
@@ -78,8 +78,8 @@ func runHistoryAdd(cmd *cobra.Command, args []string) {
 }
 
 func runHistoryList(cmd *cobra.Command, args []string) {
-	serviceCtx := cmd.Context().Value(service.ServiceCtxKey).(*service.ServiceContext)
-	historyService := serviceCtx.HistoryService
+	ctx := cmd.Context()
+	historyService := ctxreg.GetService(ctx)
 
 	commands, err := historyService.GetAllCommands()
 	if err != nil {
