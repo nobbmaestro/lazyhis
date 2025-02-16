@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nobbmaestro/lazyhis/cmd"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
@@ -15,6 +16,11 @@ var (
 )
 
 func main() {
+	cfg, err := config.ReadUserConfig()
+	if err != nil {
+		return
+	}
+
 	database, err := db.NewDatabaseConnection()
 	if err != nil {
 		return
@@ -34,6 +40,8 @@ func main() {
 
 	ctx := context.NewContext()
 	ctx = context.WithService(ctx, historyService)
+	ctx = context.WithConfig(ctx, cfg)
+
 	cmd.SetContext(ctx)
 	cmd.SetVersionInfo(version, commit, date)
 
