@@ -10,7 +10,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "lazyhis",
-	Short: "Command history with a database twist",
+	Short: "lazyhis",
 }
 
 func SetVersionInfo(version, commit, date string) {
