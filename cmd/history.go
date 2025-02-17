@@ -64,6 +64,7 @@ func init() {
 func runHistoryAdd(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
+	config := context.GetConfig(ctx)
 
 	_, err := historyService.AddHistory(
 		args,
@@ -71,6 +72,7 @@ func runHistoryAdd(cmd *cobra.Command, args []string) {
 		&historyOpts.executedIn,
 		&historyOpts.path,
 		&historyOpts.tmuxSession,
+		&config.Db.ExcludeCommands,
 	)
 	if err != nil {
 		return
