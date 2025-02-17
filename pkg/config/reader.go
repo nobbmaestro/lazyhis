@@ -31,3 +31,7 @@ func ReadUserConfig() (*UserConfig, error) {
 
 	return cfg, nil
 }
+
+func GetUserConfigPath() string {
+	return confPath
+}

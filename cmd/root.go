@@ -14,6 +14,7 @@ import (
 
 var (
 	printDefaultConfig bool
+	printConfigPath    bool
 )
 
 var rootCmd = &cobra.Command{
@@ -26,6 +27,8 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	switch {
 	case printDefaultConfig:
 		return runPrintDefaultConfig()
+	case printConfigPath:
+		return runPrintConfigPath()
 	default:
 		return nil
 	}
@@ -39,6 +42,11 @@ func runPrintDefaultConfig() error {
 		return fmt.Errorf("Failed to encode default config: %w", err)
 	}
 	fmt.Printf("%s\n", buf.String())
+	return nil
+}
+
+func runPrintConfigPath() error {
+	fmt.Println(config.GetUserConfigPath())
 	return nil
 }
 
@@ -67,4 +75,7 @@ func init() {
 	rootCmd.
 		Flags().
 		BoolVarP(&printDefaultConfig, "config", "c", false, "print the default config")
+	rootCmd.
+		Flags().
+		BoolVarP(&printConfigPath, "config-dir", "C", false, "print the config directory")
 }
