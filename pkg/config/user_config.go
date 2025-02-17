@@ -42,6 +42,10 @@ func LoadUserConfig() (*UserConfig, error) {
 	return cfg, nil
 }
 
+func GetUserConfigPath() string {
+	return confPath
+}
+
 func GetDefaultUserConfig() *UserConfig {
 	return &UserConfig{
 		Db: DbConfig{
