@@ -8,6 +8,7 @@ import (
 
 	"github.com/nobbmaestro/lazyhis/domain/model"
 	"github.com/nobbmaestro/lazyhis/domain/repository"
+	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -61,6 +62,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	executedIn *int,
 	path *string,
 	tmuxSession *string,
+	excludeCommands *[]string,
 ) (*model.History, error) {
 	commandRecord, err := s.commandRepo.Get(
 		&model.Command{Command: strings.Join(command, " ")},
@@ -77,6 +79,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 		executedIn,
 		path,
 		tmuxSession,
+		excludeCommands,
 	)
 }
 
@@ -86,12 +89,18 @@ func (s *HistoryService) AddHistory(
 	executedIn *int,
 	path *string,
 	tmuxSession *string,
+	excludeCommands *[]string,
 ) (*model.History, error) {
 	var (
 		commandID     *uint
 		pathID        *uint
 		tmuxSessionID *uint
 	)
+
+	if excludeCommands != nil &&
+		utils.IsExcluded(strings.Join(command, " "), *excludeCommands) {
+		return nil, nil
+	}
 
 	commandRecord, err := s.AddCommand(command)
 	if err != nil {
