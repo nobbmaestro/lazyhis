@@ -30,6 +30,16 @@ func CreateDatabase() (*gorm.DB, error) {
 		return nil, err
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = sqlDB.Exec("PRAGMA foreign_keys = ON;")
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
 }
 

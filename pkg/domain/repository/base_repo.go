@@ -31,7 +31,7 @@ func (r *BaseRepository[T]) Update(record *T) (*T, error) {
 }
 
 func (r *BaseRepository[T]) Delete(record *T) (*T, error) {
-	return record, r.db.Delete(record).Error
+	return record, r.db.Unscoped().Delete(record).Error // This perform HARD delete
 }
 
 func (r *BaseRepository[T]) Get(record *T) (*T, error) {

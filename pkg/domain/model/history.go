@@ -7,7 +7,7 @@ type History struct {
 	ExitCode      *int
 	ExecutedIn    *int
 	CommandID     *uint
-	Command       *Command `gorm:"foreignKey:CommandID"`
+	Command       *Command `gorm:"foreignKey:CommandID;constraint:OnDelete:CASCADE;"`
 	PathID        *uint
 	Path          *Path `gorm:"foreignKey:PathID"`
 	TmuxSessionID *uint

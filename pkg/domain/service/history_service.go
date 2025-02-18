@@ -136,6 +136,25 @@ func (s *HistoryService) AddHistory(
 	return s.historyRepo.Create(history)
 }
 
+func (s *HistoryService) PruneHistory(excludeCommands []string) error {
+	records, err := s.GetAllCommands()
+	if err != nil {
+		return err
+	}
+
+	for _, record := range records {
+		if utils.IsExcluded(record.Command, excludeCommands) {
+			fmt.Println("Prune:", record.Command)
+
+			_, err := s.commandRepo.Delete(&record)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (s *HistoryService) AddCommand(command []string) (*model.Command, error) {
 	if len(command) == 0 {
 		return nil, errors.New("Command cannot be empty")

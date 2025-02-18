@@ -36,6 +36,12 @@ var historyListCmd = &cobra.Command{
 	Run:   runHistoryList,
 }
 
+var historyPruneCmd = &cobra.Command{
+	Use:   "prune",
+	Short: "Delete history entries matching the configured exclusion filters",
+	Run:   runHistoryPrune,
+}
+
 func init() {
 	currentPath, err := os.Getwd()
 	if err != nil {
@@ -58,6 +64,7 @@ func init() {
 
 	historyCmd.AddCommand(historyAddCmd)
 	historyCmd.AddCommand(historyListCmd)
+	historyCmd.AddCommand(historyPruneCmd)
 	rootCmd.AddCommand(historyCmd)
 }
 
@@ -90,5 +97,16 @@ func runHistoryList(cmd *cobra.Command, args []string) {
 
 	for _, command := range commands {
 		fmt.Println(command.Command)
+	}
+}
+
+func runHistoryPrune(cmd *cobra.Command, args []string) {
+	ctx := cmd.Context()
+	historyService := context.GetService(ctx)
+	config := context.GetConfig(ctx)
+
+	err := historyService.PruneHistory(config.Db.ExcludeCommands)
+	if err != nil {
+		return
 	}
 }
