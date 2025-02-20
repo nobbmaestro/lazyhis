@@ -63,3 +63,11 @@ func (r *BaseRepository[T]) GetAll() ([]T, error) {
 
 	return records, nil
 }
+
+func (r *BaseRepository[T]) Exists(record *T) bool {
+	result, err := r.Get(record)
+	if err != nil {
+		return false
+	}
+	return result != nil
+}

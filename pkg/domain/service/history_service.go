@@ -8,7 +8,6 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
-	"gorm.io/gorm"
 )
 
 type RepositoryProvider struct {
@@ -57,12 +56,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	tmuxSession *string,
 	excludeCommands *[]string,
 ) (*model.History, error) {
-	commandRecord, err := s.repos.CommandRepo.Get(
-		&model.Command{Command: strings.Join(command, " ")},
-	)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
-	} else if commandRecord != nil {
+	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
 		return nil, nil
 	}
 
