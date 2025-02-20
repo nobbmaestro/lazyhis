@@ -26,16 +26,13 @@ func main() {
 		return
 	}
 
-	historyRepo := repository.NewHistoryRepository(database)
-	commandRepo := repository.NewCommandRepository(database)
-	pathRepo := repository.NewPathRepository(database)
-	tmuxRepo := repository.NewTmuxSessionRepository(database)
-
 	historyService := service.NewHistoryService(
-		historyRepo,
-		commandRepo,
-		pathRepo,
-		tmuxRepo,
+		&service.RepositoryProvider{
+			CommandRepo: repository.NewCommandRepository(database),
+			HistoryRepo: repository.NewHistoryRepository(database),
+			PathRepo:    repository.NewPathRepository(database),
+			TmuxRepo:    repository.NewTmuxSessionRepository(database),
+		},
 	)
 
 	ctx := context.NewContext()

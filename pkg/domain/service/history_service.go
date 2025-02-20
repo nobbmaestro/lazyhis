@@ -11,25 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type HistoryService struct {
-	historyRepo *repository.HistoryRepository
-	commandRepo *repository.CommandRepository
-	pathRepo    *repository.PathRepository
-	tmuxRepo    *repository.TmuxSessionRepository
+type RepositoryProvider struct {
+	CommandRepo *repository.CommandRepository
+	HistoryRepo *repository.HistoryRepository
+	PathRepo    *repository.PathRepository
+	TmuxRepo    *repository.TmuxSessionRepository
 }
 
-func NewHistoryService(
-	historyRepo *repository.HistoryRepository,
-	commandRepo *repository.CommandRepository,
-	pathRepo *repository.PathRepository,
-	tmuxRepo *repository.TmuxSessionRepository,
-) *HistoryService {
-	return &HistoryService{
-		historyRepo: historyRepo,
-		commandRepo: commandRepo,
-		pathRepo:    pathRepo,
-		tmuxRepo:    tmuxRepo,
-	}
+type HistoryService struct {
+	repos *RepositoryProvider
+}
+
+func NewHistoryService(repos *RepositoryProvider) *HistoryService {
+	return &HistoryService{repos: repos}
 }
 
 func (s *HistoryService) SearchHistory(
@@ -40,7 +34,7 @@ func (s *HistoryService) SearchHistory(
 	limit int,
 	offset int,
 ) ([]model.History, error) {
-	results, err := s.historyRepo.QueryHistory(
+	results, err := s.repos.HistoryRepo.QueryHistory(
 		keywords,
 		exitCode,
 		path,
@@ -63,7 +57,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	tmuxSession *string,
 	excludeCommands *[]string,
 ) (*model.History, error) {
-	commandRecord, err := s.commandRepo.Get(
+	commandRecord, err := s.repos.CommandRepo.Get(
 		&model.Command{Command: strings.Join(command, " ")},
 	)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -133,7 +127,7 @@ func (s *HistoryService) AddHistory(
 		TmuxSessionID: tmuxSessionID,
 	}
 
-	return s.historyRepo.Create(history)
+	return s.repos.HistoryRepo.Create(history)
 }
 
 func (s *HistoryService) PruneHistory(excludeCommands []string) error {
@@ -146,7 +140,7 @@ func (s *HistoryService) PruneHistory(excludeCommands []string) error {
 		if utils.IsExcluded(record.Command, excludeCommands) {
 			fmt.Println("Prune:", record.Command)
 
-			_, err := s.commandRepo.Delete(&record)
+			_, err := s.repos.CommandRepo.Delete(&record)
 			if err != nil {
 				return err
 			}
@@ -159,7 +153,7 @@ func (s *HistoryService) AddCommand(command []string) (*model.Command, error) {
 	if len(command) == 0 {
 		return nil, errors.New("Command cannot be empty")
 	}
-	return s.commandRepo.GetOrCreate(
+	return s.repos.CommandRepo.GetOrCreate(
 		&model.Command{Command: strings.Join(command, " ")},
 	)
 }
@@ -168,28 +162,28 @@ func (s *HistoryService) AddTmuxSession(session *string) (*model.TmuxSession, er
 	if session == nil {
 		return nil, nil
 	}
-	return s.tmuxRepo.GetOrCreate(&model.TmuxSession{Session: *session})
+	return s.repos.TmuxRepo.GetOrCreate(&model.TmuxSession{Session: *session})
 }
 
 func (s *HistoryService) AddPath(path *string) (*model.Path, error) {
 	if path == nil {
 		return nil, nil
 	}
-	return s.pathRepo.GetOrCreate(&model.Path{Path: *path})
+	return s.repos.PathRepo.GetOrCreate(&model.Path{Path: *path})
 }
 
 func (s *HistoryService) GetAllHistory() ([]model.History, error) {
-	return s.historyRepo.GetAll()
+	return s.repos.HistoryRepo.GetAll()
 }
 
 func (s *HistoryService) GetAllCommands() ([]model.Command, error) {
-	return s.commandRepo.GetAll()
+	return s.repos.CommandRepo.GetAll()
 }
 
 func (s *HistoryService) GetAllTmuxSessions() ([]model.TmuxSession, error) {
-	return s.tmuxRepo.GetAll()
+	return s.repos.TmuxRepo.GetAll()
 }
 
 func (s *HistoryService) GetAllPaths() ([]model.Path, error) {
-	return s.pathRepo.GetAll()
+	return s.repos.PathRepo.GetAll()
 }
