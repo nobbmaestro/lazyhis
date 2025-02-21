@@ -31,6 +31,22 @@ func (r *HistoryRepository) Get(record *model.History) (*model.History, error) {
 	return &result, nil
 }
 
+func (r *HistoryRepository) GetByID(id uint) (*model.History, error) {
+	var result model.History
+
+	err := r.db.
+		Preload("Command").
+		Preload("Path").
+		Preload("TmuxSession").
+		Where("id = ?", id).
+		First(&result).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func (r *HistoryRepository) GetAll() ([]model.History, error) {
 	var records []model.History
 

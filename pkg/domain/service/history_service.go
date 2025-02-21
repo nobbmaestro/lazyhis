@@ -124,6 +124,49 @@ func (s *HistoryService) AddHistory(
 	return s.repos.HistoryRepo.Create(history)
 }
 
+func (s *HistoryService) EditHistory(
+	historyID int,
+	exitCode *int,
+	executedIn *int,
+	path *string,
+	tmuxSession *string,
+) (*model.History, error) {
+	history, err := s.repos.HistoryRepo.GetByID(uint(historyID))
+	if err != nil {
+		return nil, err
+	}
+
+	if exitCode != nil {
+		history.ExitCode = exitCode
+	}
+
+	if executedIn != nil {
+		history.ExecutedIn = executedIn
+	}
+
+	if path != nil {
+		pathRecord, err := s.AddPath(path)
+		if err != nil {
+			return nil, err
+		}
+		if pathRecord != nil {
+			history.Path = pathRecord
+		}
+	}
+
+	if tmuxSession != nil {
+		tmuxSessionRecord, err := s.AddTmuxSession(tmuxSession)
+		if err != nil {
+			return nil, err
+		}
+		if tmuxSessionRecord != nil {
+			history.TmuxSession = tmuxSessionRecord
+		}
+	}
+
+	return s.repos.HistoryRepo.Update(history)
+}
+
 func (s *HistoryService) PruneHistory(excludeCommands []string) error {
 	records, err := s.GetAllCommands()
 	if err != nil {

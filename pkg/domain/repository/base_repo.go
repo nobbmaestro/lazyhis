@@ -27,7 +27,7 @@ func (r *BaseRepository[T]) Create(record *T) (*T, error) {
 }
 
 func (r *BaseRepository[T]) Update(record *T) (*T, error) {
-	return record, r.db.Save(record).Error
+	return record, r.db.Model(record).Updates(record).Error
 }
 
 func (r *BaseRepository[T]) Delete(record *T) (*T, error) {

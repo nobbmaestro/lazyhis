@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
@@ -16,7 +17,8 @@ type HistoryOptions struct {
 	tmuxSession string
 }
 
-var historyOpts = &HistoryOptions{}
+var historyAddOpts = &HistoryOptions{}
+var historyEditOpts = &HistoryOptions{}
 
 var historyCmd = &cobra.Command{
 	Use:   "history",
@@ -28,6 +30,13 @@ var historyAddCmd = &cobra.Command{
 	Short: "Add to history",
 	Args:  cobra.ArbitraryArgs,
 	Run:   runHistoryAdd,
+}
+
+var historyEditCmd = &cobra.Command{
+	Use:   "edit [ID]",
+	Short: "Edit history by ID",
+	Args:  cobra.ExactArgs(1),
+	Run:   runHistoryEdit,
 }
 
 var historyListCmd = &cobra.Command{
@@ -42,44 +51,62 @@ var historyPruneCmd = &cobra.Command{
 	Run:   runHistoryPrune,
 }
 
-func init() {
-	currentPath, err := os.Getwd()
-	if err != nil {
-		currentPath = ""
-	}
-	currentTmuxSession, err := utils.GetCurrentTmuxSession()
-	if err != nil {
-		currentTmuxSession = ""
-	}
-
-	historyAddCmd.
-		Flags().
-		IntVarP(&historyOpts.exitCode, "exit-code", "e", 0, "Exit code for the command")
-	historyAddCmd.
-		Flags().
-		StringVarP(&historyOpts.path, "path", "p", currentPath, "Working directory context")
-	historyAddCmd.
-		Flags().
-		StringVarP(&historyOpts.tmuxSession, "tmux-session", "s", currentTmuxSession, "Tmux session context")
-
-	historyCmd.AddCommand(historyAddCmd)
-	historyCmd.AddCommand(historyListCmd)
-	historyCmd.AddCommand(historyPruneCmd)
-	rootCmd.AddCommand(historyCmd)
-}
-
 func runHistoryAdd(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 	config := context.GetConfig(ctx)
 
-	_, err := historyService.AddHistory(
+	record, err := historyService.AddHistory(
 		args,
-		&historyOpts.exitCode,
-		&historyOpts.executedIn,
-		&historyOpts.path,
-		&historyOpts.tmuxSession,
+		&historyAddOpts.exitCode,
+		&historyAddOpts.executedIn,
+		&historyAddOpts.path,
+		&historyAddOpts.tmuxSession,
 		&config.Db.ExcludeCommands,
+	)
+	if err != nil {
+		return
+	}
+	if record != nil {
+		fmt.Println(record.ID)
+	}
+}
+
+func runHistoryEdit(cmd *cobra.Command, args []string) {
+	ctx := cmd.Context()
+	historyService := context.GetService(ctx)
+
+	historyID, err := strconv.Atoi(args[0])
+	if err != nil {
+		return
+	}
+
+	var (
+		exitCode    *int
+		executedIn  *int
+		path        *string
+		tmuxSession *string
+	)
+
+	if cmd.Flags().Changed("exit-code") {
+		exitCode = &historyEditOpts.exitCode
+	}
+	if cmd.Flags().Changed("duration") {
+		executedIn = &historyEditOpts.executedIn
+	}
+	if cmd.Flags().Changed("path") {
+		path = &historyEditOpts.path
+	}
+	if cmd.Flags().Changed("tmux-session") {
+		tmuxSession = &historyEditOpts.tmuxSession
+	}
+
+	_, err = historyService.EditHistory(
+		historyID,
+		exitCode,
+		executedIn,
+		path,
+		tmuxSession,
 	)
 	if err != nil {
 		return
@@ -109,4 +136,49 @@ func runHistoryPrune(cmd *cobra.Command, args []string) {
 	if err != nil {
 		return
 	}
+}
+
+func init() {
+	currentPath, err := os.Getwd()
+	if err != nil {
+		currentPath = ""
+	}
+	currentTmuxSession, err := utils.GetCurrentTmuxSession()
+	if err != nil {
+		currentTmuxSession = ""
+	}
+
+	historyAddCmd.
+		Flags().
+		IntVarP(&historyAddOpts.exitCode, "exit-code", "e", 0, "exit code for the command")
+	historyAddCmd.
+		Flags().
+		IntVarP(&historyAddOpts.executedIn, "duration", "d", 0, "execution duration of the CMD in milliseconds")
+	historyAddCmd.
+		Flags().
+		StringVarP(&historyAddOpts.path, "path", "p", currentPath, "working directory context")
+	historyAddCmd.
+		Flags().
+		StringVarP(&historyAddOpts.tmuxSession, "tmux-session", "s", currentTmuxSession, "tmux session context")
+
+	historyEditCmd.
+		Flags().
+		IntVarP(&historyEditOpts.exitCode, "exit-code", "e", -1, "exit code for the command")
+	historyEditCmd.
+		Flags().
+		IntVarP(&historyEditOpts.executedIn, "duration", "d", -1, "execution duration of the CMD in microseconds")
+	historyEditCmd.
+		Flags().
+		StringVarP(&historyEditOpts.path, "path", "p", "", "working directory context")
+	historyEditCmd.
+		Flags().
+		StringVarP(&historyEditOpts.tmuxSession, "tmux-session", "s", "", "tmux session context")
+
+	historyCmd.AddCommand(
+		historyAddCmd,
+		historyEditCmd,
+		historyListCmd,
+		historyPruneCmd,
+	)
+	rootCmd.AddCommand(historyCmd)
 }
