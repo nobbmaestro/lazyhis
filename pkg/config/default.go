@@ -5,5 +5,12 @@ func GetDefaultUserConfig() *UserConfig {
 		Db: DbConfig{
 			ExcludeCommands: []string{},
 		},
+		Gui: GuiConfig{
+			ColumnLayout: []Column{
+				ColumnExitCode,
+				ColumnExecutedAt,
+				ColumnCommand,
+			},
+		},
 	}
 }

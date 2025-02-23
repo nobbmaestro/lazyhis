@@ -2,8 +2,14 @@ package search
 
 import (
 	"fmt"
+	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
+	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/gui"
 	"github.com/spf13/cobra"
 )
 
@@ -13,6 +19,7 @@ type SearchOptions struct {
 	offsetSearchResults int
 	path                string
 	tmuxSession         string
+	runInteractive      bool
 }
 
 var searchOpts = &SearchOptions{}
@@ -27,8 +34,13 @@ var SearchCmd = &cobra.Command{
 func runSearch(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
+	config := context.GetConfig(ctx)
 
-	searchNonInteractive(*historyService, args)
+	if searchOpts.runInteractive {
+		searchInteractive(*historyService, *config, args, cmd.Root().Version)
+	} else {
+		searchNonInteractive(*historyService, args)
+	}
 }
 
 func searchNonInteractive(
@@ -55,6 +67,49 @@ func searchNonInteractive(
 	}
 }
 
+func searchInteractive(
+	historyService service.HistoryService,
+	config config.UserConfig,
+	args []string,
+	version string,
+) {
+	partialSearchHistory := func(keywords []string) []model.History {
+		records, err := historyService.SearchHistory(
+			append(args, keywords...),
+			searchOpts.exitCode,
+			searchOpts.path,
+			searchOpts.tmuxSession,
+			searchOpts.maxNumSearchResults,
+			searchOpts.offsetSearchResults,
+		)
+		if err != nil {
+			return nil
+		}
+		return records
+	}
+
+	p := tea.NewProgram(
+		gui.NewModel(
+			config.Gui.ColumnLayout,
+			partialSearchHistory,
+			version,
+			strings.Join(args, " "),
+		),
+		tea.WithAltScreen(),
+	)
+
+	result, err := p.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if m, ok := result.(gui.Model); ok {
+		if record := m.GetSelectedRecord(); record.Command != nil {
+			fmt.Printf("__lazyhis_accept__:%s\n", record.Command.Command)
+		}
+	}
+}
+
 func init() {
 	SearchCmd.
 		Flags().
@@ -71,4 +126,7 @@ func init() {
 	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.offsetSearchResults, "offset", "o", -1, "offset of the search results")
+	SearchCmd.
+		Flags().
+		BoolVarP(&searchOpts.runInteractive, "interactive", "i", false, "open interactive search GUI")
 }

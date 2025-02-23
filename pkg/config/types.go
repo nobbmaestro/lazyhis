@@ -1,8 +1,23 @@
 package config
 
+type Column string
+
+const (
+	ColumnCommand     Column = "COMMAND"
+	ColumnExecutedAt  Column = "EXECUTED_AT"
+	ColumnExecutedIn  Column = "EXECUTED_IN"
+	ColumnExitCode    Column = "EXIT_CODE"
+	ColumnPath        Column = "PATH"
+	ColumnTmuxSession Column = "TMUX_SESSION"
+)
+
 type UserConfig struct {
-	// Config relating to history storage
-	Db DbConfig `yaml:"db"`
+	Db  DbConfig  `yaml:"db"`
+	Gui GuiConfig `yaml:"gui"`
+}
+
+type GuiConfig struct {
+	ColumnLayout []Column `yaml:"columnLayout"`
 }
 
 type DbConfig struct {
