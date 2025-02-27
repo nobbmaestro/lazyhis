@@ -51,12 +51,7 @@ func runPrintConfigPath() error {
 }
 
 func SetVersionInfo(version, commit, date string) {
-	rootCmd.Version = fmt.Sprintf(
-		"%s (Built on %s from Git SHA %s)",
-		version,
-		date,
-		commit,
-	)
+	rootCmd.Version = version
 }
 
 func SetContext(ctx context.Context) {
