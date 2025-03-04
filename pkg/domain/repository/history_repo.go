@@ -62,6 +62,21 @@ func (r *HistoryRepository) GetAll() ([]model.History, error) {
 	return records, nil
 }
 
+func (r *HistoryRepository) GetLast() (model.History, error) {
+	var record model.History
+
+	err := r.db.
+		Preload("Command").
+		Preload("Path").
+		Preload("TmuxSession").
+		Last(&record).Error
+	if err != nil {
+		return record, err
+	}
+
+	return record, nil
+}
+
 func (r *HistoryRepository) QueryHistory(
 	keywords []string,
 	exitCode int,

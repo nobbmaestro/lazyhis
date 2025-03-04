@@ -224,3 +224,7 @@ func (s *HistoryService) GetAllTmuxSessions() ([]model.TmuxSession, error) {
 func (s *HistoryService) GetAllPaths() ([]model.Path, error) {
 	return s.repos.PathRepo.GetAll()
 }
+
+func (s *HistoryService) GetLastHistory() (model.History, error) {
+	return s.repos.HistoryRepo.GetLast()
+}

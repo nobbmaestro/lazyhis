@@ -45,6 +45,12 @@ var historyListCmd = &cobra.Command{
 	Run:   runHistoryList,
 }
 
+var historyLastCmd = &cobra.Command{
+	Use:   "last",
+	Short: "Last added history record",
+	Run:   runHistoryLast,
+}
+
 var historyPruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Delete history entries matching the configured exclusion filters",
@@ -113,17 +119,28 @@ func runHistoryEdit(cmd *cobra.Command, args []string) {
 	}
 }
 
+func runHistoryLast(cmd *cobra.Command, args []string) {
+	ctx := cmd.Context()
+	historyService := context.GetService(ctx)
+
+	record, err := historyService.GetLastHistory()
+	if err != nil {
+		return
+	}
+	fmt.Println(record.Command.Command)
+}
+
 func runHistoryList(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
-	commands, err := historyService.GetAllCommands()
+	records, err := historyService.GetAllHistory()
 	if err != nil {
 		return
 	}
 
-	for _, command := range commands {
-		fmt.Println(command.Command)
+	for _, record := range records {
+		fmt.Println(record.Command.Command)
 	}
 }
 
@@ -177,6 +194,7 @@ func init() {
 	historyCmd.AddCommand(
 		historyAddCmd,
 		historyEditCmd,
+		historyLastCmd,
 		historyListCmd,
 		historyPruneCmd,
 	)
