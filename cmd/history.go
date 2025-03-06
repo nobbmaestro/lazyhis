@@ -30,21 +30,21 @@ var historyCmd = &cobra.Command{
 
 var historyAddCmd = &cobra.Command{
 	Use:   "add [CMD...]",
-	Short: "Add to history",
+	Short: "Add history record",
 	Args:  cobra.ArbitraryArgs,
 	Run:   runHistoryAdd,
 }
 
 var historyEditCmd = &cobra.Command{
 	Use:   "edit [ID]",
-	Short: "Edit history by ID",
+	Short: "Edit history record by ID",
 	Args:  cobra.ExactArgs(1),
 	Run:   runHistoryEdit,
 }
 
 var historyListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all items in history",
+	Short: "List all history records",
 	Run:   runHistoryList,
 }
 
@@ -63,7 +63,7 @@ var historyImportCmd = &cobra.Command{
 
 var historyPruneCmd = &cobra.Command{
 	Use:   "prune",
-	Short: "Delete history entries matching the configured exclusion filters",
+	Short: "Delete history records matching the configured exclusion filters",
 	Run:   runHistoryPrune,
 }
 
