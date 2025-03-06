@@ -1,4 +1,4 @@
-package cmd
+package search
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ type SearchOptions struct {
 
 var searchOpts = &SearchOptions{}
 
-var searchCmd = &cobra.Command{
+var SearchCmd = &cobra.Command{
 	Use:   "search [KEYWORDS...]",
 	Short: "Interactive history search",
 	Args:  cobra.ArbitraryArgs,
@@ -28,6 +28,13 @@ func runSearch(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
+	searchNonInteractive(*historyService, args)
+}
+
+func searchNonInteractive(
+	historyService service.HistoryService,
+	args []string,
+) {
 	records, err := historyService.SearchHistory(
 		args,
 		searchOpts.exitCode,
@@ -49,21 +56,19 @@ func runSearch(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	searchCmd.
+	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.exitCode, "exit-code", "e", -1, "filter search results by exit code")
-	searchCmd.
+	SearchCmd.
 		Flags().
 		StringVarP(&searchOpts.tmuxSession, "tmux-session", "s", "", "filter search results by tmux session")
-	searchCmd.
+	SearchCmd.
 		Flags().
 		StringVarP(&searchOpts.path, "path", "p", "", "filter search results by path")
-	searchCmd.
+	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.maxNumSearchResults, "limit", "l", -1, "limit the number of search results")
-	searchCmd.
+	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.offsetSearchResults, "offset", "o", -1, "offset of the search results")
-
-	rootCmd.AddCommand(searchCmd)
 }
