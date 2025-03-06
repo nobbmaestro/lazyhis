@@ -6,12 +6,12 @@ import (
 )
 
 type HistoryRepository struct {
-	*BaseRepository[model.History]
+	*GenericRepository[model.History]
 }
 
 func NewHistoryRepository(db *gorm.DB) *HistoryRepository {
 	return &HistoryRepository{
-		BaseRepository: &BaseRepository[model.History]{db: db},
+		GenericRepository: &GenericRepository[model.History]{db: db},
 	}
 }
 

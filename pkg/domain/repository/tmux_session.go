@@ -6,12 +6,12 @@ import (
 )
 
 type TmuxSessionRepository struct {
-	*BaseRepository[model.TmuxSession]
+	*GenericRepository[model.TmuxSession]
 }
 
 func NewTmuxSessionRepository(db *gorm.DB) *TmuxSessionRepository {
 	return &TmuxSessionRepository{
-		BaseRepository: &BaseRepository[model.TmuxSession]{db: db},
+		GenericRepository: &GenericRepository[model.TmuxSession]{db: db},
 	}
 }
 

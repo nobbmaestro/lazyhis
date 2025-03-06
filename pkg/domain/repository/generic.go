@@ -18,23 +18,23 @@ type Repository[T Model] interface {
 	GetAll() ([]T, error)
 }
 
-type BaseRepository[T Model] struct {
+type GenericRepository[T Model] struct {
 	db *gorm.DB
 }
 
-func (r *BaseRepository[T]) Create(record *T) (*T, error) {
+func (r *GenericRepository[T]) Create(record *T) (*T, error) {
 	return record, r.db.Create(record).Error
 }
 
-func (r *BaseRepository[T]) Update(record *T) (*T, error) {
+func (r *GenericRepository[T]) Update(record *T) (*T, error) {
 	return record, r.db.Model(record).Updates(record).Error
 }
 
-func (r *BaseRepository[T]) Delete(record *T) (*T, error) {
+func (r *GenericRepository[T]) Delete(record *T) (*T, error) {
 	return record, r.db.Unscoped().Delete(record).Error // This perform HARD delete
 }
 
-func (r *BaseRepository[T]) Get(record *T) (*T, error) {
+func (r *GenericRepository[T]) Get(record *T) (*T, error) {
 	var result T
 
 	err := r.db.Where(record).First(&result).Error
@@ -45,7 +45,7 @@ func (r *BaseRepository[T]) Get(record *T) (*T, error) {
 	return &result, nil
 }
 
-func (r *BaseRepository[T]) GetOrCreate(record *T) (*T, error) {
+func (r *GenericRepository[T]) GetOrCreate(record *T) (*T, error) {
 	err := r.db.Where(record).FirstOrCreate(record).Error
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (r *BaseRepository[T]) GetOrCreate(record *T) (*T, error) {
 	return record, nil
 }
 
-func (r *BaseRepository[T]) GetAll() ([]T, error) {
+func (r *GenericRepository[T]) GetAll() ([]T, error) {
 	var records []T
 
 	err := r.db.Find(&records).Error
@@ -64,7 +64,7 @@ func (r *BaseRepository[T]) GetAll() ([]T, error) {
 	return records, nil
 }
 
-func (r *BaseRepository[T]) Exists(record *T) bool {
+func (r *GenericRepository[T]) Exists(record *T) bool {
 	result, err := r.Get(record)
 	if err != nil {
 		return false

@@ -6,11 +6,11 @@ import (
 )
 
 type PathRepository struct {
-	*BaseRepository[model.Path]
+	*GenericRepository[model.Path]
 }
 
 func NewPathRepository(db *gorm.DB) *PathRepository {
-	return &PathRepository{BaseRepository: &BaseRepository[model.Path]{db: db}}
+	return &PathRepository{GenericRepository: &GenericRepository[model.Path]{db: db}}
 }
 
 func (r *PathRepository) QueryPaths(path string) ([]model.Path, error) {
