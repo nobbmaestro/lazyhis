@@ -61,6 +61,8 @@ _lazyhis_search() {
 		if [[ $LBUFFER == __lazyhis_accept__:* ]]; then
 			LBUFFER=${LBUFFER#__lazyhis_accept__:}
 			zle accept-line
+		elif [[ $LBUFFER == __lazyhis_prefill__:* ]]; then
+			LBUFFER=${LBUFFER#__lazyhis_prefill__:}
 		fi
 	fi
 }

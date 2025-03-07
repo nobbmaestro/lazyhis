@@ -23,6 +23,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.table.MoveDown(10)
 
 		case tea.KeyEnter:
+			m.setUserAction(UserActionAccept)
+			m.setSelectedRecord()
+			return m, tea.Quit
+
+		case tea.KeyCtrlO:
+			m.setUserAction(UserActionPrefill)
 			m.setSelectedRecord()
 			return m, tea.Quit
 
@@ -47,6 +53,10 @@ func (m *Model) updateRecords() {
 
 func (m *Model) setSelectedRecord() {
 	if cursor := m.table.Cursor(); cursor < len(m.records) {
-		m.selectedRecord = m.records[cursor]
+		m.SelectedRecord = m.records[cursor]
 	}
+}
+
+func (m *Model) setUserAction(action UserAction) {
+	m.UserAction = action
 }

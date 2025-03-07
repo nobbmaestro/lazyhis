@@ -107,9 +107,12 @@ func searchInteractive(
 		fmt.Println(err)
 	}
 
-	if m, ok := result.(gui.Model); ok {
-		if record := m.GetSelectedRecord(); record.Command != nil {
+	if record := result.(gui.Model).SelectedRecord; record.Command != nil {
+		switch result.(gui.Model).UserAction {
+		case gui.UserActionAccept:
 			fmt.Fprintf(os.Stderr, "__lazyhis_accept__:%s\n", record.Command.Command)
+		case gui.UserActionPrefill:
+			fmt.Fprintf(os.Stderr, "__lazyhis_prefill__:%s\n", record.Command.Command)
 		}
 	}
 }
