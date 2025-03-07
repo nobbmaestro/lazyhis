@@ -17,7 +17,10 @@ type UserConfig struct {
 }
 
 type GuiConfig struct {
+	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
+	// Option for display only unique commands
+	ShowUniqueCommands bool `yaml:"showUniqueCommands"`
 }
 
 type DbConfig struct {

@@ -21,6 +21,7 @@ type SearchOptions struct {
 	path                string
 	tmuxSession         string
 	runInteractive      bool
+	uniqueSearchResults bool
 }
 
 var searchOpts = &SearchOptions{}
@@ -55,6 +56,7 @@ func searchNonInteractive(
 		searchOpts.tmuxSession,
 		searchOpts.maxNumSearchResults,
 		searchOpts.offsetSearchResults,
+		searchOpts.uniqueSearchResults,
 	)
 	if err != nil {
 		fmt.Println(err)
@@ -82,6 +84,7 @@ func searchInteractive(
 			searchOpts.tmuxSession,
 			searchOpts.maxNumSearchResults,
 			searchOpts.offsetSearchResults,
+			searchOpts.uniqueSearchResults || config.Gui.ShowUniqueCommands,
 		)
 		if err != nil {
 			return nil
@@ -124,6 +127,9 @@ func init() {
 	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.maxNumSearchResults, "limit", "l", -1, "limit the number of search results")
+	SearchCmd.
+		Flags().
+		BoolVarP(&searchOpts.uniqueSearchResults, "unique", "u", false, "filter search results by unique commands")
 	SearchCmd.
 		Flags().
 		IntVarP(&searchOpts.offsetSearchResults, "offset", "o", -1, "offset of the search results")

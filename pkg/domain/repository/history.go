@@ -84,6 +84,7 @@ func (r *HistoryRepository) QueryHistory(
 	tmuxSession string,
 	limit int,
 	offset int,
+	unique bool,
 ) ([]model.History, error) {
 	var histories []model.History
 
@@ -119,6 +120,13 @@ func (r *HistoryRepository) QueryHistory(
 
 	if offset != -1 {
 		query = query.Offset(offset)
+	}
+
+	if unique {
+		subQuery := r.db.Model(&model.History{}).
+			Select("MAX(id) as id").
+			Group("command_id")
+		query = query.Where("id IN (?)", subQuery)
 	}
 
 	err := query.

@@ -32,6 +32,7 @@ func (s *HistoryService) SearchHistory(
 	tmuxSession string,
 	limit int,
 	offset int,
+	unique bool,
 ) ([]model.History, error) {
 	results, err := s.repos.HistoryRepo.QueryHistory(
 		keywords,
@@ -40,6 +41,7 @@ func (s *HistoryService) SearchHistory(
 		tmuxSession,
 		limit,
 		offset,
+		unique,
 	)
 	if err != nil {
 		fmt.Println(err)

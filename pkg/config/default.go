@@ -11,6 +11,7 @@ func GetDefaultUserConfig() *UserConfig {
 				ColumnExecutedAt,
 				ColumnCommand,
 			},
+			ShowUniqueCommands: true,
 		},
 	}
 }
