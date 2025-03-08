@@ -31,7 +31,7 @@ func main() {
 			CommandRepo: repository.NewCommandRepository(database),
 			HistoryRepo: repository.NewHistoryRepository(database),
 			PathRepo:    repository.NewPathRepository(database),
-			TmuxRepo:    repository.NewTmuxSessionRepository(database),
+			SessionRepo: repository.NewSessionRepository(database),
 		},
 	)
 

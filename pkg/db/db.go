@@ -52,7 +52,7 @@ func NewDatabaseConnection() (*gorm.DB, error) {
 	err = db.AutoMigrate(
 		model.History{},
 		model.Command{},
-		model.TmuxSession{},
+		model.Session{},
 		model.Path{},
 	)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 )
 
 type Model interface {
-	model.Command | model.Path | model.TmuxSession | model.History
+	model.Command | model.Path | model.Session | model.History
 }
 
 type Repository[T Model] interface {

@@ -21,7 +21,7 @@ func (r *HistoryRepository) Get(record *model.History) (*model.History, error) {
 	err := r.db.
 		Preload("Command").
 		Preload("Path").
-		Preload("TmuxSession").
+		Preload("Session").
 		Where(record).
 		First(&result).Error
 	if err != nil {
@@ -37,7 +37,7 @@ func (r *HistoryRepository) GetByID(id uint) (*model.History, error) {
 	err := r.db.
 		Preload("Command").
 		Preload("Path").
-		Preload("TmuxSession").
+		Preload("Session").
 		Where("id = ?", id).
 		First(&result).Error
 	if err != nil {
@@ -53,7 +53,7 @@ func (r *HistoryRepository) GetAll() ([]model.History, error) {
 	err := r.db.
 		Preload("Command").
 		Preload("Path").
-		Preload("TmuxSession").
+		Preload("Session").
 		Find(&records).Error
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (r *HistoryRepository) GetLast() (model.History, error) {
 	err := r.db.
 		Preload("Command").
 		Preload("Path").
-		Preload("TmuxSession").
+		Preload("Session").
 		Last(&record).Error
 	if err != nil {
 		return record, err
@@ -81,7 +81,7 @@ func (r *HistoryRepository) QueryHistory(
 	keywords []string,
 	exitCode int,
 	path string,
-	tmuxSession string,
+	session string,
 	limit int,
 	offset int,
 	unique bool,
@@ -104,10 +104,10 @@ func (r *HistoryRepository) QueryHistory(
 			Where("path LIKE ?", path))
 	}
 
-	if tmuxSession != "" {
-		query = query.Where("tmux_session_id IN (?)", r.db.Model(&model.TmuxSession{}).
+	if session != "" {
+		query = query.Where("session_id IN (?)", r.db.Model(&model.Session{}).
 			Select("id").
-			Where("session LIKE ?", tmuxSession))
+			Where("session LIKE ?", session))
 	}
 
 	if exitCode != -1 {
@@ -133,7 +133,7 @@ func (r *HistoryRepository) QueryHistory(
 		Order("id DESC").
 		Preload("Command").
 		Preload("Path").
-		Preload("TmuxSession").
+		Preload("Session").
 		Find(&histories).Error
 	if err != nil {
 		return nil, err

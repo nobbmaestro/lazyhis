@@ -19,7 +19,7 @@ type SearchOptions struct {
 	maxNumSearchResults int
 	offsetSearchResults int
 	path                string
-	tmuxSession         string
+	session             string
 	runInteractive      bool
 	uniqueSearchResults bool
 }
@@ -53,7 +53,7 @@ func searchNonInteractive(
 		args,
 		searchOpts.exitCode,
 		searchOpts.path,
-		searchOpts.tmuxSession,
+		searchOpts.session,
 		searchOpts.maxNumSearchResults,
 		searchOpts.offsetSearchResults,
 		searchOpts.uniqueSearchResults,
@@ -81,7 +81,7 @@ func searchInteractive(
 			append(args, keywords...),
 			searchOpts.exitCode,
 			searchOpts.path,
-			searchOpts.tmuxSession,
+			searchOpts.session,
 			searchOpts.maxNumSearchResults,
 			searchOpts.offsetSearchResults,
 			searchOpts.uniqueSearchResults || config.Gui.ShowUniqueCommands,
@@ -123,7 +123,7 @@ func init() {
 		IntVarP(&searchOpts.exitCode, "exit-code", "e", -1, "filter search results by exit code")
 	SearchCmd.
 		Flags().
-		StringVarP(&searchOpts.tmuxSession, "tmux-session", "s", "", "filter search results by tmux session")
+		StringVarP(&searchOpts.session, "session", "s", "", "filter search results by session")
 	SearchCmd.
 		Flags().
 		StringVarP(&searchOpts.path, "path", "p", "", "filter search results by path")

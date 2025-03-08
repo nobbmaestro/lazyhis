@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type TmuxSession struct {
+type Session struct {
 	gorm.Model
 	Session string `gorm:"unique"`
 }

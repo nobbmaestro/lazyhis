@@ -28,7 +28,7 @@ func runHistoryAdd(cmd *cobra.Command, args []string) {
 		&historyAddOpts.exitCode,
 		&historyAddOpts.executedIn,
 		&historyAddOpts.path,
-		&historyAddOpts.tmuxSession,
+		&historyAddOpts.session,
 		&config.Db.ExcludeCommands,
 	)
 	if err != nil {
@@ -44,9 +44,9 @@ func init() {
 	if err != nil {
 		currentPath = ""
 	}
-	currentTmuxSession, err := utils.GetCurrentTmuxSession()
+	currentSession, err := utils.GetCurrentTmuxSession()
 	if err != nil {
-		currentTmuxSession = ""
+		currentSession = ""
 	}
 
 	historyAddCmd.
@@ -60,5 +60,5 @@ func init() {
 		StringVarP(&historyAddOpts.path, "path", "p", currentPath, "working directory context")
 	historyAddCmd.
 		Flags().
-		StringVarP(&historyAddOpts.tmuxSession, "tmux-session", "s", currentTmuxSession, "tmux session context")
+		StringVarP(&historyAddOpts.session, "session", "s", currentSession, "session context")
 }

@@ -14,7 +14,7 @@ type RepositoryProvider struct {
 	CommandRepo *repository.CommandRepository
 	HistoryRepo *repository.HistoryRepository
 	PathRepo    *repository.PathRepository
-	TmuxRepo    *repository.TmuxSessionRepository
+	SessionRepo *repository.SessionRepository
 }
 
 type HistoryService struct {
@@ -29,7 +29,7 @@ func (s *HistoryService) SearchHistory(
 	keywords []string,
 	exitCode int,
 	path string,
-	tmuxSession string,
+	session string,
 	limit int,
 	offset int,
 	unique bool,
@@ -38,7 +38,7 @@ func (s *HistoryService) SearchHistory(
 		keywords,
 		exitCode,
 		path,
-		tmuxSession,
+		session,
 		limit,
 		offset,
 		unique,
@@ -55,7 +55,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	exitCode *int,
 	executedIn *int,
 	path *string,
-	tmuxSession *string,
+	session *string,
 	excludeCommands *[]string,
 ) (*model.History, error) {
 	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
@@ -67,7 +67,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 		exitCode,
 		executedIn,
 		path,
-		tmuxSession,
+		session,
 		excludeCommands,
 	)
 }
@@ -77,13 +77,13 @@ func (s *HistoryService) AddHistory(
 	exitCode *int,
 	executedIn *int,
 	path *string,
-	tmuxSession *string,
+	session *string,
 	excludeCommands *[]string,
 ) (*model.History, error) {
 	var (
-		commandID     *uint
-		pathID        *uint
-		tmuxSessionID *uint
+		commandID *uint
+		pathID    *uint
+		sessionID *uint
 	)
 
 	if excludeCommands != nil &&
@@ -99,12 +99,12 @@ func (s *HistoryService) AddHistory(
 		commandID = &commandRecord.ID
 	}
 
-	tmuxSessionRecord, err := s.AddTmuxSession(tmuxSession)
+	sessionRecord, err := s.AddSession(session)
 	if err != nil {
 		return nil, err
 	}
-	if tmuxSessionRecord != nil {
-		tmuxSessionID = &tmuxSessionRecord.ID
+	if sessionRecord != nil {
+		sessionID = &sessionRecord.ID
 	}
 
 	pathRecord, err := s.AddPath(path)
@@ -116,11 +116,11 @@ func (s *HistoryService) AddHistory(
 	}
 
 	history := &model.History{
-		ExitCode:      exitCode,
-		ExecutedIn:    executedIn,
-		CommandID:     commandID,
-		PathID:        pathID,
-		TmuxSessionID: tmuxSessionID,
+		ExitCode:   exitCode,
+		ExecutedIn: executedIn,
+		CommandID:  commandID,
+		PathID:     pathID,
+		SessionID:  sessionID,
 	}
 
 	return s.repos.HistoryRepo.Create(history)
@@ -131,7 +131,7 @@ func (s *HistoryService) EditHistory(
 	exitCode *int,
 	executedIn *int,
 	path *string,
-	tmuxSession *string,
+	session *string,
 ) (*model.History, error) {
 	history, err := s.repos.HistoryRepo.GetByID(uint(historyID))
 	if err != nil {
@@ -156,13 +156,13 @@ func (s *HistoryService) EditHistory(
 		}
 	}
 
-	if tmuxSession != nil {
-		tmuxSessionRecord, err := s.AddTmuxSession(tmuxSession)
+	if session != nil {
+		sessionRecord, err := s.AddSession(session)
 		if err != nil {
 			return nil, err
 		}
-		if tmuxSessionRecord != nil {
-			history.TmuxSession = tmuxSessionRecord
+		if sessionRecord != nil {
+			history.Session = sessionRecord
 		}
 	}
 
@@ -197,11 +197,11 @@ func (s *HistoryService) AddCommand(command []string) (*model.Command, error) {
 	)
 }
 
-func (s *HistoryService) AddTmuxSession(session *string) (*model.TmuxSession, error) {
+func (s *HistoryService) AddSession(session *string) (*model.Session, error) {
 	if session == nil {
 		return nil, nil
 	}
-	return s.repos.TmuxRepo.GetOrCreate(&model.TmuxSession{Session: *session})
+	return s.repos.SessionRepo.GetOrCreate(&model.Session{Session: *session})
 }
 
 func (s *HistoryService) AddPath(path *string) (*model.Path, error) {
@@ -219,8 +219,8 @@ func (s *HistoryService) GetAllCommands() ([]model.Command, error) {
 	return s.repos.CommandRepo.GetAll()
 }
 
-func (s *HistoryService) GetAllTmuxSessions() ([]model.TmuxSession, error) {
-	return s.repos.TmuxRepo.GetAll()
+func (s *HistoryService) GetAllSessions() ([]model.Session, error) {
+	return s.repos.SessionRepo.GetAll()
 }
 
 func (s *HistoryService) GetAllPaths() ([]model.Path, error) {

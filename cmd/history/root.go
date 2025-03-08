@@ -5,10 +5,10 @@ import (
 )
 
 type HistoryOptions struct {
-	executedIn  int
-	exitCode    int
-	path        string
-	tmuxSession string
+	executedIn int
+	exitCode   int
+	path       string
+	session    string
 }
 
 var HistoryCmd = &cobra.Command{

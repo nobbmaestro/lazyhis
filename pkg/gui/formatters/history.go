@@ -12,30 +12,30 @@ import (
 type getHistoryFieldByColumn func(history model.History) string
 
 var tableColumnNames = map[config.Column]string{
-	config.ColumnCommand:     "Command",
-	config.ColumnExecutedAt:  "Executed",
-	config.ColumnExecutedIn:  "Duration",
-	config.ColumnExitCode:    "Exit",
-	config.ColumnPath:        "Path",
-	config.ColumnTmuxSession: "Tmux Session",
+	config.ColumnCommand:    "Command",
+	config.ColumnExecutedAt: "Executed",
+	config.ColumnExecutedIn: "Duration",
+	config.ColumnExitCode:   "Exit",
+	config.ColumnPath:       "Path",
+	config.ColumnSession:    "Session",
 }
 
 var tableColumnWidth = map[config.Column]int{
-	config.ColumnCommand:     100,
-	config.ColumnExecutedAt:  10,
-	config.ColumnExecutedIn:  10,
-	config.ColumnExitCode:    5,
-	config.ColumnPath:        50,
-	config.ColumnTmuxSession: 15,
+	config.ColumnCommand:    100,
+	config.ColumnExecutedAt: 10,
+	config.ColumnExecutedIn: 10,
+	config.ColumnExitCode:   5,
+	config.ColumnPath:       50,
+	config.ColumnSession:    15,
 }
 
 var columnToGetter = map[config.Column]getHistoryFieldByColumn{
-	config.ColumnCommand:     extractCommandFromHistory,
-	config.ColumnExecutedAt:  extractExecutedAtFromHistory,
-	config.ColumnExecutedIn:  extractExecutedInFromHistory,
-	config.ColumnExitCode:    extractExitCodeFromHistory,
-	config.ColumnPath:        extractPathFromHistory,
-	config.ColumnTmuxSession: extractTmuxSessionFromHistory,
+	config.ColumnCommand:    extractCommandFromHistory,
+	config.ColumnExecutedAt: extractExecutedAtFromHistory,
+	config.ColumnExecutedIn: extractExecutedInFromHistory,
+	config.ColumnExitCode:   extractExitCodeFromHistory,
+	config.ColumnPath:       extractPathFromHistory,
+	config.ColumnSession:    extractSessionFromHistory,
 }
 
 type HistoryTableContent struct {
@@ -115,9 +115,9 @@ func extractPathFromHistory(history model.History) string {
 	return ""
 }
 
-func extractTmuxSessionFromHistory(history model.History) string {
-	if history.TmuxSession != nil {
-		return history.TmuxSession.Session
+func extractSessionFromHistory(history model.History) string {
+	if history.Session != nil {
+		return history.Session.Session
 	}
 	return ""
 }

@@ -26,10 +26,10 @@ func runHistoryEdit(cmd *cobra.Command, args []string) {
 	}
 
 	var (
-		exitCode    *int
-		executedIn  *int
-		path        *string
-		tmuxSession *string
+		exitCode   *int
+		executedIn *int
+		path       *string
+		session    *string
 	)
 
 	if cmd.Flags().Changed("exit-code") {
@@ -41,8 +41,8 @@ func runHistoryEdit(cmd *cobra.Command, args []string) {
 	if cmd.Flags().Changed("path") {
 		path = &historyEditOpts.path
 	}
-	if cmd.Flags().Changed("tmux-session") {
-		tmuxSession = &historyEditOpts.tmuxSession
+	if cmd.Flags().Changed("session") {
+		session = &historyEditOpts.session
 	}
 
 	_, err = historyService.EditHistory(
@@ -50,7 +50,7 @@ func runHistoryEdit(cmd *cobra.Command, args []string) {
 		exitCode,
 		executedIn,
 		path,
-		tmuxSession,
+		session,
 	)
 	if err != nil {
 		return
@@ -69,5 +69,5 @@ func init() {
 		StringVarP(&historyEditOpts.path, "path", "p", "", "working directory context")
 	historyEditCmd.
 		Flags().
-		StringVarP(&historyEditOpts.tmuxSession, "tmux-session", "s", "", "tmux session context")
+		StringVarP(&historyEditOpts.session, "session", "s", "", "session context")
 }

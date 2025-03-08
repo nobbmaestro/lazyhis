@@ -3,12 +3,12 @@ package config
 type Column string
 
 const (
-	ColumnCommand     Column = "COMMAND"
-	ColumnExecutedAt  Column = "EXECUTED_AT"
-	ColumnExecutedIn  Column = "EXECUTED_IN"
-	ColumnExitCode    Column = "EXIT_CODE"
-	ColumnPath        Column = "PATH"
-	ColumnTmuxSession Column = "TMUX_SESSION"
+	ColumnCommand    Column = "COMMAND"
+	ColumnExecutedAt Column = "EXECUTED_AT"
+	ColumnExecutedIn Column = "EXECUTED_IN"
+	ColumnExitCode   Column = "EXIT_CODE"
+	ColumnPath       Column = "PATH"
+	ColumnSession    Column = "SESSION"
 )
 
 type UserConfig struct {
