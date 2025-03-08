@@ -21,7 +21,7 @@ func (m Model) View() string {
 }
 
 func (m Model) renderHistoryTable() string {
-	content := formatters.NewHistoryTableContent(m.records, m.columns)
+	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
 	m.table.SetColumns(content.Columns)
 	m.table.SetRows(content.Rows)
 
