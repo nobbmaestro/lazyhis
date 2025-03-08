@@ -14,6 +14,7 @@ const (
 type UserConfig struct {
 	Db  DbConfig  `yaml:"db"`
 	Gui GuiConfig `yaml:"gui"`
+	Os  OsConfig  `yaml:"os"`
 }
 
 type GuiConfig struct {
@@ -26,4 +27,9 @@ type GuiConfig struct {
 type DbConfig struct {
 	// List of excluded commands
 	ExcludeCommands []string `yaml:"excludeCommands"`
+}
+
+type OsConfig struct {
+	// Command for retrieving current session
+	FetchCurrentSessionCmd string `yaml:"fetchCurrentSessionCmd"`
 }

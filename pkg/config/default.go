@@ -13,5 +13,8 @@ func GetDefaultUserConfig() *UserConfig {
 			},
 			ShowUniqueCommands: true,
 		},
+		Os: OsConfig{
+			FetchCurrentSessionCmd: "tmux display-message -p '#S'",
+		},
 	}
 }
