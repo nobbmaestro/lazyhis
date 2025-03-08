@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 )
 
 var (
@@ -20,17 +19,9 @@ func (m Model) View() string {
 	)
 }
 
-func (m Model) renderHistoryTable() string {
-	content := formatters.NewHistoryTableContent(m.records, m.columns)
-	m.table.SetColumns(content.Columns)
-	m.table.SetRows(content.Rows)
-
+func (m *Model) renderHistoryTable() string {
 	m.table.SetWidth(m.width)
 	m.table.SetHeight(m.height - 4)
-
-	if m.table.Cursor() > len(m.table.Rows()) {
-		m.table.SetCursor(0)
-	}
 
 	return lipgloss.NewStyle().PaddingBottom(1).Render(m.table.View())
 }

@@ -11,14 +11,6 @@ import (
 
 type QueryHistoryCallback func(keywords []string) []model.History
 
-type UserAction int
-
-const (
-	UserActionNone UserAction = iota
-	UserActionAccept
-	UserActionPrefill
-)
-
 type Model struct {
 	records        []model.History
 	columns        []config.Column
@@ -29,7 +21,7 @@ type Model struct {
 	version        string
 	queryHistory   QueryHistoryCallback
 	SelectedRecord model.History
-	UserAction     UserAction
+	UserAction     Action
 }
 
 func (m Model) Init() tea.Cmd {
@@ -66,6 +58,6 @@ func NewModel(
 		version:        version,
 		queryHistory:   queryHistory,
 		SelectedRecord: model.History{},
-		UserAction:     UserActionNone,
+		UserAction:     ActionNone,
 	}
 }
