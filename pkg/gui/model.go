@@ -40,7 +40,7 @@ func NewModel(
 
 	records := queryHistory([]string{})
 
-	content := formatters.NewHistoryTableContent(records, columns)
+	content := formatters.NewHistoryTableContent(records, columns, 100)
 	historyTable := table.New(
 		table.WithColumns(content.Columns),
 		table.WithRows(content.Rows),
