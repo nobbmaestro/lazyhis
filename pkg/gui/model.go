@@ -7,6 +7,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
 type QueryHistoryCallback func(keywords []string) []model.History
@@ -14,7 +15,7 @@ type QueryHistoryCallback func(keywords []string) []model.History
 type Model struct {
 	records        []model.History
 	columns        []config.Column
-	table          table.Model
+	table          histable.Model
 	input          textinput.Model
 	height         int
 	width          int
@@ -41,12 +42,12 @@ func NewModel(
 	records := queryHistory([]string{})
 
 	content := formatters.NewHistoryTableContent(records, columns, 100)
-	historyTable := table.New(
-		table.WithColumns(content.Columns),
-		table.WithRows(content.Rows),
-		table.WithFocused(true),
+	historyTable := histable.New(
+		histable.WithColumns(content.Columns),
+		histable.WithRows(content.Rows),
 	)
 	historyTable.SetStyles(table.DefaultStyles())
+	historyTable.GotoBottom()
 
 	return Model{
 		records:        records,

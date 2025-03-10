@@ -3,9 +3,9 @@ package gui
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
 type Action int
@@ -74,27 +74,25 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionMoveDown() (tea.Model, tea.Cmd) {
-	if m.table.Cursor() < len(m.records)-1 {
-		m.table.MoveDown(1)
+	if m.table.Cursor() == 0 {
+		return m.onUserActionQuit()
 	}
+	m.table.MoveDown(1)
 	return m, nil
 }
 
 func (m *Model) onUserActionMoveUp() (tea.Model, tea.Cmd) {
-	if m.table.Cursor() > 0 {
-		m.table.MoveUp(1)
-	}
+	m.table.MoveUp(1)
 	return m, nil
 }
 
 func (m *Model) onUserActionJumpDown() (tea.Model, tea.Cmd) {
-	remaining := len(m.records) - 1 - m.table.Cursor()
-	m.table.MoveDown(min(10, remaining))
+	m.table.MoveDown(10)
 	return m, nil
 }
 
 func (m *Model) onUserActionJumpUp() (tea.Model, tea.Cmd) {
-	m.table.MoveUp(min(10, m.table.Cursor()))
+	m.table.MoveUp(10)
 	return m, nil
 }
 
@@ -118,11 +116,11 @@ func (m *Model) updateTableContent() {
 	m.records = m.queryHistory(strings.Fields(m.input.Value()))
 
 	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
-	m.table = table.New(
-		table.WithColumns(content.Columns),
-		table.WithRows(content.Rows),
-		table.WithFocused(true),
+	m.table = histable.New(
+		histable.WithColumns(content.Columns),
+		histable.WithRows(content.Rows),
 	)
+	m.table.GotoBottom()
 }
 
 func (m *Model) setSelectedRecord() {
