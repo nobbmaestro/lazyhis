@@ -67,7 +67,7 @@ Available columns:
 
 ## Custom Session Providers
 
-By default, 'LazyHis' assumes sessions to be provided by [tmux](https://github.com/tmux/tmux).
+By default, `LazyHis` assumes sessions to be provided by [tmux](https://github.com/tmux/tmux).
 However, this can simply configured by overwriting the `fetchCurrentSessionCmd`.
 
 Example:
