@@ -2,7 +2,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/nobbmaestro/lazyhis)](github-release)
 [![GitHub last commit](https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development)](github-last-commit)
-[![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.0.1-dev/development)](githut-commits-since)
+[![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0-beta/development)](githut-commits-since)
 ![License](https://img.shields.io/github/license/nobbmaestro/lazyhis)
 
 LazyHis: `FIXME`
