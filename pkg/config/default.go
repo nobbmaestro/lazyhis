@@ -4,6 +4,7 @@ func GetDefaultUserConfig() *UserConfig {
 	return &UserConfig{
 		Db: DbConfig{
 			ExcludeCommands: []string{},
+			ExcludePrefix:   "\x20",
 		},
 		Gui: GuiConfig{
 			ColumnLayout: []Column{

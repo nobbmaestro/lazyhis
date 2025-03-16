@@ -27,6 +27,8 @@ type GuiConfig struct {
 type DbConfig struct {
 	// List of excluded commands
 	ExcludeCommands []string `yaml:"excludeCommands"`
+	// Ignore commands starting with this prefix.
+	ExcludePrefix string `yaml:"excludePrefix"`
 }
 
 type OsConfig struct {

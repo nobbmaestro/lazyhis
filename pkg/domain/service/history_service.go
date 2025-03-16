@@ -91,7 +91,11 @@ func (s *HistoryService) AddHistory(
 		sessionID *uint
 	)
 
-	if utils.IsExcluded(strings.Join(command, " "), s.config.ExcludeCommands) {
+	if utils.IsExcludedCommand(
+		command,
+		s.config.ExcludePrefix,
+		s.config.ExcludeCommands,
+	) {
 		return nil, nil
 	}
 
@@ -180,7 +184,7 @@ func (s *HistoryService) PruneHistory() error {
 	}
 
 	for _, record := range records {
-		if utils.IsExcluded(record.Command, s.config.ExcludeCommands) {
+		if utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
 			fmt.Println("Prune:", record.Command)
 
 			_, err := s.repos.CommandRepo.Delete(&record)
