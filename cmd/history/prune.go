@@ -14,9 +14,8 @@ var historyPruneCmd = &cobra.Command{
 func runHistoryPrune(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
-	config := context.GetConfig(ctx)
 
-	err := historyService.PruneHistory(config.Db.ExcludeCommands)
+	err := historyService.PruneHistory()
 	if err != nil {
 		return
 	}

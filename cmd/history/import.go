@@ -21,7 +21,6 @@ var historyImportCmd = &cobra.Command{
 func runImport(cmd *cobra.Command, args []string) {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
-	config := context.GetConfig(ctx)
 
 	file, err := os.Open(args[0])
 	if err != nil {
@@ -42,7 +41,6 @@ func runImport(cmd *cobra.Command, args []string) {
 			nil,
 			nil,
 			nil,
-			&config.Db.ExcludeCommands,
 		)
 		if err != nil {
 			continue

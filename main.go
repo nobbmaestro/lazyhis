@@ -33,6 +33,7 @@ func main() {
 			PathRepo:    repository.NewPathRepository(database),
 			SessionRepo: repository.NewSessionRepository(database),
 		},
+		&cfg.Db,
 	)
 
 	ctx := context.NewContext()
