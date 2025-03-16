@@ -1,31 +1,44 @@
 # LazyHis
 
+A simple terminal UI for shell history, written in [Go](https://github.com/golang/go)!
+
 [![GitHub Release](https://img.shields.io/github/v/release/nobbmaestro/lazyhis)](github-release)
 [![GitHub last commit](https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development)](github-last-commit)
-[![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0-beta/development)](githut-commits-since)
+[![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0/development)](githut-commits-since)
 ![License](https://img.shields.io/github/license/nobbmaestro/lazyhis)
 
-LazyHis: `FIXME`
+<!-- TODO: Add short demo video -->
 
-`TODO: Add short demo video`
+<!-- ## Why LazyHis? -->
+
+<!-- LazyHis focuses on simplicity, speed, and a clean terminal UI. -->
+
+<!-- - 🚀 **Fast**: Written in Go for maximum performance. -->
+<!-- - 🎨 **Customizable**: Supports themes and keybindings. -->
+<!-- - 🔍 **Powerful**: Advanced filtering, fuzzy search, and shell integration. -->
 
 ## Table of contents
 
-- [Installation](#installation)
-  - [Brew](#brew)
-  - [Manual](#manual)
+- [Quick Install](#quick-install)
+  - [Homebrew](#homebrew)
+  - [Build from Source](#build-from-source)
   - [Configure zsh](#configure-zsh)
 - [Feature Roadmap](#feature-roadmap)
 - [Customization](#customization)
 - [Alternatives](#alternatives)
 
-## Installation
+## Quick Install
 
-### Brew (Recommended)
+### 1. Install the lazyhis binary:
 
-`TODO: Finalize this`
+#### With [Homebrew](https://brew.sh) (Recommended)
 
-### Manual
+```sh
+brew tap nobbmaestro/homebrew-tap
+brew install lazyhis
+```
+
+#### Build from Source
 
 ```sh
 git clone git@github.com:nobbmaestro/lazyhis.git
@@ -33,30 +46,35 @@ cd lazyhis
 make
 ```
 
-`TODO: Finalize this`
+### 2. Add the init script to your shell's config file:
 
-## Configure zsh
+#### Zsh
+
+Add the following to the end of ~/.zshrc:
 
 ```sh
-echo 'eval "$(lazyhis init zsh)"' >> ~/.zshrc
+# ~/.zshrc
+
+eval "$(lazyhis init zsh)"
 ```
 
 ## Feature Roadmap
 
-- [ ] Customizable GUI theme
-- [ ] Support for inline GUI mode
-- [ ] Edit history entries via GUI
+- [ ] Add doctor CLI command for verifying shell configuration
+- [ ] Add export CLI command for exporting to HISTFILE
+- [ ] Add generate shell-completions CLI command
+- [x] Add prune CLI command for removing history based on ignore pattern
+- [ ] Copy to clipboard via GUI
+- [ ] Customizable GUI theme
+- [x] Customizable command exclusion by patterns
+- [x] Customizable command exclusion by prefix
+- [ ] Customizable keybindings
 - [ ] Delete history entries via GUI
 - [ ] Delete selected history entries via GUI
-- [ ] Copy to clipboard via GUI
-- [ ] Fuzzy-finder search strategy in GUI
+- [ ] Edit history entries via GUI
 - [ ] Filter history by context via GUI
-- [ ] Add doctor CLI command for verifying shell configuration
-- [ ] Add prune CLI command for removing history based on ignore pattern
-- [ ] Add generate shell-completions CLI command
-- [ ] Add export CLI command for exporting to HISTFILE
-- [ ] Add support for command execution duration
-- [ ] Customizable keybindings
+- [ ] Fuzzy-finder search strategy in GUI
+- [ ] Support for inline GUI mode
 
 ## Customization
 
@@ -64,6 +82,6 @@ Check out the [configuration docs](docs/config.md).
 
 ## Alternatives
 
-If you find that `lazyhis` does not quite satisfy your needs, following may be a better fit:
+If `lazyhis` isn't quite what you're looking for, you might prefer:
 
 - [Atuin](https://github.com/atuinsh/atuin)
