@@ -42,7 +42,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.height = msg.Height
 		m.width = msg.Width
-
+		m.updateTableWidth()
 	}
 	return m, nil
 }
@@ -110,6 +110,11 @@ func (m *Model) onUserActionPrefillSelected() (tea.Model, tea.Cmd) {
 
 func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
 	return m, tea.Quit
+}
+
+func (m *Model) updateTableWidth() {
+	columns := formatters.GenerateTableColumnsFromColumns(m.columns, m.width)
+	m.table.SetColumns(columns)
 }
 
 func (m *Model) updateTableContent() {
