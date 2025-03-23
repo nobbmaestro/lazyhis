@@ -15,16 +15,16 @@ var historyImportCmd = &cobra.Command{
 	Use:   "import [HISTFILE]",
 	Short: "Import history from histfile",
 	Args:  cobra.ExactArgs(1),
-	Run:   runImport,
+	RunE:  runImport,
 }
 
-func runImport(cmd *cobra.Command, args []string) {
+func runImport(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
 	file, err := os.Open(args[0])
 	if err != nil {
-		fmt.Println(fmt.Errorf("%w", err))
+		return err
 	}
 	defer file.Close()
 
@@ -48,8 +48,10 @@ func runImport(cmd *cobra.Command, args []string) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println(fmt.Errorf("Error reading file: %w", err))
+		return fmt.Errorf("Error reading file: %w", err)
 	}
+
+	return nil
 }
 
 func parseHistoryLine(line string) []string {

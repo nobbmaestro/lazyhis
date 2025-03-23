@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/nobbmaestro/lazyhis/cmd/history"
 	"github.com/nobbmaestro/lazyhis/cmd/initialize"
@@ -61,12 +60,8 @@ func SetContext(ctx context.Context) {
 	rootCmd.SetContext(ctx)
 }
 
-func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func Execute() error {
+	return rootCmd.Execute()
 }
 
 func init() {

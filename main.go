@@ -43,14 +43,20 @@ func main() {
 			SessionRepo: repository.NewSessionRepository(database),
 		},
 		&cfg.Db,
+		logger.Logger,
 	)
 
 	ctx := context.NewContext()
 	ctx = context.WithService(ctx, historyService)
 	ctx = context.WithConfig(ctx, cfg)
+	ctx = context.WithLogger(ctx, logger.Logger)
 
 	cmd.SetContext(ctx)
 	cmd.SetVersionInfo(version, commit, date)
 
-	cmd.Execute()
+	err = cmd.Execute()
+	if err != nil {
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
+	}
 }

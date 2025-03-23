@@ -10,16 +10,18 @@ import (
 var historyLastCmd = &cobra.Command{
 	Use:   "last",
 	Short: "Last added history record",
-	Run:   runHistoryLast,
+	RunE:  runHistoryLast,
 }
 
-func runHistoryLast(cmd *cobra.Command, args []string) {
+func runHistoryLast(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
 	record, err := historyService.GetLastHistory()
 	if err != nil {
-		return
+		return err
 	}
 	fmt.Println(record.Command.Command)
+
+	return nil
 }

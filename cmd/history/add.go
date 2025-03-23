@@ -16,10 +16,10 @@ var historyAddCmd = &cobra.Command{
 	Use:   "add [CMD...]",
 	Short: "Add history record",
 	Args:  cobra.ArbitraryArgs,
-	Run:   runHistoryAdd,
+	RunE:  runHistoryAdd,
 }
 
-func runHistoryAdd(cmd *cobra.Command, args []string) {
+func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 	config := context.GetConfig(ctx)
@@ -45,11 +45,13 @@ func runHistoryAdd(cmd *cobra.Command, args []string) {
 		&historyAddOpts.session,
 	)
 	if err != nil {
-		return
+		return err
 	}
 	if record != nil {
 		fmt.Println(record.ID)
 	}
+
+	return nil
 }
 
 func init() {
