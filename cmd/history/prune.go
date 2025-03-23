@@ -8,16 +8,17 @@ import (
 var historyPruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Delete history records matching the configured exclusion filters",
-	Run:   runHistoryPrune,
+	RunE:  runHistoryPrune,
 }
 
-func runHistoryPrune(cmd *cobra.Command, args []string) {
+func runHistoryPrune(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
-	config := context.GetConfig(ctx)
 
-	err := historyService.PruneHistory(config.Db.ExcludeCommands)
+	err := historyService.PruneHistory()
 	if err != nil {
-		return
+		return err
 	}
+
+	return nil
 }

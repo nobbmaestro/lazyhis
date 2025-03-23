@@ -11,10 +11,20 @@ const (
 	ColumnSession    Column = "SESSION"
 )
 
+type LogLevel string
+
+const (
+	LevelDebug LogLevel = "DEBUG"
+	LevelInfo  LogLevel = "INFO"
+	LevelWarn  LogLevel = "WARNING"
+	LevelError LogLevel = "ERROR"
+)
+
 type UserConfig struct {
 	Db  DbConfig  `yaml:"db"`
 	Gui GuiConfig `yaml:"gui"`
 	Os  OsConfig  `yaml:"os"`
+	Log LogConfig `yaml:"log"`
 }
 
 type GuiConfig struct {
@@ -27,9 +37,20 @@ type GuiConfig struct {
 type DbConfig struct {
 	// List of excluded commands
 	ExcludeCommands []string `yaml:"excludeCommands"`
+	// Ignore commands starting with this prefix
+	ExcludePrefix string `yaml:"excludePrefix"`
 }
 
 type OsConfig struct {
 	// Command for retrieving current session
 	FetchCurrentSessionCmd string `yaml:"fetchCurrentSessionCmd"`
+}
+
+type LogConfig struct {
+	// Option for enabling logging
+	LogEnabled bool `yaml:"logEnabled"`
+	// Option for configuring log level
+	LogLevel LogLevel `yaml:"logLevel"`
+	// Path to the log file
+	LogFile string `yaml:"logFile"`
 }

@@ -1,12 +1,15 @@
 package main
 
 import (
+	"os"
+
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
+	"github.com/nobbmaestro/lazyhis/pkg/log"
 )
 
 var (
@@ -26,6 +29,12 @@ func main() {
 		return
 	}
 
+	logger, err := log.NewLogger(cfg.Log)
+	if err != nil {
+		return
+	}
+	defer logger.Close()
+
 	historyService := service.NewHistoryService(
 		&service.RepositoryProvider{
 			CommandRepo: repository.NewCommandRepository(database),
@@ -33,14 +42,21 @@ func main() {
 			PathRepo:    repository.NewPathRepository(database),
 			SessionRepo: repository.NewSessionRepository(database),
 		},
+		&cfg.Db,
+		logger.Logger,
 	)
 
 	ctx := context.NewContext()
 	ctx = context.WithService(ctx, historyService)
 	ctx = context.WithConfig(ctx, cfg)
+	ctx = context.WithLogger(ctx, logger.Logger)
 
 	cmd.SetContext(ctx)
 	cmd.SetVersionInfo(version, commit, date)
 
-	cmd.Execute()
+	err = cmd.Execute()
+	if err != nil {
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
+	}
 }

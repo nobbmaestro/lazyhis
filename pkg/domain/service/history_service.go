@@ -2,9 +2,10 @@ package service
 
 import (
 	"errors"
-	"fmt"
+	"log/slog"
 	"strings"
 
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
@@ -18,11 +19,21 @@ type RepositoryProvider struct {
 }
 
 type HistoryService struct {
-	repos *RepositoryProvider
+	repos  *RepositoryProvider
+	config *config.DbConfig
+	logger *slog.Logger
 }
 
-func NewHistoryService(repos *RepositoryProvider) *HistoryService {
-	return &HistoryService{repos: repos}
+func NewHistoryService(
+	repos *RepositoryProvider,
+	config *config.DbConfig,
+	logger *slog.Logger,
+) *HistoryService {
+	return &HistoryService{
+		repos:  repos,
+		config: config,
+		logger: logger,
+	}
 }
 
 func (s *HistoryService) SearchHistory(
@@ -44,7 +55,7 @@ func (s *HistoryService) SearchHistory(
 		unique,
 	)
 	if err != nil {
-		fmt.Println(err)
+		s.logger.Error(err.Error())
 		return nil, err
 	}
 	return results, nil
@@ -56,7 +67,6 @@ func (s *HistoryService) AddHistoryIfUnique(
 	executedIn *int,
 	path *string,
 	session *string,
-	excludeCommands *[]string,
 ) (*model.History, error) {
 	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
 		return nil, nil
@@ -68,7 +78,6 @@ func (s *HistoryService) AddHistoryIfUnique(
 		executedIn,
 		path,
 		session,
-		excludeCommands,
 	)
 }
 
@@ -78,7 +87,6 @@ func (s *HistoryService) AddHistory(
 	executedIn *int,
 	path *string,
 	session *string,
-	excludeCommands *[]string,
 ) (*model.History, error) {
 	var (
 		commandID *uint
@@ -86,8 +94,11 @@ func (s *HistoryService) AddHistory(
 		sessionID *uint
 	)
 
-	if excludeCommands != nil &&
-		utils.IsExcluded(strings.Join(command, " "), *excludeCommands) {
+	if utils.IsExcludedCommand(
+		command,
+		s.config.ExcludePrefix,
+		s.config.ExcludeCommands,
+	) {
 		return nil, nil
 	}
 
@@ -169,15 +180,15 @@ func (s *HistoryService) EditHistory(
 	return s.repos.HistoryRepo.Update(history)
 }
 
-func (s *HistoryService) PruneHistory(excludeCommands []string) error {
+func (s *HistoryService) PruneHistory() error {
 	records, err := s.GetAllCommands()
 	if err != nil {
 		return err
 	}
 
 	for _, record := range records {
-		if utils.IsExcluded(record.Command, excludeCommands) {
-			fmt.Println("Prune:", record.Command)
+		if utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
+			s.logger.Debug("Prune", "command", record.Command)
 
 			_, err := s.repos.CommandRepo.Delete(&record)
 			if err != nil {

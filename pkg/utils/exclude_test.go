@@ -26,7 +26,7 @@ func TestIsExcluded(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.description, func(t *testing.T) {
-			result := utils.IsExcluded(tc.command, tc.exclusions)
+			result := utils.MatchesExclusionPatterns(tc.command, tc.exclusions)
 			if result != tc.expected {
 				t.Errorf("Expected %q with exclusions %v to return %v, but got %v",
 					tc.command, tc.exclusions, tc.expected, result)

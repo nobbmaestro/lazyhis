@@ -49,18 +49,18 @@ func NewHistoryTableContent(
 	width int,
 ) HistoryTableContent {
 	return HistoryTableContent{
-		Columns: generateTableColumnsFromColumns(columns, width),
-		Rows:    generateTableRowsFromHistory(records, columns),
+		Columns: GenerateTableColumnsFromColumns(columns, width),
+		Rows:    GenerateTableRowsFromHistory(records, columns),
 	}
 }
 
-func generateTableColumnsFromColumns(
+func GenerateTableColumnsFromColumns(
 	columns []config.Column,
 	width int,
 ) []table.Column {
 	tableColumns := make([]table.Column, len(columns))
 
-	newTableColumnWidth := updateTableColumnWidth(columns, width)
+	newTableColumnWidth := calculateTableColumnWidth(columns, width)
 	for i, column := range columns {
 		tableColumns[i].Title = tableColumnNames[column]
 		tableColumns[i].Width = newTableColumnWidth[column]
@@ -68,7 +68,7 @@ func generateTableColumnsFromColumns(
 	return tableColumns
 }
 
-func generateTableRowsFromHistory(
+func GenerateTableRowsFromHistory(
 	records []model.History,
 	columns []config.Column,
 ) []table.Row {
@@ -128,7 +128,7 @@ func extractSessionFromHistory(history model.History) string {
 	return ""
 }
 
-func updateTableColumnWidth(
+func calculateTableColumnWidth(
 	columns []config.Column,
 	totalWidth int,
 ) map[config.Column]int {

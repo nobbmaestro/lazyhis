@@ -13,16 +13,16 @@ var historyEditCmd = &cobra.Command{
 	Use:   "edit [ID]",
 	Short: "Edit history record by ID",
 	Args:  cobra.ExactArgs(1),
-	Run:   runHistoryEdit,
+	RunE:  runHistoryEdit,
 }
 
-func runHistoryEdit(cmd *cobra.Command, args []string) {
+func runHistoryEdit(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
 	historyID, err := strconv.Atoi(args[0])
 	if err != nil {
-		return
+		return err
 	}
 
 	var (
@@ -53,8 +53,10 @@ func runHistoryEdit(cmd *cobra.Command, args []string) {
 		session,
 	)
 	if err != nil {
-		return
+		return err
 	}
+
+	return nil
 }
 
 func init() {

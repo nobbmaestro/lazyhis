@@ -10,19 +10,21 @@ import (
 var historyListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all history records",
-	Run:   runHistoryList,
+	RunE:  runHistoryList,
 }
 
-func runHistoryList(cmd *cobra.Command, args []string) {
+func runHistoryList(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
 	records, err := historyService.GetAllHistory()
 	if err != nil {
-		return
+		return err
 	}
 
 	for _, record := range records {
 		fmt.Println(record.Command.Command)
 	}
+
+	return nil
 }

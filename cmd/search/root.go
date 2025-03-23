@@ -30,25 +30,24 @@ var SearchCmd = &cobra.Command{
 	Use:   "search [KEYWORDS...]",
 	Short: "Interactive history search",
 	Args:  cobra.ArbitraryArgs,
-	Run:   runSearch,
+	RunE:  runSearch,
 }
 
-func runSearch(cmd *cobra.Command, args []string) {
+func runSearch(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 	config := context.GetConfig(ctx)
 
 	if searchOpts.runInteractive {
-		searchInteractive(*historyService, *config, args, cmd.Root().Version)
-	} else {
-		searchNonInteractive(*historyService, args)
+		return searchInteractive(*historyService, *config, args, cmd.Root().Version)
 	}
+	return searchNonInteractive(*historyService, args)
 }
 
 func searchNonInteractive(
 	historyService service.HistoryService,
 	args []string,
-) {
+) error {
 	records, err := historyService.SearchHistory(
 		args,
 		searchOpts.exitCode,
@@ -59,8 +58,7 @@ func searchNonInteractive(
 		searchOpts.uniqueSearchResults,
 	)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	for _, record := range records {
@@ -68,6 +66,8 @@ func searchNonInteractive(
 			fmt.Println(record.Command.Command)
 		}
 	}
+
+	return nil
 }
 
 func searchInteractive(
@@ -75,7 +75,7 @@ func searchInteractive(
 	config config.UserConfig,
 	args []string,
 	version string,
-) {
+) error {
 	partialSearchHistory := func(keywords []string) []model.History {
 		records, err := historyService.SearchHistory(
 			append(args, keywords...),
@@ -104,7 +104,7 @@ func searchInteractive(
 
 	result, err := p.Run()
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 
 	if model, ok := result.(*gui.Model); ok && model.SelectedRecord.Command != nil {
@@ -116,6 +116,8 @@ func searchInteractive(
 			fmt.Fprintf(os.Stderr, "__lazyhis_prefill__:%s\n", command)
 		}
 	}
+
+	return nil
 }
 
 func init() {
