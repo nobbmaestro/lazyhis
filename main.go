@@ -24,7 +24,7 @@ func main() {
 		return
 	}
 
-	database, err := db.NewDatabaseConnection()
+	database, err := db.New()
 	if err != nil {
 		return
 	}
