@@ -1,11 +1,25 @@
-# LazyHis
+<h1 align="center">
+  LazyHis
+</h1>
 
-A simple terminal UI for shell history, written in [Go](https://github.com/golang/go)!
+<p align="center">
+  A simple terminal UI for shell history, written in <a href="https://github.com/golang/go">Go</a>!
+</p>
 
-[![GitHub Release](https://img.shields.io/github/v/release/nobbmaestro/lazyhis)](github-release)
-[![GitHub last commit](https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development)](github-last-commit)
-[![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0/development)](githut-commits-since)
-![License](https://img.shields.io/github/license/nobbmaestro/lazyhis)
+<p align="center">
+  <a href="https://github.com/nobbmaestro/lazyhis/releases">
+      <img src="https://img.shields.io/github/v/release/nobbmaestro/lazyhis" alt="GitHub Release" />
+  </a>
+  <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
+      <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
+  </a>
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.1.0...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0/development" alt="GitHub Commits Since" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+      <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
+  </a>
+</p>
 
 <p align="center">
   <img src="demo.gif" alt="animated" width="80%" />
