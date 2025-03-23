@@ -32,7 +32,7 @@ os:
   fetchCurrentSessionCmd: "tmux display-message -p '#S'"
 
 # Config relating to logging
-# See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#configuring-logger
+# See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#logging-configuration
 log:
   # If true, logging to file is enabled
   logEnabled: false
@@ -41,7 +41,7 @@ log:
   logLevel: ERROR
 
   # Path to the logging file
-  logFile: <HOME>/Library/Logs/lazyhis.log
+  logFile: ~/Library/Logs/lazyhis.log
 ```
 
 ## Exclude Commands from Database
@@ -89,11 +89,14 @@ os:
   fetchCurrentSessionCmd: echo 'Hello World'
 ```
 
-## Configuring logger
+## Logging Configuration
 
-For debuging purposes, logging to file can be enabled by overwriting `logEnabled` to `true`.
-By default, `LazyHis` will store logs in `~/Library/Logs/lazyhis.log` but this can be configured
-by overwriting the `logFile` entry.
+For debugging purposes, logging to a file can be enabled by setting `logEnabled` to `true`. By default,
+LazyHis stores logs in `~/Library/Logs/lazyhis.log`, but you can configure this by changing the
+`logFile` entry.
+
+**Note**: `LazyHis` does not manage log file sizes, so you are responsible for file rotation or
+cleanup if needed.
 
 Available log levels:
 
