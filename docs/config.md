@@ -41,7 +41,7 @@ log:
   logLevel: ERROR
 
   # Path to the logging file
-  logFile: /Users/norbertbatiuk/Library/Logs/lazyhis.log
+  logFile: <HOME>/Library/Logs/lazyhis.log
 ```
 
 ## Exclude Commands from Database
