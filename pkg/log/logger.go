@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -20,15 +21,20 @@ type Logger struct {
 	file   *os.File
 }
 
-func NewLogger(cfg config.LogConfig) (*Logger, error) {
+func New(cfg config.LogConfig) (*Logger, error) {
 	var file *os.File
 	var handler *slog.TextHandler
 
 	opts := &slog.HandlerOptions{Level: logLevelMapping[cfg.LogLevel]}
 
 	if cfg.LogEnabled {
-		file, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		file, err := os.OpenFile(
+			cfg.LogFile.String(),
+			os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+			0644,
+		)
 		if err != nil {
+			fmt.Println("Error opening log file:", err)
 			return nil, err
 		}
 		handler = slog.NewTextHandler(file, opts)

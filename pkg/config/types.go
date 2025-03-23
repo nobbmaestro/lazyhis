@@ -1,5 +1,7 @@
 package config
 
+import path "github.com/nobbmaestro/lazyhis/pkg/config/parsers"
+
 type Column string
 
 const (
@@ -52,5 +54,5 @@ type LogConfig struct {
 	// Option for configuring log level
 	LogLevel LogLevel `yaml:"logLevel"`
 	// Path to the log file
-	LogFile string `yaml:"logFile"`
+	LogFile path.Path `yaml:"logFile"`
 }

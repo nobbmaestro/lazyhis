@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	logger, err := log.NewLogger(cfg.Log)
+	logger, err := log.New(cfg.Log)
 	if err != nil {
 		return
 	}
