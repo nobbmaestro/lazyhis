@@ -7,7 +7,9 @@ A simple terminal UI for shell history, written in [Go](https://github.com/golan
 [![GitHub commits since](https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.1.0/development)](githut-commits-since)
 ![License](https://img.shields.io/github/license/nobbmaestro/lazyhis)
 
-<!-- TODO: Add short demo video -->
+<p align="center">
+  <img src="demo.gif" alt="animated" width="80%" />
+</p>
 
 <!-- ## Why LazyHis? -->
 
