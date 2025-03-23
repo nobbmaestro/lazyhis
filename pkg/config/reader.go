@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -19,7 +18,6 @@ func ReadUserConfig() (*UserConfig, error) {
 
 	userConfig, err := os.Open(confPath)
 	if err != nil {
-		fmt.Println("User config file does not exist:", confPath)
 		return cfg, nil
 	}
 	defer userConfig.Close()

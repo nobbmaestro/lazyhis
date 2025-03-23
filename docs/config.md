@@ -30,6 +30,18 @@ os:
   # Command for retrieving current session
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-session-providers
   fetchCurrentSessionCmd: "tmux display-message -p '#S'"
+
+# Config relating to logging
+# See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#configuring-logger
+log:
+  # If true, logging to file is enabled
+  logEnabled: false
+
+  # Options for configuring logging level
+  logLevel: ERROR
+
+  # Path to the logging file
+  logFile: /Users/norbertbatiuk/Library/Logs/lazyhis.log
 ```
 
 ## Exclude Commands from Database
@@ -76,3 +88,16 @@ Example:
 os:
   fetchCurrentSessionCmd: echo 'Hello World'
 ```
+
+## Configuring logger
+
+For debuging purposes, logging to file can be enabled by overwriting `logEnabled` to `true`.
+By default, `LazyHis` will store logs in `~/Library/Logs/lazyhis.log` but this can be configured
+by overwriting the `logFile` entry.
+
+Available log levels:
+
+- INFO
+- DEBUG
+- WARNING
+- ERROR
