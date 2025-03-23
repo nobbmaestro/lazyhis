@@ -1,9 +1,6 @@
 package config
 
-import (
-	"os"
-	"path/filepath"
-)
+import path "github.com/nobbmaestro/lazyhis/pkg/config/parsers"
 
 func GetDefaultUserConfig() *UserConfig {
 	return &UserConfig{
@@ -25,12 +22,7 @@ func GetDefaultUserConfig() *UserConfig {
 		Log: LogConfig{
 			LogEnabled: false,
 			LogLevel:   LevelError,
-			LogFile: filepath.Join(
-				os.Getenv("HOME"),
-				"Library",
-				"Logs",
-				"lazyhis.log",
-			),
+			LogFile:    path.New("~/Library/Logs/lazyhis.log"),
 		},
 	}
 }

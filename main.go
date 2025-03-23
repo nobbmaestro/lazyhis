@@ -24,12 +24,12 @@ func main() {
 		return
 	}
 
-	database, err := db.NewDatabaseConnection()
+	database, err := db.New()
 	if err != nil {
 		return
 	}
 
-	logger, err := log.NewLogger(cfg.Log)
+	logger, err := log.New(cfg.Log)
 	if err != nil {
 		return
 	}

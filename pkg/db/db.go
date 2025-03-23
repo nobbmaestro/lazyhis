@@ -17,7 +17,26 @@ func init() {
 	dbPath = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
 }
 
-func CreateDatabase() (*gorm.DB, error) {
+func New() (*gorm.DB, error) {
+	db, err := createDatabase()
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.AutoMigrate(
+		model.History{},
+		model.Command{},
+		model.Session{},
+		model.Path{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+func createDatabase() (*gorm.DB, error) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\n", log.LstdFlags),
 		logger.Config{
@@ -36,25 +55,6 @@ func CreateDatabase() (*gorm.DB, error) {
 	}
 
 	_, err = sqlDB.Exec("PRAGMA foreign_keys = ON;")
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func NewDatabaseConnection() (*gorm.DB, error) {
-	db, err := CreateDatabase()
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.AutoMigrate(
-		model.History{},
-		model.Command{},
-		model.Session{},
-		model.Path{},
-	)
 	if err != nil {
 		return nil, err
 	}
