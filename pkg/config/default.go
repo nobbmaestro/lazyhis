@@ -15,6 +15,14 @@ func GetDefaultUserConfig() *UserConfig {
 				ColumnCommand,
 			},
 			ShowUniqueCommands: true,
+			InitialFilterMode: NoFilter,
+			CyclicFilterModes: []FilterMode{
+				NoFilter,
+				PathFilter,
+				SessionFilter,
+				PathSessionFilter,
+				ExitFilter,
+			},
 		},
 		Os: OsConfig{
 			FetchCurrentSessionCmd: "tmux display-message -p '#S'",

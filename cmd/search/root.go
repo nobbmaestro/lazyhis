@@ -11,6 +11,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 	"github.com/nobbmaestro/lazyhis/pkg/gui"
+	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -72,19 +73,19 @@ func searchNonInteractive(
 
 func searchInteractive(
 	historyService service.HistoryService,
-	config config.UserConfig,
+	cfg config.UserConfig,
 	args []string,
 	version string,
 ) error {
-	partialSearchHistory := func(keywords []string) []model.History {
+	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
 		records, err := historyService.SearchHistory(
 			append(args, keywords...),
-			searchOpts.exitCode,
-			searchOpts.path,
-			searchOpts.session,
+			applyExitCodeFilter(mode),
+			applyPathFilter(mode),
+			applySessionFilter(mode, cfg.Os.FetchCurrentSessionCmd),
 			-1, //maxNumSearchResults
 			-1, //offsetSearchResults
-			config.Gui.ShowUniqueCommands,
+			cfg.Gui.ShowUniqueCommands,
 		)
 		if err != nil {
 			return nil
@@ -94,7 +95,7 @@ func searchInteractive(
 
 	p := tea.NewProgram(
 		gui.NewModel(
-			config.Gui.ColumnLayout,
+			cfg.Gui,
 			partialSearchHistory,
 			version,
 			strings.Join(args, " "),
@@ -118,6 +119,31 @@ func searchInteractive(
 	}
 
 	return nil
+}
+
+func applyPathFilter(mode config.FilterMode) string {
+	if mode == config.PathFilter || mode == config.PathSessionFilter {
+		if p, err := os.Getwd(); err == nil {
+			return p
+		}
+	}
+	return ""
+}
+
+func applySessionFilter(mode config.FilterMode, sessionCmd string) string {
+	if mode == config.SessionFilter || mode == config.PathSessionFilter {
+		if s, err := utils.RunCommand(strings.Split(sessionCmd, " ")); err == nil {
+			return s
+		}
+	}
+	return ""
+}
+
+func applyExitCodeFilter(mode config.FilterMode) int {
+	if mode == config.ExitFilter {
+		return 0
+	}
+	return -1
 }
 
 func init() {

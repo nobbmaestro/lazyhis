@@ -71,3 +71,8 @@ func HumanizePath(path string) string {
 
 	return path
 }
+
+func CenterString(text string, width int, format string) string {
+	padding := (width + len(text)) / 2
+	return fmt.Sprintf(format, width, fmt.Sprintf("%*s", padding, text))
+}
