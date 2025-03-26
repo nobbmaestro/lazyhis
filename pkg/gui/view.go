@@ -13,6 +13,7 @@ var filterModeNames = map[config.FilterMode]string{
 	config.ExitFilter:        "EXIT",
 	config.PathFilter:        "PATH",
 	config.SessionFilter:     "SESS",
+	config.UniqueFilter:      "UNIQUE",
 	config.PathSessionFilter: "PATH + SESS",
 }
 

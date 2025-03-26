@@ -14,7 +14,6 @@ func GetDefaultUserConfig() *UserConfig {
 				ColumnExecutedAt,
 				ColumnCommand,
 			},
-			ShowUniqueCommands: true,
 			InitialFilterMode: NoFilter,
 			CyclicFilterModes: []FilterMode{
 				NoFilter,
@@ -22,6 +21,9 @@ func GetDefaultUserConfig() *UserConfig {
 				SessionFilter,
 				PathSessionFilter,
 				ExitFilter,
+			},
+			PersistentFilterModes: []FilterMode{
+				UniqueFilter,
 			},
 		},
 		Os: OsConfig{

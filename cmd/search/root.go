@@ -3,6 +3,7 @@ package search
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -80,12 +81,16 @@ func searchInteractive(
 	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
 		records, err := historyService.SearchHistory(
 			append(args, keywords...),
-			applyExitCodeFilter(mode),
-			applyPathFilter(mode),
-			applySessionFilter(mode, cfg.Os.FetchCurrentSessionCmd),
+			applyExitCodeFilter(mode, cfg.Gui.PersistentFilterModes),
+			applyPathFilter(mode, cfg.Gui.PersistentFilterModes),
+			applySessionFilter(
+				mode,
+				cfg.Gui.PersistentFilterModes,
+				cfg.Os.FetchCurrentSessionCmd,
+			),
 			-1, //maxNumSearchResults
 			-1, //offsetSearchResults
-			cfg.Gui.ShowUniqueCommands,
+			applyUniqueCommandFilter(mode, cfg.Gui.PersistentFilterModes),
 		)
 		if err != nil {
 			return nil
@@ -121,8 +126,14 @@ func searchInteractive(
 	return nil
 }
 
-func applyPathFilter(mode config.FilterMode) string {
-	if mode == config.PathFilter || mode == config.PathSessionFilter {
+func applyPathFilter(
+	mode config.FilterMode,
+	persistent []config.FilterMode,
+) string {
+	if mode == config.PathFilter ||
+		mode == config.PathSessionFilter ||
+		slices.Contains(persistent, config.PathFilter) ||
+		slices.Contains(persistent, config.PathSessionFilter) {
 		if p, err := os.Getwd(); err == nil {
 			return p
 		}
@@ -130,8 +141,14 @@ func applyPathFilter(mode config.FilterMode) string {
 	return ""
 }
 
-func applySessionFilter(mode config.FilterMode, sessionCmd string) string {
-	if mode == config.SessionFilter || mode == config.PathSessionFilter {
+func applySessionFilter(
+	mode config.FilterMode,
+	persistent []config.FilterMode,
+	sessionCmd string,
+) string {
+	if mode == config.SessionFilter ||
+		mode == config.PathSessionFilter ||
+		slices.Contains(persistent, config.SessionFilter) {
 		if s, err := utils.RunCommand(strings.Split(sessionCmd, " ")); err == nil {
 			return s
 		}
@@ -139,11 +156,24 @@ func applySessionFilter(mode config.FilterMode, sessionCmd string) string {
 	return ""
 }
 
-func applyExitCodeFilter(mode config.FilterMode) int {
-	if mode == config.ExitFilter {
+func applyExitCodeFilter(
+	mode config.FilterMode,
+	persistent []config.FilterMode,
+) int {
+	if mode == config.ExitFilter || slices.Contains(persistent, config.ExitFilter) {
 		return 0
 	}
 	return -1
+}
+
+func applyUniqueCommandFilter(
+	mode config.FilterMode,
+	persistent []config.FilterMode,
+) bool {
+	if mode == config.UniqueFilter || slices.Contains(persistent, config.UniqueFilter) {
+		return true
+	}
+	return false
 }
 
 func init() {
