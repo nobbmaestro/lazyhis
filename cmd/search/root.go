@@ -82,9 +82,9 @@ func searchInteractive(
 			searchOpts.exitCode,
 			searchOpts.path,
 			searchOpts.session,
-			searchOpts.maxNumSearchResults,
-			searchOpts.offsetSearchResults,
-			searchOpts.uniqueSearchResults || config.Gui.ShowUniqueCommands,
+			-1, //maxNumSearchResults
+			-1, //offsetSearchResults
+			config.Gui.ShowUniqueCommands,
 		)
 		if err != nil {
 			return nil
@@ -123,22 +123,22 @@ func searchInteractive(
 func init() {
 	SearchCmd.
 		Flags().
-		IntVarP(&searchOpts.exitCode, "exit-code", "e", -1, "filter search results by exit code")
+		IntVarP(&searchOpts.exitCode, "exit-code", "e", -1, "filter search results by exit code (non-interactive only)")
 	SearchCmd.
 		Flags().
-		StringVarP(&searchOpts.session, "session", "s", "", "filter search results by session")
+		StringVarP(&searchOpts.session, "session", "s", "", "filter search results by session (non-interactive only)")
 	SearchCmd.
 		Flags().
-		StringVarP(&searchOpts.path, "path", "p", "", "filter search results by path")
+		StringVarP(&searchOpts.path, "path", "p", "", "filter search results by path (non-interactive only)")
 	SearchCmd.
 		Flags().
-		IntVarP(&searchOpts.maxNumSearchResults, "limit", "l", -1, "limit the number of search results")
+		IntVarP(&searchOpts.maxNumSearchResults, "limit", "l", -1, "limit the number of search results (non-interactive only)")
 	SearchCmd.
 		Flags().
-		BoolVarP(&searchOpts.uniqueSearchResults, "unique", "u", false, "filter search results by unique commands")
+		BoolVarP(&searchOpts.uniqueSearchResults, "unique", "u", false, "filter search results by unique commands (non-interactive only)")
 	SearchCmd.
 		Flags().
-		IntVarP(&searchOpts.offsetSearchResults, "offset", "o", -1, "offset of the search results")
+		IntVarP(&searchOpts.offsetSearchResults, "offset", "o", -1, "offset of the search results (non-interactive only)")
 	SearchCmd.
 		Flags().
 		BoolVarP(&searchOpts.runInteractive, "interactive", "i", false, "open interactive search GUI")
