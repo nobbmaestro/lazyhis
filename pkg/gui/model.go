@@ -10,19 +10,21 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
-type QueryHistoryCallback func(keywords []string) []model.History
+type QueryHistoryCallback func(keywords []string, mode config.FilterMode) []model.History
 
 type Model struct {
-	records        []model.History
-	columns        []config.Column
-	table          histable.Model
-	input          textinput.Model
-	height         int
-	width          int
-	version        string
-	queryHistory   QueryHistoryCallback
-	SelectedRecord model.History
-	UserAction     Action
+	currentFilterMode config.FilterMode
+	filterModes       []config.FilterMode
+	columns           []config.Column
+	records           []model.History
+	table             histable.Model
+	input             textinput.Model
+	height            int
+	width             int
+	version           string
+	queryHistory      QueryHistoryCallback
+	SelectedRecord    model.History
+	UserAction        Action
 }
 
 func (m Model) Init() tea.Cmd {
@@ -30,7 +32,7 @@ func (m Model) Init() tea.Cmd {
 }
 
 func NewModel(
-	columns []config.Column,
+	cfg config.GuiConfig,
 	queryHistory QueryHistoryCallback,
 	version string,
 	searchKeywords string,
@@ -39,9 +41,9 @@ func NewModel(
 	input.SetValue(searchKeywords)
 	input.Focus()
 
-	records := queryHistory([]string{})
+	records := queryHistory([]string{}, cfg.InitialFilterMode)
 
-	content := formatters.NewHistoryTableContent(records, columns, 100)
+	content := formatters.NewHistoryTableContent(records, cfg.ColumnLayout, 100)
 	historyTable := histable.New(
 		histable.WithColumns(content.Columns),
 		histable.WithRows(content.Rows),
@@ -50,15 +52,17 @@ func NewModel(
 	historyTable.GotoBottom()
 
 	return Model{
-		records:        records,
-		columns:        columns,
-		table:          historyTable,
-		input:          input,
-		height:         10,
-		width:          10,
-		version:        version,
-		queryHistory:   queryHistory,
-		SelectedRecord: model.History{},
-		UserAction:     ActionNone,
+		columns:           cfg.ColumnLayout,
+		currentFilterMode: cfg.InitialFilterMode,
+		filterModes:       cfg.CyclicFilterModes,
+		records:           records,
+		table:             historyTable,
+		input:             input,
+		height:            10,
+		width:             10,
+		version:           version,
+		queryHistory:      queryHistory,
+		SelectedRecord:    model.History{},
+		UserAction:        ActionNone,
 	}
 }

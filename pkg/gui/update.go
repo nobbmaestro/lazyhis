@@ -6,6 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
+	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type Action int
@@ -19,6 +20,7 @@ const (
 	ActionMoveUp
 	ActionJumpDown
 	ActionJumpUp
+	ActionNextFilter
 )
 
 var keyToAction = map[tea.KeyType]Action{
@@ -33,6 +35,7 @@ var keyToAction = map[tea.KeyType]Action{
 	tea.KeyCtrlC: ActionQuit,
 	tea.KeyCtrlQ: ActionQuit,
 	tea.KeyEsc:   ActionQuit,
+	tea.KeyTab:   ActionNextFilter,
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -65,6 +68,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onUserActionJumpDown()
 	case ActionJumpUp:
 		return m.onUserActionJumpUp()
+	case ActionNextFilter:
+		return m.onUserActionNextFilter()
 	default:
 		m.input, _ = m.input.Update(msg)
 		m.updateTableContent()
@@ -96,6 +101,12 @@ func (m *Model) onUserActionJumpUp() (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
+func (m *Model) onUserActionNextFilter() (tea.Model, tea.Cmd) {
+	m.currentFilterMode = utils.CycleNext(m.currentFilterMode, m.filterModes)
+	m.updateTableContent()
+	return m, nil
+}
+
 func (m *Model) onUserActionAcceptSelected() (tea.Model, tea.Cmd) {
 	m.setUserAction(ActionAcceptSelected)
 	m.setSelectedRecord()
@@ -118,7 +129,7 @@ func (m *Model) updateTableWidth() {
 }
 
 func (m *Model) updateTableContent() {
-	m.records = m.queryHistory(strings.Fields(m.input.Value()))
+	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.currentFilterMode)
 
 	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
 	m.table = histable.New(

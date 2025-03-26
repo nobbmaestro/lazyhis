@@ -22,6 +22,17 @@ const (
 	LevelError LogLevel = "ERROR"
 )
 
+type FilterMode string
+
+const (
+	NoFilter          FilterMode = "NO_FILTER"
+	ExitFilter        FilterMode = "EXIT_FILTER"
+	PathFilter        FilterMode = "PATH_FILTER"
+	SessionFilter     FilterMode = "SESSION_FILTER"
+	UniqueFilter      FilterMode = "UNIQUE_FILTER"
+	PathSessionFilter FilterMode = "PATH_SESSION_FILTER"
+)
+
 type UserConfig struct {
 	Db  DbConfig  `yaml:"db"`
 	Gui GuiConfig `yaml:"gui"`
@@ -32,8 +43,12 @@ type UserConfig struct {
 type GuiConfig struct {
 	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
-	// Option for display only unique commands
-	ShowUniqueCommands bool `yaml:"showUniqueCommands"`
+	// Option for setting initial (cyclic) filter mode
+	InitialFilterMode FilterMode `yaml:"initialFilterMode"`
+	// List of filter modes to cycle through
+	CyclicFilterModes []FilterMode `yaml:"cyclicFilterModes"`
+	// List of persistent filter modes
+	PersistentFilterModes []FilterMode `yaml:"persistentFilterModes"`
 }
 
 type DbConfig struct {

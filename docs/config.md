@@ -22,8 +22,22 @@ gui:
     - EXECUTED_AT
     - COMMAND
 
-  # If true, GUI will display only unique commands
-  showUniqueCommands: true
+  # Option for setting initial (cyclic) filter mode
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
+  initialFilterMode: NO_FILTER
+
+  # List of filter modes to cycle through
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
+  cyclicFilterModes:
+    - NO_FILTER
+    - PATH_FILTER
+    - SESSION_FILTER
+    - PATH_SESSION_FILTER
+
+  # List of persistent filter modes
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
+  persitentFilterModes:
+    - UNIQUE_FILTER
 
 # Config relating to things outside of LazyHis like how sessions are obtain etc
 os:
@@ -104,3 +118,23 @@ Available log levels:
 - DEBUG
 - WARNING
 - ERROR
+
+## Filter Modes
+
+`LazyHis` stores various metadata associated with the history records, which can be used to filter
+search results. However, no filter is applied by default. You can specify the desired filter in the
+`initialFilterMode`. Additionally, modifying `cyclicFilterModes` allows you to select which filters
+to cycle through and define their order.
+
+If you prefer persistent filters, add the desired filter(s) to `persistentFilterModes`.
+
+Available filter modes:
+
+| Modes               | Description                         |
+| ------------------- | ----------------------------------- |
+| NO_FILTER           | No filter applied                   |
+| EXIT_FILTER         | Filter out non-zero exit codes      |
+| PATH_FILTER         | Filter by current working directory |
+| SESSION_FILTER      | Filter by current session           |
+| UNIQUE_FILTER       | Filter by unique commands           |
+| PATH_SESSION_FILTER | Filter by cwd and session           |

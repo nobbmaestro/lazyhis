@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	printUserConfig    bool
 	printDefaultConfig bool
 	printConfigPath    bool
 )
@@ -27,6 +28,8 @@ var rootCmd = &cobra.Command{
 
 func runRoot(cmd *cobra.Command, args []string) error {
 	switch {
+	case printUserConfig:
+		return runPrintUserConfig()
 	case printDefaultConfig:
 		return runPrintDefaultConfig()
 	case printConfigPath:
@@ -36,12 +39,23 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	}
 }
 
+func runPrintUserConfig() error {
+	cfg, err := config.ReadUserConfig()
+	if err != nil {
+		return fmt.Errorf("Failed to read user config: %w", err)
+	}
+	return printConfig(cfg)
+}
+
 func runPrintDefaultConfig() error {
+	return printConfig(config.GetDefaultUserConfig())
+}
+
+func printConfig(cfg *config.UserConfig) error {
 	var buf bytes.Buffer
 	encoder := yaml.NewEncoder(&buf)
-	err := encoder.Encode(config.GetDefaultUserConfig())
-	if err != nil {
-		return fmt.Errorf("Failed to encode default config: %w", err)
+	if err := encoder.Encode(cfg); err != nil {
+		return fmt.Errorf("Error encoding config: %w", err)
 	}
 	fmt.Printf("%s\n", buf.String())
 	return nil
@@ -67,10 +81,13 @@ func Execute() error {
 func init() {
 	rootCmd.
 		Flags().
-		BoolVarP(&printDefaultConfig, "config", "c", false, "print the default config")
+		BoolVarP(&printUserConfig, "user-config", "c", false, "print the user config")
 	rootCmd.
 		Flags().
-		BoolVarP(&printConfigPath, "config-dir", "C", false, "print the config directory")
+		BoolVarP(&printDefaultConfig, "default-config", "C", false, "print the default config")
+	rootCmd.
+		Flags().
+		BoolVarP(&printConfigPath, "config-dir", "d", false, "print the config directory")
 
 	rootCmd.AddCommand(history.HistoryCmd)
 	rootCmd.AddCommand(initialize.InitCmd)
