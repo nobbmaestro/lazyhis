@@ -8,6 +8,7 @@
 | ------ | --------------------- | -------------------------------------- |
 | enter  | ActionAcceptSelected  | Select highlighted command and execute |
 | ctrl+o | ActionPrefillSelected | Select highlighted command and prefill |
+| tab    | ActionToggleFilter    | Select next filter mode                |
 | ctrl+q | ActionQuit            | Quit the application                   |
 | ctrl+c | ActionQuit            | Quit the application                   |
 | esc    | ActionQuit            | Quit the application                   |
