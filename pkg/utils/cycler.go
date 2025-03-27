@@ -1,13 +1,19 @@
 package utils
 
-func CycleNext[T comparable](current T, collection []T) T {
-	if len(collection) == 0 {
+func Cycle[T comparable](current T, collection []T, isForward bool) T {
+	length := len(collection)
+
+	if length == 0 {
 		var zero T
 		return zero
 	}
+
 	for i, item := range collection {
 		if item == current {
-			return collection[(i+1)%len(collection)]
+			if !isForward {
+				return collection[(i-1+length)%length]
+			}
+			return collection[(i+1)%length]
 		}
 	}
 	return collection[0]
