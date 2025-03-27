@@ -76,7 +76,7 @@ eval "$(lazyhis init zsh)"
 
 ## Feature Roadmap
 
-- [ ] Add doctor CLI command for verifying shell configuration
+- [ ] Add doctor CLI command for verifying configuration
 - [ ] Add export CLI command for exporting to HISTFILE
 - [ ] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
@@ -88,7 +88,7 @@ eval "$(lazyhis init zsh)"
 - [ ] Delete history entries via GUI
 - [ ] Delete selected history entries via GUI
 - [ ] Edit history entries via GUI
-- [ ] Filter history by context via GUI
+- [x] Filter history by context via GUI
 - [ ] Fuzzy-finder search strategy in GUI
 - [ ] Support for inline GUI mode
 
