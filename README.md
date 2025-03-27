@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.3.0...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.3.0/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.3.1...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.3.1/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -76,7 +76,7 @@ eval "$(lazyhis init zsh)"
 
 ## Feature Roadmap
 
-- [ ] Add doctor CLI command for verifying shell configuration
+- [ ] Add doctor CLI command for verifying configuration
 - [ ] Add export CLI command for exporting to HISTFILE
 - [ ] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
@@ -88,7 +88,7 @@ eval "$(lazyhis init zsh)"
 - [ ] Delete history entries via GUI
 - [ ] Delete selected history entries via GUI
 - [ ] Edit history entries via GUI
-- [ ] Filter history by context via GUI
+- [x] Filter history by context via GUI
 - [ ] Fuzzy-finder search strategy in GUI
 - [ ] Support for inline GUI mode
 

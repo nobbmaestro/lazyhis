@@ -42,7 +42,7 @@ func (m Model) renderFilterModeName() string {
 		return ""
 	}
 
-	itemWidth := int(0.1 * float64(m.width))
+	itemWidth := int(18)
 
 	return lipgloss.NewStyle().
 		Align(lipgloss.Left).
