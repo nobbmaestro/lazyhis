@@ -47,8 +47,8 @@ func NewModel(
 	historyTable := histable.New(
 		histable.WithColumns(content.Columns),
 		histable.WithRows(content.Rows),
+		histable.WithStyles(table.DefaultStyles()),
 	)
-	historyTable.SetStyles(table.DefaultStyles())
 	historyTable.GotoBottom()
 
 	return Model{

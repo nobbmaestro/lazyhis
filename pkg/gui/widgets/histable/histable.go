@@ -42,6 +42,12 @@ func WithColumns(columns []table.Column) table.Option {
 	}
 }
 
+func WithStyles(styles table.Styles) table.Option {
+	return func(m *table.Model) {
+		m.SetStyles(styles)
+	}
+}
+
 func (m Model) Cursor() int {
 	return len(m.Rows()) - 1 - paddedRows - m.realCursor()
 }
