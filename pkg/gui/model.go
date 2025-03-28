@@ -7,6 +7,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/help"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
@@ -19,6 +20,7 @@ type Model struct {
 	records           []model.History
 	table             histable.Model
 	input             textinput.Model
+	help              help.Model
 	height            int
 	width             int
 	version           string
@@ -51,6 +53,10 @@ func NewModel(
 		histable.WithGotoBottom(),
 	)
 
+	help := help.New(
+		help.WithStyles(help.NewStyles()),
+	)
+
 	return Model{
 		columns:           cfg.ColumnLayout,
 		currentFilterMode: cfg.InitialFilterMode,
@@ -58,6 +64,7 @@ func NewModel(
 		records:           records,
 		table:             historyTable,
 		input:             input,
+		help:              help,
 		height:            10,
 		width:             10,
 		version:           version,

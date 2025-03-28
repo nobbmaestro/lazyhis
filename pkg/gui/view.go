@@ -57,19 +57,21 @@ func (m Model) renderInput() string {
 }
 
 func (m Model) renderFooter() string {
-	itemWidth := int(0.5 * float64(m.width))
+	versionWidth := 35
 
-	helpText := lipgloss.NewStyle().
+	help := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(itemWidth).
-		Render("Press [ctrl+q] to quit, [Tab] to cycle filter, [Enter] to select.")
+		Width(m.width - versionWidth).
+		Render(m.help.View(Keys))
 
-	title := lipgloss.NewStyle().
+	version := lipgloss.NewStyle().
 		Align(lipgloss.Right).
-		Width(itemWidth).
-		Render(titleStyle.Render(strings.Join([]string{"LazyHis", m.version}, " ")))
+		Width(versionWidth).
+		Bold(true).
+		Foreground(lipgloss.Color("#FFA500")).
+		Render(strings.Join([]string{"lazyhis", m.version}, " "))
 
-	row := lipgloss.JoinHorizontal(lipgloss.Top, helpText, title)
+	row := lipgloss.JoinHorizontal(lipgloss.Bottom, help, version)
 
 	return lipgloss.Place(m.width, 2, lipgloss.Left, lipgloss.Bottom, row)
 }

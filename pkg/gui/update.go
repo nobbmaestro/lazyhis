@@ -23,6 +23,7 @@ const (
 	ActionJumpUp
 	ActionNextFilter
 	ActionPrevFilter
+	ActionShowHelp
 )
 
 type keyMap struct {
@@ -35,6 +36,7 @@ type keyMap struct {
 	ActionMoveDown        key.Binding
 	ActionMoveUp          key.Binding
 	ActionQuit            key.Binding
+	ActionShowHelp        key.Binding
 }
 
 var Keys = keyMap{
@@ -66,6 +68,10 @@ var Keys = keyMap{
 		key.WithKeys("ctrl+c", "ctrl+q", "esc"),
 		key.WithHelp(" ⌃q", "quit"),
 	),
+	ActionShowHelp: key.NewBinding(
+		key.WithKeys("?"),
+		key.WithHelp("  ?", "toggle help"),
+	),
 	ActionNextFilter: key.NewBinding(
 		key.WithKeys("tab"),
 		key.WithHelp("  ⇥", "next filter"),
@@ -74,6 +80,25 @@ var Keys = keyMap{
 		key.WithKeys("shift+tab"),
 		key.WithHelp(" ⇧⇥", "prev filter"),
 	),
+}
+
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.ActionShowHelp,
+		k.ActionAcceptSelected,
+		k.ActionNextFilter,
+		k.ActionQuit,
+	}
+}
+
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.ActionAcceptSelected, k.ActionPrefillSelected},
+		{k.ActionNextFilter, k.ActionPrevFilter},
+		{k.ActionMoveUp, k.ActionMoveDown},
+		{k.ActionJumpDown, k.ActionJumpUp},
+		{k.ActionShowHelp, k.ActionQuit},
+	}
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -108,6 +133,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onUserActionPrevFilter()
 	case key.Matches(msg, Keys.ActionQuit):
 		return m.onUserActionQuit()
+	case key.Matches(msg, Keys.ActionShowHelp):
+		return m.onUserShowHelp()
 	default:
 		m.input, _ = m.input.Update(msg)
 		m.updateTableContent()
@@ -165,6 +192,11 @@ func (m *Model) onUserActionPrefillSelected() (tea.Model, tea.Cmd) {
 
 func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
 	return m, tea.Quit
+}
+
+func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
+	m.help.ShowAll = !m.help.ShowAll
+	return m, nil
 }
 
 func (m *Model) updateTableWidth() {
