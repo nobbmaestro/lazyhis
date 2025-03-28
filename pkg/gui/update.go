@@ -21,21 +21,23 @@ const (
 	ActionJumpDown
 	ActionJumpUp
 	ActionNextFilter
+	ActionPrevFilter
 )
 
 var keyToAction = map[tea.KeyType]Action{
-	tea.KeyCtrlP: ActionMoveUp,
-	tea.KeyUp:    ActionMoveUp,
-	tea.KeyCtrlN: ActionMoveDown,
-	tea.KeyDown:  ActionMoveDown,
-	tea.KeyCtrlD: ActionJumpDown,
-	tea.KeyCtrlU: ActionJumpUp,
-	tea.KeyEnter: ActionAcceptSelected,
-	tea.KeyCtrlO: ActionPrefillSelected,
-	tea.KeyCtrlC: ActionQuit,
-	tea.KeyCtrlQ: ActionQuit,
-	tea.KeyEsc:   ActionQuit,
-	tea.KeyTab:   ActionNextFilter,
+	tea.KeyCtrlP:    ActionMoveUp,
+	tea.KeyUp:       ActionMoveUp,
+	tea.KeyCtrlN:    ActionMoveDown,
+	tea.KeyDown:     ActionMoveDown,
+	tea.KeyCtrlD:    ActionJumpDown,
+	tea.KeyCtrlU:    ActionJumpUp,
+	tea.KeyEnter:    ActionAcceptSelected,
+	tea.KeyCtrlO:    ActionPrefillSelected,
+	tea.KeyCtrlC:    ActionQuit,
+	tea.KeyCtrlQ:    ActionQuit,
+	tea.KeyEsc:      ActionQuit,
+	tea.KeyTab:      ActionNextFilter,
+	tea.KeyShiftTab: ActionPrevFilter,
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -70,6 +72,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onUserActionJumpUp()
 	case ActionNextFilter:
 		return m.onUserActionNextFilter()
+	case ActionPrevFilter:
+		return m.onUserActionPrevFilter()
 	default:
 		m.input, _ = m.input.Update(msg)
 		m.updateTableContent()
@@ -102,7 +106,13 @@ func (m *Model) onUserActionJumpUp() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionNextFilter() (tea.Model, tea.Cmd) {
-	m.currentFilterMode = utils.CycleNext(m.currentFilterMode, m.filterModes)
+	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, true)
+	m.updateTableContent()
+	return m, nil
+}
+
+func (m *Model) onUserActionPrevFilter() (tea.Model, tea.Cmd) {
+	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, false)
 	m.updateTableContent()
 	return m, nil
 }
