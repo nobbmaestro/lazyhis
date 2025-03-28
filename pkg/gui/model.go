@@ -48,8 +48,8 @@ func NewModel(
 		histable.WithColumns(content.Columns),
 		histable.WithRows(content.Rows),
 		histable.WithStyles(table.DefaultStyles()),
+		histable.WithGotoBottom(),
 	)
-	historyTable.GotoBottom()
 
 	return Model{
 		columns:           cfg.ColumnLayout,

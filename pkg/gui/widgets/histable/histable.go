@@ -48,6 +48,12 @@ func WithStyles(styles table.Styles) table.Option {
 	}
 }
 
+func WithGotoBottom() table.Option {
+	return func(m *table.Model) {
+		m.GotoBottom()
+	}
+}
+
 func (m Model) Cursor() int {
 	return len(m.Rows()) - 1 - paddedRows - m.realCursor()
 }
