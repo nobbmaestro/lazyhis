@@ -3,6 +3,7 @@ package gui
 import (
 	"strings"
 
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
@@ -24,20 +25,55 @@ const (
 	ActionPrevFilter
 )
 
-var keyToAction = map[tea.KeyType]Action{
-	tea.KeyCtrlP:    ActionMoveUp,
-	tea.KeyUp:       ActionMoveUp,
-	tea.KeyCtrlN:    ActionMoveDown,
-	tea.KeyDown:     ActionMoveDown,
-	tea.KeyCtrlD:    ActionJumpDown,
-	tea.KeyCtrlU:    ActionJumpUp,
-	tea.KeyEnter:    ActionAcceptSelected,
-	tea.KeyCtrlO:    ActionPrefillSelected,
-	tea.KeyCtrlC:    ActionQuit,
-	tea.KeyCtrlQ:    ActionQuit,
-	tea.KeyEsc:      ActionQuit,
-	tea.KeyTab:      ActionNextFilter,
-	tea.KeyShiftTab: ActionPrevFilter,
+type keyMap struct {
+	ActionAcceptSelected  key.Binding
+	ActionPrefillSelected key.Binding
+	ActionNextFilter      key.Binding
+	ActionPrevFilter      key.Binding
+	ActionJumpDown        key.Binding
+	ActionJumpUp          key.Binding
+	ActionMoveDown        key.Binding
+	ActionMoveUp          key.Binding
+	ActionQuit            key.Binding
+}
+
+var Keys = keyMap{
+	ActionMoveUp: key.NewBinding(
+		key.WithKeys("ctrl+p", "up"),
+		key.WithHelp(" ⌃p", "move up"),
+	),
+	ActionMoveDown: key.NewBinding(
+		key.WithKeys("ctrl+n", "down"),
+		key.WithHelp(" ⌃n", "move down"),
+	),
+	ActionJumpUp: key.NewBinding(
+		key.WithKeys("ctrl+u"),
+		key.WithHelp(" ⌃u", "jump up"),
+	),
+	ActionJumpDown: key.NewBinding(
+		key.WithKeys("ctrl+d"),
+		key.WithHelp(" ⌃d", "jump down"),
+	),
+	ActionAcceptSelected: key.NewBinding(
+		key.WithKeys("enter"),
+		key.WithHelp("  ↵", "accept"),
+	),
+	ActionPrefillSelected: key.NewBinding(
+		key.WithKeys("ctrl+o"),
+		key.WithHelp(" ⌃o", "prefill"),
+	),
+	ActionQuit: key.NewBinding(
+		key.WithKeys("ctrl+c", "ctrl+q", "esc"),
+		key.WithHelp(" ⌃q", "quit"),
+	),
+	ActionNextFilter: key.NewBinding(
+		key.WithKeys("tab"),
+		key.WithHelp("  ⇥", "next filter"),
+	),
+	ActionPrevFilter: key.NewBinding(
+		key.WithKeys("shift+tab"),
+		key.WithHelp(" ⇧⇥", "prev filter"),
+	),
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -53,27 +89,25 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
-	userAction := keyToAction[msg.Type]
-
-	switch userAction {
-	case ActionAcceptSelected:
+	switch {
+	case key.Matches(msg, Keys.ActionAcceptSelected):
 		return m.onUserActionAcceptSelected()
-	case ActionPrefillSelected:
+	case key.Matches(msg, Keys.ActionPrefillSelected):
 		return m.onUserActionPrefillSelected()
-	case ActionQuit:
-		return m.onUserActionQuit()
-	case ActionMoveDown:
+	case key.Matches(msg, Keys.ActionMoveDown):
 		return m.onUserActionMoveDown()
-	case ActionMoveUp:
+	case key.Matches(msg, Keys.ActionMoveUp):
 		return m.onUserActionMoveUp()
-	case ActionJumpDown:
+	case key.Matches(msg, Keys.ActionJumpDown):
 		return m.onUserActionJumpDown()
-	case ActionJumpUp:
+	case key.Matches(msg, Keys.ActionJumpUp):
 		return m.onUserActionJumpUp()
-	case ActionNextFilter:
+	case key.Matches(msg, Keys.ActionNextFilter):
 		return m.onUserActionNextFilter()
-	case ActionPrevFilter:
+	case key.Matches(msg, Keys.ActionPrevFilter):
 		return m.onUserActionPrevFilter()
+	case key.Matches(msg, Keys.ActionQuit):
+		return m.onUserActionQuit()
 	default:
 		m.input, _ = m.input.Update(msg)
 		m.updateTableContent()
