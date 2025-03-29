@@ -4,72 +4,53 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
-)
-
-var filterModeNames = map[config.FilterMode]string{
-	config.NoFilter:          "-",
-	config.ExitFilter:        "EXIT",
-	config.PathFilter:        "PATH",
-	config.SessionFilter:     "SESS",
-	config.UniqueFilter:      "UNIQUE",
-	config.PathSessionFilter: "PATH + SESS",
-}
-
-var (
-	titleStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FFA500"))
-	// cursorStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#00FFFF"))
 )
 
 func (m Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left,
-		m.renderHistoryTable(),
+		m.renderTable(),
 		m.renderInput(),
 		m.renderFooter(),
 	)
 }
 
-func (m *Model) renderHistoryTable() string {
+func (m *Model) renderTable() string {
 	m.table.SetWidth(m.width)
 	m.table.SetHeight(m.height - 4)
 
 	return lipgloss.NewStyle().PaddingBottom(1).Render(m.table.View())
 }
 
-func (m Model) renderFilterModeName() string {
-	if len(m.filterModes) == 0 {
-		return ""
-	}
-
-	itemWidth := int(18)
-
-	return lipgloss.NewStyle().
-		Align(lipgloss.Left).
-		Width(itemWidth).
-		Render(utils.CenterString(filterModeNames[m.currentFilterMode], 11, "[ %-*s ]"))
-}
-
 func (m Model) renderInput() string {
-	filterModeName := m.renderFilterModeName()
-	row := lipgloss.JoinHorizontal(lipgloss.Top, filterModeName, m.input.View())
-	return lipgloss.Place(m.width, 1, lipgloss.Left, lipgloss.Bottom, row)
+	return lipgloss.Place(
+		m.width,
+		1,
+		lipgloss.Left,
+		lipgloss.Bottom,
+		lipgloss.JoinHorizontal(lipgloss.Top, m.filter.View(), m.input.View()),
+	)
 }
 
 func (m Model) renderFooter() string {
-	itemWidth := int(0.5 * float64(m.width))
+	versionWidth := 35
 
-	helpText := lipgloss.NewStyle().
+	help := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(itemWidth).
-		Render("Press [ctrl+q] to quit, [Tab] to cycle filter, [Enter] to select.")
+		Width(m.width - versionWidth).
+		Render(m.help.View(Keys))
 
-	title := lipgloss.NewStyle().
+	version := lipgloss.NewStyle().
 		Align(lipgloss.Right).
-		Width(itemWidth).
-		Render(titleStyle.Render(strings.Join([]string{"LazyHis", m.version}, " ")))
+		Width(versionWidth).
+		Bold(true).
+		Foreground(lipgloss.Color("#FFA500")).
+		Render(strings.Join([]string{"lazyhis", m.version}, " "))
 
-	row := lipgloss.JoinHorizontal(lipgloss.Top, helpText, title)
-
-	return lipgloss.Place(m.width, 2, lipgloss.Left, lipgloss.Bottom, row)
+	return lipgloss.Place(
+		m.width,
+		2,
+		lipgloss.Left,
+		lipgloss.Bottom,
+		lipgloss.JoinHorizontal(lipgloss.Bottom, help, version),
+	)
 }

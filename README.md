@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.3.2...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.3.2/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.4.0...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.4.0/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -72,6 +72,14 @@ Add the following to the end of ~/.zshrc:
 # ~/.zshrc
 
 eval "$(lazyhis init zsh)"
+```
+
+### 3. Import existing histfile:
+
+#### Zsh
+
+```sh
+lazyhis history import --zsh /path/to/histfile
 ```
 
 ## Feature Roadmap

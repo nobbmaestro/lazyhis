@@ -3,10 +3,10 @@ package gui
 import (
 	"strings"
 
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type Action int
@@ -22,22 +22,82 @@ const (
 	ActionJumpUp
 	ActionNextFilter
 	ActionPrevFilter
+	ActionShowHelp
 )
 
-var keyToAction = map[tea.KeyType]Action{
-	tea.KeyCtrlP:    ActionMoveUp,
-	tea.KeyUp:       ActionMoveUp,
-	tea.KeyCtrlN:    ActionMoveDown,
-	tea.KeyDown:     ActionMoveDown,
-	tea.KeyCtrlD:    ActionJumpDown,
-	tea.KeyCtrlU:    ActionJumpUp,
-	tea.KeyEnter:    ActionAcceptSelected,
-	tea.KeyCtrlO:    ActionPrefillSelected,
-	tea.KeyCtrlC:    ActionQuit,
-	tea.KeyCtrlQ:    ActionQuit,
-	tea.KeyEsc:      ActionQuit,
-	tea.KeyTab:      ActionNextFilter,
-	tea.KeyShiftTab: ActionPrevFilter,
+type keyMap struct {
+	ActionAcceptSelected  key.Binding
+	ActionPrefillSelected key.Binding
+	ActionNextFilter      key.Binding
+	ActionPrevFilter      key.Binding
+	ActionJumpDown        key.Binding
+	ActionJumpUp          key.Binding
+	ActionMoveDown        key.Binding
+	ActionMoveUp          key.Binding
+	ActionQuit            key.Binding
+	ActionShowHelp        key.Binding
+}
+
+var Keys = keyMap{
+	ActionMoveUp: key.NewBinding(
+		key.WithKeys("ctrl+p", "up"),
+		key.WithHelp(" ⌃p", "move up"),
+	),
+	ActionMoveDown: key.NewBinding(
+		key.WithKeys("ctrl+n", "down"),
+		key.WithHelp(" ⌃n", "move down"),
+	),
+	ActionJumpUp: key.NewBinding(
+		key.WithKeys("ctrl+u"),
+		key.WithHelp(" ⌃u", "jump up"),
+	),
+	ActionJumpDown: key.NewBinding(
+		key.WithKeys("ctrl+d"),
+		key.WithHelp(" ⌃d", "jump down"),
+	),
+	ActionAcceptSelected: key.NewBinding(
+		key.WithKeys("enter"),
+		key.WithHelp("  ↵", "accept"),
+	),
+	ActionPrefillSelected: key.NewBinding(
+		key.WithKeys("ctrl+o"),
+		key.WithHelp(" ⌃o", "prefill"),
+	),
+	ActionQuit: key.NewBinding(
+		key.WithKeys("ctrl+c", "ctrl+q", "esc"),
+		key.WithHelp(" ⌃q", "quit"),
+	),
+	ActionShowHelp: key.NewBinding(
+		key.WithKeys("?"),
+		key.WithHelp("  ?", "toggle help"),
+	),
+	ActionNextFilter: key.NewBinding(
+		key.WithKeys("tab"),
+		key.WithHelp("  ⇥", "next filter"),
+	),
+	ActionPrevFilter: key.NewBinding(
+		key.WithKeys("shift+tab"),
+		key.WithHelp(" ⇧⇥", "prev filter"),
+	),
+}
+
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.ActionShowHelp,
+		k.ActionAcceptSelected,
+		k.ActionNextFilter,
+		k.ActionQuit,
+	}
+}
+
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.ActionAcceptSelected, k.ActionPrefillSelected},
+		{k.ActionNextFilter, k.ActionPrevFilter},
+		{k.ActionMoveUp, k.ActionMoveDown},
+		{k.ActionJumpDown, k.ActionJumpUp},
+		{k.ActionShowHelp, k.ActionQuit},
+	}
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -53,27 +113,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
-	userAction := keyToAction[msg.Type]
-
-	switch userAction {
-	case ActionAcceptSelected:
+	switch {
+	case key.Matches(msg, Keys.ActionAcceptSelected):
 		return m.onUserActionAcceptSelected()
-	case ActionPrefillSelected:
+	case key.Matches(msg, Keys.ActionPrefillSelected):
 		return m.onUserActionPrefillSelected()
-	case ActionQuit:
-		return m.onUserActionQuit()
-	case ActionMoveDown:
+	case key.Matches(msg, Keys.ActionMoveDown):
 		return m.onUserActionMoveDown()
-	case ActionMoveUp:
+	case key.Matches(msg, Keys.ActionMoveUp):
 		return m.onUserActionMoveUp()
-	case ActionJumpDown:
+	case key.Matches(msg, Keys.ActionJumpDown):
 		return m.onUserActionJumpDown()
-	case ActionJumpUp:
+	case key.Matches(msg, Keys.ActionJumpUp):
 		return m.onUserActionJumpUp()
-	case ActionNextFilter:
+	case key.Matches(msg, Keys.ActionNextFilter):
 		return m.onUserActionNextFilter()
-	case ActionPrevFilter:
+	case key.Matches(msg, Keys.ActionPrevFilter):
 		return m.onUserActionPrevFilter()
+	case key.Matches(msg, Keys.ActionQuit):
+		return m.onUserActionQuit()
+	case key.Matches(msg, Keys.ActionShowHelp):
+		return m.onUserShowHelp()
 	default:
 		m.input, _ = m.input.Update(msg)
 		m.updateTableContent()
@@ -106,13 +166,13 @@ func (m *Model) onUserActionJumpUp() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionNextFilter() (tea.Model, tea.Cmd) {
-	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, true)
+	m.filter.NextMode()
 	m.updateTableContent()
 	return m, nil
 }
 
 func (m *Model) onUserActionPrevFilter() (tea.Model, tea.Cmd) {
-	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, false)
+	m.filter.PrevMode()
 	m.updateTableContent()
 	return m, nil
 }
@@ -133,13 +193,18 @@ func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
 	return m, tea.Quit
 }
 
+func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
+	m.help.ShowAll = !m.help.ShowAll
+	return m, nil
+}
+
 func (m *Model) updateTableWidth() {
 	columns := formatters.GenerateTableColumnsFromColumns(m.columns, m.width)
 	m.table.SetColumns(columns)
 }
 
 func (m *Model) updateTableContent() {
-	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.currentFilterMode)
+	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
 	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
 	m.table = histable.New(

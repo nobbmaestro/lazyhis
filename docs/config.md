@@ -30,9 +30,9 @@ gui:
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
   cyclicFilterModes:
     - NO_FILTER
-    - PATH_FILTER
+    - WORKDIR_FILTER
     - SESSION_FILTER
-    - PATH_SESSION_FILTER
+    - WORKDIR_SESSION_FILTER
 
   # List of persistent filter modes
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
@@ -130,11 +130,11 @@ If you prefer persistent filters, add the desired filter(s) to `persistentFilter
 
 Available filter modes:
 
-| Modes               | Description                         |
-| ------------------- | ----------------------------------- |
-| NO_FILTER           | No filter applied                   |
-| EXIT_FILTER         | Filter out non-zero exit codes      |
-| PATH_FILTER         | Filter by current working directory |
-| SESSION_FILTER      | Filter by current session           |
-| UNIQUE_FILTER       | Filter by unique commands           |
-| PATH_SESSION_FILTER | Filter by cwd and session           |
+| Modes                  | Description                         |
+| ---------------------- | ----------------------------------- |
+| NO_FILTER              | No filter applied                   |
+| SUCCESS_FILTER         | Filter out non-zero exit codes      |
+| WORKDIR_FILTER         | Filter by current working directory |
+| SESSION_FILTER         | Filter by current session           |
+| UNIQUE_FILTER          | Filter by unique commands           |
+| WORKDIR_SESSION_FILTER | Filter by cwd and session           |

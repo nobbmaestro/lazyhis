@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var isZshHistfile bool
+
 var historyImportCmd = &cobra.Command{
 	Use:   "import [HISTFILE]",
 	Short: "Import history from histfile",
@@ -19,6 +21,15 @@ var historyImportCmd = &cobra.Command{
 }
 
 func runImport(cmd *cobra.Command, args []string) error {
+	switch {
+	case isZshHistfile:
+		return importZshHistfile(cmd, args)
+	default:
+		return fmt.Errorf("Unsupported shell option")
+	}
+}
+
+func importZshHistfile(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	historyService := context.GetService(ctx)
 
@@ -72,4 +83,10 @@ func parseHistoryLine(line string) []string {
 	}
 
 	return strings.Fields(line)
+}
+
+func init() {
+	historyImportCmd.
+		Flags().
+		BoolVar(&isZshHistfile, "zsh", false, "import zsh histfile")
 }

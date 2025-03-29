@@ -17,10 +17,10 @@ func GetDefaultUserConfig() *UserConfig {
 			InitialFilterMode: NoFilter,
 			CyclicFilterModes: []FilterMode{
 				NoFilter,
-				PathFilter,
+				WorkdirFilter,
 				SessionFilter,
-				PathSessionFilter,
-				ExitFilter,
+				WorkdirSessionFilter,
+				SuccessFilter,
 			},
 			PersistentFilterModes: []FilterMode{
 				UniqueFilter,
