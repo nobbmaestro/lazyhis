@@ -74,6 +74,12 @@ Add the following to the end of ~/.zshrc:
 eval "$(lazyhis init zsh)"
 ```
 
+### 3. Import existing histfile:
+
+```sh
+lazyhis history import /path/to/histfile
+```
+
 ## Feature Roadmap
 
 - [ ] Add doctor CLI command for verifying configuration
