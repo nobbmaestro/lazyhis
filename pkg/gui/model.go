@@ -46,10 +46,11 @@ func NewModel(
 		hisquery.WithFocus(),
 	)
 
-	content := formatters.NewHistoryTableContent(records, cfg.ColumnLayout, 100)
+	rows := formatters.HistoryToTableRows(records, cfg.ColumnLayout)
+	cols := histable.NewColumns(cfg.ColumnLayout, 100)
 	historyTable := histable.New(
-		histable.WithColumns(content.Columns),
-		histable.WithRows(content.Rows),
+		histable.WithRows(rows),
+		histable.WithColumns(cols),
 		histable.WithStyles(table.DefaultStyles()),
 		histable.WithGotoBottom(),
 	)

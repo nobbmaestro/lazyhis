@@ -11,24 +11,6 @@ import (
 
 type getHistoryFieldByColumn func(history model.History) string
 
-var tableColumnNames = map[config.Column]string{
-	config.ColumnCommand:    "Command",
-	config.ColumnExecutedAt: "Executed",
-	config.ColumnExecutedIn: "Duration",
-	config.ColumnExitCode:   "Exit",
-	config.ColumnPath:       "Path",
-	config.ColumnSession:    "Session",
-}
-
-var tableColumnWidth = map[config.Column]int{
-	config.ColumnCommand:    100,
-	config.ColumnExecutedAt: 10,
-	config.ColumnExecutedIn: 10,
-	config.ColumnExitCode:   5,
-	config.ColumnPath:       50,
-	config.ColumnSession:    15,
-}
-
 var columnToGetter = map[config.Column]getHistoryFieldByColumn{
 	config.ColumnCommand:    extractCommandFromHistory,
 	config.ColumnExecutedAt: extractExecutedAtFromHistory,
@@ -38,37 +20,7 @@ var columnToGetter = map[config.Column]getHistoryFieldByColumn{
 	config.ColumnSession:    extractSessionFromHistory,
 }
 
-type HistoryTableContent struct {
-	Columns []table.Column
-	Rows    []table.Row
-}
-
-func NewHistoryTableContent(
-	records []model.History,
-	columns []config.Column,
-	width int,
-) HistoryTableContent {
-	return HistoryTableContent{
-		Columns: GenerateTableColumnsFromColumns(columns, width),
-		Rows:    GenerateTableRowsFromHistory(records, columns),
-	}
-}
-
-func GenerateTableColumnsFromColumns(
-	columns []config.Column,
-	width int,
-) []table.Column {
-	tableColumns := make([]table.Column, len(columns))
-
-	newTableColumnWidth := calculateTableColumnWidth(columns, width)
-	for i, column := range columns {
-		tableColumns[i].Title = tableColumnNames[column]
-		tableColumns[i].Width = newTableColumnWidth[column]
-	}
-	return tableColumns
-}
-
-func GenerateTableRowsFromHistory(
+func HistoryToTableRows(
 	records []model.History,
 	columns []config.Column,
 ) []table.Row {
@@ -126,29 +78,4 @@ func extractSessionFromHistory(history model.History) string {
 		return history.Session.Session
 	}
 	return ""
-}
-
-func calculateTableColumnWidth(
-	columns []config.Column,
-	totalWidth int,
-) map[config.Column]int {
-	newTableColumnWidth := make(map[config.Column]int)
-
-	totalStaticWidth := 0
-	for _, column := range columns {
-		totalStaticWidth += tableColumnWidth[column]
-	}
-
-	remainingWidth := totalWidth - totalStaticWidth - 5 + tableColumnWidth[config.ColumnCommand]
-	remainingWidth = max(remainingWidth, 0)
-
-	for _, column := range columns {
-		if column == config.ColumnCommand {
-			newTableColumnWidth[column] = remainingWidth
-		} else {
-			newTableColumnWidth[column] = tableColumnWidth[column]
-		}
-	}
-
-	return newTableColumnWidth
 }
