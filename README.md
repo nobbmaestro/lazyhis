@@ -76,8 +76,10 @@ eval "$(lazyhis init zsh)"
 
 ### 3. Import existing histfile:
 
+#### Zsh
+
 ```sh
-lazyhis history import /path/to/histfile
+lazyhis history import --zsh /path/to/histfile
 ```
 
 ## Feature Roadmap
