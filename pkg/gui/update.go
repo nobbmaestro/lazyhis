@@ -7,7 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type Action int
@@ -167,13 +166,13 @@ func (m *Model) onUserActionJumpUp() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionNextFilter() (tea.Model, tea.Cmd) {
-	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, true)
+	m.filter.NextMode()
 	m.updateTableContent()
 	return m, nil
 }
 
 func (m *Model) onUserActionPrevFilter() (tea.Model, tea.Cmd) {
-	m.currentFilterMode = utils.Cycle(m.currentFilterMode, m.filterModes, false)
+	m.filter.PrevMode()
 	m.updateTableContent()
 	return m, nil
 }
@@ -205,7 +204,7 @@ func (m *Model) updateTableWidth() {
 }
 
 func (m *Model) updateTableContent() {
-	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.currentFilterMode)
+	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
 	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
 	m.table = histable.New(

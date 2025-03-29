@@ -4,18 +4,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
-
-var filterModeNames = map[config.FilterMode]string{
-	config.NoFilter:          "-",
-	config.ExitFilter:        "EXIT",
-	config.PathFilter:        "PATH",
-	config.SessionFilter:     "SESS",
-	config.UniqueFilter:      "UNIQUE",
-	config.PathSessionFilter: "PATH + SESS",
-}
 
 var (
 	titleStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FFA500"))
@@ -37,22 +26,8 @@ func (m *Model) renderHistoryTable() string {
 	return lipgloss.NewStyle().PaddingBottom(1).Render(m.table.View())
 }
 
-func (m Model) renderFilterModeName() string {
-	if len(m.filterModes) == 0 {
-		return ""
-	}
-
-	itemWidth := int(18)
-
-	return lipgloss.NewStyle().
-		Align(lipgloss.Left).
-		Width(itemWidth).
-		Render(utils.CenterString(filterModeNames[m.currentFilterMode], 11, "[ %-*s ]"))
-}
-
 func (m Model) renderInput() string {
-	filterModeName := m.renderFilterModeName()
-	row := lipgloss.JoinHorizontal(lipgloss.Top, filterModeName, m.input.View())
+	row := lipgloss.JoinHorizontal(lipgloss.Top, m.filter.View(), m.input.View())
 	return lipgloss.Place(m.width, 1, lipgloss.Left, lipgloss.Bottom, row)
 }
 

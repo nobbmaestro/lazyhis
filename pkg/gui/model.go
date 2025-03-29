@@ -7,6 +7,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/help"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisfilter"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisquery"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
@@ -14,19 +15,18 @@ import (
 type QueryHistoryCallback func(keywords []string, mode config.FilterMode) []model.History
 
 type Model struct {
-	currentFilterMode config.FilterMode
-	filterModes       []config.FilterMode
-	columns           []config.Column
-	records           []model.History
-	table             histable.Model
-	input             hisquery.Model
-	help              help.Model
-	height            int
-	width             int
-	version           string
-	queryHistory      QueryHistoryCallback
-	SelectedRecord    model.History
-	UserAction        Action
+	columns        []config.Column
+	records        []model.History
+	table          histable.Model
+	input          hisquery.Model
+	help           help.Model
+	filter         hisfilter.Model
+	height         int
+	width          int
+	version        string
+	queryHistory   QueryHistoryCallback
+	SelectedRecord model.History
+	UserAction     Action
 }
 
 func (m Model) Init() tea.Cmd {
@@ -58,19 +58,23 @@ func NewModel(
 		help.WithStyles(help.NewStyles()),
 	)
 
+	historyFilter := hisfilter.New(
+		cfg.InitialFilterMode,
+		cfg.CyclicFilterModes,
+	)
+
 	return Model{
-		columns:           cfg.ColumnLayout,
-		currentFilterMode: cfg.InitialFilterMode,
-		filterModes:       cfg.CyclicFilterModes,
-		records:           records,
-		table:             historyTable,
-		input:             historyQuery,
-		help:              help,
-		height:            10,
-		width:             10,
-		version:           version,
-		queryHistory:      queryHistory,
-		SelectedRecord:    model.History{},
-		UserAction:        ActionNone,
+		columns:        cfg.ColumnLayout,
+		records:        records,
+		table:          historyTable,
+		input:          historyQuery,
+		filter:         historyFilter,
+		help:           help,
+		height:         10,
+		width:          10,
+		version:        version,
+		queryHistory:   queryHistory,
+		SelectedRecord: model.History{},
+		UserAction:     ActionNone,
 	}
 }
