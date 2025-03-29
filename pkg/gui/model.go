@@ -15,7 +15,7 @@ import (
 type QueryHistoryCallback func(keywords []string, mode config.FilterMode) []model.History
 
 type Model struct {
-	columns        []config.Column
+	cfg            config.GuiConfig
 	records        []model.History
 	table          histable.Model
 	input          hisquery.Model
@@ -47,7 +47,7 @@ func NewModel(
 	)
 
 	rows := formatters.HistoryToTableRows(records, cfg.ColumnLayout)
-	cols := histable.NewColumns(cfg.ColumnLayout, 100)
+	cols := histable.NewColumns(cfg.ColumnLayout, cfg.ShowColumnLabels, 100)
 	historyTable := histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
@@ -65,7 +65,7 @@ func NewModel(
 	)
 
 	return Model{
-		columns:        cfg.ColumnLayout,
+		cfg:            cfg,
 		records:        records,
 		table:          historyTable,
 		input:          historyQuery,

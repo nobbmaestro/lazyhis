@@ -8,7 +8,7 @@ import (
 
 const paddedRows = 100
 
-var tableColumnNames = map[config.Column]string{
+var tableColumnTitles = map[config.Column]string{
 	config.ColumnCommand:    "Command",
 	config.ColumnExecutedAt: "Executed",
 	config.ColumnExecutedIn: "Duration",
@@ -36,13 +36,18 @@ func New(opts ...table.Option) Model {
 
 func NewColumns(
 	columns []config.Column,
+	showLabels bool,
 	width int,
 ) []table.Column {
 	tableColumns := make([]table.Column, len(columns))
 
 	newTableColumnWidth := calculateTableColumnWidth(columns, width)
 	for i, column := range columns {
-		tableColumns[i].Title = tableColumnNames[column]
+		columnTitle := tableColumnTitles[column]
+		if !showLabels {
+			columnTitle = ""
+		}
+		tableColumns[i].Title = columnTitle
 		tableColumns[i].Width = newTableColumnWidth[column]
 	}
 	return tableColumns

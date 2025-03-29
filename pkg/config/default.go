@@ -9,6 +9,7 @@ func GetDefaultUserConfig() *UserConfig {
 			ExcludePrefix:   "\x20",
 		},
 		Gui: GuiConfig{
+			ShowColumnLabels: false,
 			ColumnLayout: []Column{
 				ColumnExitCode,
 				ColumnExecutedAt,

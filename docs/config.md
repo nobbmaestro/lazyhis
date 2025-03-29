@@ -15,6 +15,9 @@ db:
 
 # Config relating to the GUI
 gui:
+  # Option for hiding column labels
+  showColumnLabels: false
+
   # List of GUI Columns
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#gui-columns
   columnLayout:

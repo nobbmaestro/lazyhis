@@ -41,6 +41,8 @@ type UserConfig struct {
 }
 
 type GuiConfig struct {
+	// Option for hiding column labels
+	ShowColumnLabels bool `yaml:"showColumnLabels"`
 	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
 	// Option for setting initial (cyclic) filter mode

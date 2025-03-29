@@ -199,15 +199,15 @@ func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) updateTableWidth() {
-	columns := histable.NewColumns(m.columns, m.width)
+	columns := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
 	m.table.SetColumns(columns)
 }
 
 func (m *Model) updateTableContent() {
 	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
-	rows := formatters.HistoryToTableRows(m.records, m.columns)
-	cols := histable.NewColumns(m.columns, m.width)
+	rows := formatters.HistoryToTableRows(m.records, m.cfg.ColumnLayout)
+	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
