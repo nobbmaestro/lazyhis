@@ -7,12 +7,12 @@ import (
 )
 
 var filterModeNames = map[config.FilterMode]string{
-	config.NoFilter:          "-",
-	config.ExitFilter:        "EXIT",
-	config.PathFilter:        "PATH",
-	config.SessionFilter:     "SESS",
-	config.UniqueFilter:      "UNIQUE",
-	config.PathSessionFilter: "PATH + SESS",
+	config.NoFilter:             "-",
+	config.SuccessFilter:        "SUCCESS",
+	config.WorkdirFilter:        "WORKDIR",
+	config.SessionFilter:        "SESSION",
+	config.UniqueFilter:         "UNIQUE",
+	config.WorkdirSessionFilter: "WDIR + SESS",
 }
 
 type Model struct {

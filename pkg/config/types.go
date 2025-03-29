@@ -25,12 +25,12 @@ const (
 type FilterMode string
 
 const (
-	NoFilter          FilterMode = "NO_FILTER"
-	ExitFilter        FilterMode = "EXIT_FILTER"
-	PathFilter        FilterMode = "PATH_FILTER"
-	SessionFilter     FilterMode = "SESSION_FILTER"
-	UniqueFilter      FilterMode = "UNIQUE_FILTER"
-	PathSessionFilter FilterMode = "PATH_SESSION_FILTER"
+	NoFilter             FilterMode = "NO_FILTER"
+	SuccessFilter        FilterMode = "SUCCESS_FILTER"
+	WorkdirFilter        FilterMode = "WORKDIR_FILTER"
+	SessionFilter        FilterMode = "SESSION_FILTER"
+	UniqueFilter         FilterMode = "UNIQUE_FILTER"
+	WorkdirSessionFilter FilterMode = "WORKDIR_SESSION_FILTER"
 )
 
 type UserConfig struct {

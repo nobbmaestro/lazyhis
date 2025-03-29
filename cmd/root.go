@@ -136,10 +136,10 @@ func applyPathFilter(
 	mode config.FilterMode,
 	persistent []config.FilterMode,
 ) string {
-	if mode == config.PathFilter ||
-		mode == config.PathSessionFilter ||
-		slices.Contains(persistent, config.PathFilter) ||
-		slices.Contains(persistent, config.PathSessionFilter) {
+	if mode == config.WorkdirFilter ||
+		mode == config.WorkdirSessionFilter ||
+		slices.Contains(persistent, config.WorkdirFilter) ||
+		slices.Contains(persistent, config.WorkdirSessionFilter) {
 		if p, err := os.Getwd(); err == nil {
 			return p
 		}
@@ -153,7 +153,7 @@ func applySessionFilter(
 	sessionCmd string,
 ) string {
 	if mode == config.SessionFilter ||
-		mode == config.PathSessionFilter ||
+		mode == config.WorkdirSessionFilter ||
 		slices.Contains(persistent, config.SessionFilter) {
 		if s, err := utils.RunCommand(strings.Split(sessionCmd, " ")); err == nil {
 			return s
@@ -166,7 +166,8 @@ func applyExitCodeFilter(
 	mode config.FilterMode,
 	persistent []config.FilterMode,
 ) int {
-	if mode == config.ExitFilter || slices.Contains(persistent, config.ExitFilter) {
+	if mode == config.SuccessFilter ||
+		slices.Contains(persistent, config.SuccessFilter) {
 		return 0
 	}
 	return -1
