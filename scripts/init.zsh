@@ -50,7 +50,7 @@ _lazyhis_search() {
 	zle -I
 
 	local output
-	output=$(lazyhis search $* -- "$BUFFER" 3>&1 1>&2 2>&3)
+	output=$(lazyhis $* -- "$BUFFER" 3>&1 1>&2 2>&3)
 
 	zle reset-prompt
 
@@ -67,10 +67,10 @@ _lazyhis_search() {
 	fi
 }
 _lazyhis_search_vicmd() {
-	_lazyhis_search --interactive
+	_lazyhis_search
 }
 _lazyhis_search_viins() {
-	_lazyhis_search --interactive
+	_lazyhis_search
 }
 
 _lazyhis_up_search() {
@@ -82,10 +82,10 @@ _lazyhis_up_search() {
 	fi
 }
 _lazyhis_up_search_vicmd() {
-	_lazyhis_up_search --interactive
+	_lazyhis_up_search
 }
 _lazyhis_up_search_viins() {
-	_lazyhis_up_search --interactive
+	_lazyhis_up_search
 }
 
 add-zsh-hook preexec _lazyhis_preexec
