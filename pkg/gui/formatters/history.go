@@ -20,16 +20,33 @@ var columnToGetter = map[config.Column]getHistoryFieldByColumn{
 	config.ColumnSession:    extractSessionFromHistory,
 }
 
-func HistoryToTableRows(
-	records []model.History,
-	columns []config.Column,
-) []table.Row {
+type Formatter struct {
+	columns []config.Column
+}
+
+type Option func(*Formatter)
+
+func NewFormatter(opts ...Option) Formatter {
+	m := Formatter{}
+	for _, opt := range opts {
+		opt(&m)
+	}
+	return m
+}
+
+func WithColumns(columns []config.Column) Option {
+	return func(f *Formatter) {
+		f.columns = columns
+	}
+}
+
+func (f Formatter) HistoryToTableRows(records []model.History) []table.Row {
 	rows := make([]table.Row, len(records))
 
 	for i, history := range records {
-		row := make([]string, len(columns))
+		row := make([]string, len(f.columns))
 
-		for j, column := range columns {
+		for j, column := range f.columns {
 			if getter, ok := columnToGetter[column]; ok {
 				row[j] = getter(history)
 			} else {
