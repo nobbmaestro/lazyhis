@@ -87,6 +87,7 @@ Available columns:
 
 | Column      | Description                        |
 | ----------- | ---------------------------------- |
+| ID          | The record ID                      |
 | COMMAND     | The command                        |
 | EXIT_CODE   | Exit code of the command           |
 | EXECUTED_AT | Execution timestamp of the command |

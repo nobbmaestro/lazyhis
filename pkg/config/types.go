@@ -9,6 +9,7 @@ const (
 	ColumnExecutedAt Column = "EXECUTED_AT"
 	ColumnExecutedIn Column = "EXECUTED_IN"
 	ColumnExitCode   Column = "EXIT_CODE"
+	ColumnID         Column = "ID"
 	ColumnPath       Column = "PATH"
 	ColumnSession    Column = "SESSION"
 )

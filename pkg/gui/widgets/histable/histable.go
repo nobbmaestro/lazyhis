@@ -13,6 +13,7 @@ var tableColumnTitles = map[config.Column]string{
 	config.ColumnExecutedAt: "Executed",
 	config.ColumnExecutedIn: "Duration",
 	config.ColumnExitCode:   "Exit",
+	config.ColumnID:         "ID",
 	config.ColumnPath:       "Path",
 	config.ColumnSession:    "Session",
 }
@@ -22,6 +23,7 @@ var tableColumnWidth = map[config.Column]int{
 	config.ColumnExecutedAt: 10,
 	config.ColumnExecutedIn: 10,
 	config.ColumnExitCode:   5,
+	config.ColumnID:         5,
 	config.ColumnPath:       50,
 	config.ColumnSession:    15,
 }

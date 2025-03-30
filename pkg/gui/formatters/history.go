@@ -2,6 +2,7 @@ package formatters
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
@@ -16,6 +17,7 @@ var columnToGetter = map[config.Column]getHistoryFieldByColumn{
 	config.ColumnExecutedAt: extractExecutedAtFromHistory,
 	config.ColumnExecutedIn: extractExecutedInFromHistory,
 	config.ColumnExitCode:   extractExitCodeFromHistory,
+	config.ColumnID:         extractIDFromHistory,
 	config.ColumnPath:       extractPathFromHistory,
 	config.ColumnSession:    extractSessionFromHistory,
 }
@@ -81,6 +83,10 @@ func extractExitCodeFromHistory(history model.History) string {
 		return fmt.Sprintf("%3d", *history.ExitCode)
 	}
 	return ""
+}
+
+func extractIDFromHistory(history model.History) string {
+	return strconv.FormatUint(uint64(history.ID), 10)
 }
 
 func extractPathFromHistory(history model.History) string {
