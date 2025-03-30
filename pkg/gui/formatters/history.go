@@ -28,7 +28,7 @@ type Formatter struct {
 
 type Option func(*Formatter)
 
-func NewFormatter(opts ...Option) Formatter {
+func NewFmt(opts ...Option) Formatter {
 	m := Formatter{}
 	for _, opt := range opts {
 		opt(&m)

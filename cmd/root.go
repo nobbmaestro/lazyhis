@@ -16,6 +16,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gopkg.in/yaml.v3"
@@ -86,7 +87,7 @@ func runHistoryGui(
 
 	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
 		records, err := svc.SearchHistory(
-			append(args, keywords...),
+			keywords,
 			applyExitCodeFilter(mode, cfg.Gui.PersistentFilterModes),
 			applyPathFilter(mode, cfg.Gui.PersistentFilterModes),
 			applySessionFilter(
@@ -105,11 +106,14 @@ func runHistoryGui(
 	}
 
 	p := tea.NewProgram(
-		gui.NewModel(
-			cfg.Gui,
+		gui.NewGui(
 			partialSearchHistory,
-			cmd.Version,
-			strings.Join(args, " "),
+			cfg.Gui,
+			gui.WithVersion(cmd.Version),
+			gui.WithInitialQuery(args),
+			gui.WithFormatter(
+				formatters.NewFmt(formatters.WithColumns(cfg.Gui.ColumnLayout)),
+			),
 		),
 		tea.WithAltScreen(),
 	)
