@@ -3,7 +3,7 @@ package history
 import (
 	"strconv"
 
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -17,8 +17,8 @@ var historyEditCmd = &cobra.Command{
 }
 
 func runHistoryEdit(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	svc := reg.GetService()
 
 	historyID, err := strconv.Atoi(args[0])
 	if err != nil {
@@ -45,7 +45,7 @@ func runHistoryEdit(cmd *cobra.Command, args []string) error {
 		session = &historyEditOpts.session
 	}
 
-	_, err = historyService.EditHistory(
+	_, err = svc.EditHistory(
 		historyID,
 		exitCode,
 		executedIn,

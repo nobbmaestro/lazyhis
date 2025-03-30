@@ -3,7 +3,7 @@ package history
 import (
 	"fmt"
 
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +14,10 @@ var historyLastCmd = &cobra.Command{
 }
 
 func runHistoryLast(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	svc := reg.GetService()
 
-	record, err := historyService.GetLastHistory()
+	record, err := svc.GetLastHistory()
 	if err != nil {
 		return err
 	}

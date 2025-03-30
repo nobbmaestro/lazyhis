@@ -1,4 +1,4 @@
-package context
+package registry
 
 import (
 	"context"
@@ -8,51 +8,67 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 )
 
-type serviceCtxKey struct{}
-type configCtxKey struct{}
-type loggerCtxKey struct{}
+type ContextKey int
 
-func NewContext() context.Context {
-	return context.Background()
+const (
+	ServiceKey ContextKey = iota
+	ConfigKey
+	LoggerKey
+)
+
+type Registry struct {
+	Context context.Context
 }
 
-func WithService(
-	ctx context.Context,
-	historyService *service.HistoryService,
-) context.Context {
-	return context.WithValue(ctx, serviceCtxKey{}, historyService)
+type Option func(*Registry)
+
+func NewRegistry(opts ...Option) Registry {
+	r := Registry{context.Background()}
+	for _, opt := range opts {
+		opt(&r)
+	}
+	return r
 }
 
-func GetService(ctx context.Context) *service.HistoryService {
-	if val, ok := ctx.Value(serviceCtxKey{}).(*service.HistoryService); ok {
+func WithContext(context context.Context) Option {
+	return func(r *Registry) {
+		r.Context = context
+	}
+}
+
+func WithService(historyService *service.HistoryService) Option {
+	return func(r *Registry) {
+		r.Context = context.WithValue(r.Context, ServiceKey, historyService)
+	}
+}
+
+func WithConfig(cfg *config.UserConfig) Option {
+	return func(r *Registry) {
+		r.Context = context.WithValue(r.Context, ConfigKey, cfg)
+	}
+}
+func WithLogger(logger *slog.Logger) Option {
+	return func(r *Registry) {
+		r.Context = context.WithValue(r.Context, LoggerKey, logger)
+	}
+}
+
+func (r Registry) GetService() *service.HistoryService {
+	if val, ok := r.Context.Value(ServiceKey).(*service.HistoryService); ok {
 		return val
 	}
 	return nil
 }
 
-func WithConfig(
-	ctx context.Context,
-	cfg *config.UserConfig,
-) context.Context {
-	return context.WithValue(ctx, configCtxKey{}, cfg)
-}
-
-func GetConfig(ctx context.Context) *config.UserConfig {
-	if val, ok := ctx.Value(configCtxKey{}).(*config.UserConfig); ok {
+func (r Registry) GetConfig() *config.UserConfig {
+	if val, ok := r.Context.Value(ConfigKey).(*config.UserConfig); ok {
 		return val
 	}
 	return nil
 }
 
-func WithLogger(
-	ctx context.Context,
-	logger *slog.Logger,
-) context.Context {
-	return context.WithValue(ctx, loggerCtxKey{}, logger)
-}
-
-func GetLogger(ctx context.Context) *slog.Logger {
-	if val, ok := ctx.Value(loggerCtxKey{}).(*slog.Logger); ok {
+func (r Registry) GetLogger() *slog.Logger {
+	if val, ok := r.Context.Value(LoggerKey).(*slog.Logger); ok {
 		return val
 	}
 	return nil

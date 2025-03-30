@@ -5,11 +5,11 @@ import (
 
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 	"github.com/nobbmaestro/lazyhis/pkg/log"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 )
 
 var (
@@ -46,12 +46,13 @@ func main() {
 		logger.Logger,
 	)
 
-	ctx := context.NewContext()
-	ctx = context.WithService(ctx, historyService)
-	ctx = context.WithConfig(ctx, cfg)
-	ctx = context.WithLogger(ctx, logger.Logger)
+	reg := registry.NewRegistry(
+		registry.WithConfig(cfg),
+		registry.WithLogger(logger.Logger),
+		registry.WithService(historyService),
+	)
 
-	cmd.SetContext(ctx)
+	cmd.SetContext(reg.Context)
 	cmd.SetVersionInfo(version, commit, date)
 
 	err = cmd.Execute()

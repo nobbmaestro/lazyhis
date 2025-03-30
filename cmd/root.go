@@ -14,9 +14,9 @@ import (
 	"github.com/nobbmaestro/lazyhis/cmd/initialize"
 	"github.com/nobbmaestro/lazyhis/cmd/search"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	ctxreg "github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gopkg.in/yaml.v3"
 
@@ -80,12 +80,12 @@ func runHistoryGui(
 	cmd *cobra.Command,
 	args []string,
 ) error {
-	ctx := cmd.Context()
-	historyService := ctxreg.GetService(ctx)
-	cfg := ctxreg.GetConfig(ctx)
+	reg := registry.FromContext(cmd.Context())
+	cfg := reg.GetConfig()
+	svc := reg.GetService()
 
 	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
-		records, err := historyService.SearchHistory(
+		records, err := svc.SearchHistory(
 			append(args, keywords...),
 			applyExitCodeFilter(mode, cfg.Gui.PersistentFilterModes),
 			applyPathFilter(mode, cfg.Gui.PersistentFilterModes),
