@@ -106,7 +106,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.height = msg.Height
 		m.width = msg.Width
-		m.updateTableWidth()
+		m.updateTableContent()
 	}
 	return m, nil
 }
@@ -197,21 +197,17 @@ func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) updateTableWidth() {
-	columns := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
-	m.table.SetColumns(columns)
-}
-
 func (m *Model) updateTableContent() {
 	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
 	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
+
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
+		histable.WithGotoBottom(),
 	)
-	m.table.GotoBottom()
 }
 
 func (m *Model) setSelectedRecord() {
