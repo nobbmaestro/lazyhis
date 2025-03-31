@@ -17,9 +17,14 @@ var filterModeNames = map[config.FilterMode]string{
 
 type Option func(*Model)
 
+type Styles struct {
+	TextStyle lipgloss.Style
+}
+
 type Model struct {
-	Mode  config.FilterMode
-	Modes []config.FilterMode
+	Mode   config.FilterMode
+	Modes  []config.FilterMode
+	styles Styles
 }
 
 func New(opts ...Option) Model {
@@ -28,6 +33,18 @@ func New(opts ...Option) Model {
 		opt(&m)
 	}
 	return m
+}
+
+func NewStyles(theme config.GuiTheme) Styles {
+	return Styles{
+		TextStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(theme.FilterFgColor)),
+	}
+}
+
+func WithStyles(styles Styles) Option {
+	return func(m *Model) {
+		m.styles = styles
+	}
 }
 
 func WithValues(mode config.FilterMode, modes []config.FilterMode) Option {
@@ -44,10 +61,12 @@ func (m Model) View() string {
 
 	itemWidth := int(18)
 
-	return lipgloss.NewStyle().
-		Align(lipgloss.Left).
-		Width(itemWidth).
-		Render(utils.CenterString(filterModeNames[m.Mode], 11, "[ %-*s ]"))
+	return m.styles.TextStyle.Render(
+		lipgloss.NewStyle().
+			Align(lipgloss.Left).
+			Width(itemWidth).
+			Render(utils.CenterString(filterModeNames[m.Mode], 11, "[ %-*s ]")),
+	)
 }
 
 func (m *Model) NextMode() {

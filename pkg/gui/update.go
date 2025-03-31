@@ -201,12 +201,13 @@ func (m *Model) updateTableContent() {
 	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
-	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
+	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width-4)
 
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
 		histable.WithGotoBottom(),
+		histable.WithStyles(histable.NewStyles(m.cfg.Theme)),
 	)
 }
 

@@ -42,6 +42,18 @@ gui:
   persitentFilterModes:
     - UNIQUE_FILTER
 
+  # Gui theme
+  theme:
+    borderColor: "8"
+    tableCursorBgColor: ""
+    tableCursorFgColor: "6"
+    tableLabelsFgColor: "7"
+    filterFgColor: "7"
+    inputFgColor: "7"
+    helpAccentColor: "6"
+    helpFgColor: "7"
+    versionFgColor: "6"
+
 # Config relating to things outside of LazyHis like how sessions are obtain etc
 os:
   # Command for retrieving current session

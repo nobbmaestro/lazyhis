@@ -3,6 +3,7 @@ package help
 import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 )
 
 type Option func(*Model)
@@ -23,10 +24,10 @@ func New(opts ...Option) Model {
 	return m
 }
 
-func NewStyles() help.Styles {
-	keyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFAA00"))
-	descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606064"))
-	sepStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#464959"))
+func NewStyles(theme config.GuiTheme) help.Styles {
+	keyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.HelpAccentColor))
+	descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.HelpFgColor))
+	sepStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.BorderColor))
 
 	return help.Styles{
 		ShortKey:       keyStyle,

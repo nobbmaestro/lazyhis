@@ -3,7 +3,6 @@ package gui
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
@@ -61,6 +60,7 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 	m.input = hisquery.New(
 		hisquery.WithFocus(),
 		hisquery.WithValue(strings.Join(m.initialQuery, " ")),
+		hisquery.WithStyles(hisquery.NewStyles(m.cfg.Theme)),
 	)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
@@ -68,16 +68,17 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
-		histable.WithStyles(table.DefaultStyles()),
+		histable.WithStyles(histable.NewStyles(m.cfg.Theme)),
 		histable.WithGotoBottom(),
 	)
 
 	m.help = help.New(
-		help.WithStyles(help.NewStyles()),
+		help.WithStyles(help.NewStyles(m.cfg.Theme)),
 	)
 
 	m.filter = hisfilter.New(
 		hisfilter.WithValues(m.cfg.InitialFilterMode, m.cfg.CyclicFilterModes),
+		hisfilter.WithStyles(hisfilter.NewStyles(m.cfg.Theme)),
 	)
 
 	return m

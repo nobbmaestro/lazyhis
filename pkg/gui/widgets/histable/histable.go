@@ -56,14 +56,20 @@ func NewColumns(
 
 }
 
-func DefaultStyles() table.Styles {
+func NewStyles(theme config.GuiTheme) table.Styles {
 	return table.Styles{
+		Header: lipgloss.NewStyle().
+			Padding(0, 1).
+			Foreground(lipgloss.Color(theme.TableLabelsFgColor)).
+			Bold(true),
+
+		Cell: lipgloss.NewStyle().
+			Padding(0, 1),
+
 		Selected: lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#00e8c6")).
-			Background(lipgloss.Color("00FFAA")),
-		Header: lipgloss.NewStyle().Bold(true).Padding(0, 1),
-		Cell:   lipgloss.NewStyle().Padding(0, 1),
+			Foreground(lipgloss.Color(theme.TableCursorFgColor)).
+			Background(lipgloss.Color(theme.TableCursorBgColor)).
+			Bold(true),
 	}
 }
 

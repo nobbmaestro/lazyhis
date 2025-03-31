@@ -15,19 +15,34 @@ func (m Model) View() string {
 }
 
 func (m *Model) renderTable() string {
-	m.table.SetWidth(m.width)
-	m.table.SetHeight(m.height - 4)
+	borderPadding := 2
+	bottomPadding := 5
 
-	return lipgloss.NewStyle().PaddingBottom(1).Render(m.table.View())
+	m.table.SetWidth(m.width - borderPadding)
+	m.table.SetHeight(m.height - bottomPadding - borderPadding)
+
+	return lipgloss.NewStyle().
+		PaddingBottom(1).
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(m.cfg.Theme.BorderColor)).
+		Render(m.table.View())
 }
 
 func (m Model) renderInput() string {
-	return lipgloss.Place(
-		m.width,
-		1,
-		lipgloss.Left,
-		lipgloss.Bottom,
-		lipgloss.JoinHorizontal(lipgloss.Top, m.filter.View(), m.input.View()),
+	borderPadding := 2
+
+	inputStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(m.cfg.Theme.BorderColor))
+
+	return inputStyle.Render(
+		lipgloss.Place(
+			m.width-borderPadding,
+			1,
+			lipgloss.Left,
+			lipgloss.Bottom,
+			lipgloss.JoinHorizontal(lipgloss.Top, m.filter.View(), m.input.View()),
+		),
 	)
 }
 
@@ -43,12 +58,12 @@ func (m Model) renderFooter() string {
 		Align(lipgloss.Right).
 		Width(versionWidth).
 		Bold(true).
-		Foreground(lipgloss.Color("#FFA500")).
+		Foreground(lipgloss.Color(m.cfg.Theme.VersionFgColor)).
 		Render(strings.Join([]string{"lazyhis", m.version}, " "))
 
 	return lipgloss.Place(
 		m.width,
-		2,
+		1,
 		lipgloss.Left,
 		lipgloss.Bottom,
 		lipgloss.JoinHorizontal(lipgloss.Bottom, help, version),
