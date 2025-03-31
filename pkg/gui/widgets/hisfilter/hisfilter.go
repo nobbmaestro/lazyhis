@@ -15,15 +15,25 @@ var filterModeNames = map[config.FilterMode]string{
 	config.WorkdirSessionFilter: "WDIR + SESS",
 }
 
+type Option func(*Model)
+
 type Model struct {
 	Mode  config.FilterMode
 	Modes []config.FilterMode
 }
 
-func New(mode config.FilterMode, modes []config.FilterMode) Model {
-	return Model{
-		Mode:  mode,
-		Modes: modes,
+func New(opts ...Option) Model {
+	m := Model{}
+	for _, opt := range opts {
+		opt(&m)
+	}
+	return m
+}
+
+func WithValues(mode config.FilterMode, modes []config.FilterMode) Option {
+	return func(m *Model) {
+		m.Mode = mode
+		m.Modes = modes
 	}
 }
 

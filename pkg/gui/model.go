@@ -63,8 +63,7 @@ func NewModel(
 	)
 
 	historyFilter := hisfilter.New(
-		cfg.InitialFilterMode,
-		cfg.CyclicFilterModes,
+		hisfilter.WithValues(cfg.InitialFilterMode, cfg.CyclicFilterModes),
 	)
 
 	return Model{
