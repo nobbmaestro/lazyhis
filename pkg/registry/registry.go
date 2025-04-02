@@ -13,6 +13,7 @@ type ContextKey int
 const (
 	ServiceKey ContextKey = iota
 	ConfigKey
+	ConfigPathKey
 	LoggerKey
 )
 
@@ -47,6 +48,13 @@ func WithConfig(cfg *config.UserConfig) Option {
 		r.Context = context.WithValue(r.Context, ConfigKey, cfg)
 	}
 }
+
+func WithConfigPath(path string) Option {
+	return func(r *Registry) {
+		r.Context = context.WithValue(r.Context, ConfigPathKey, path)
+	}
+}
+
 func WithLogger(logger *slog.Logger) Option {
 	return func(r *Registry) {
 		r.Context = context.WithValue(r.Context, LoggerKey, logger)
@@ -62,6 +70,13 @@ func (r Registry) GetService() *service.HistoryService {
 
 func (r Registry) GetConfig() *config.UserConfig {
 	if val, ok := r.Context.Value(ConfigKey).(*config.UserConfig); ok {
+		return val
+	}
+	return nil
+}
+
+func (r Registry) GetConfigPath() *config.UserConfig {
+	if val, ok := r.Context.Value(ConfigPathKey).(*config.UserConfig); ok {
 		return val
 	}
 	return nil

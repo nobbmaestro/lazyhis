@@ -40,25 +40,22 @@ var rootCmd = &cobra.Command{
 func runRoot(cmd *cobra.Command, args []string) error {
 	switch {
 	case printUserConfig:
-		return runPrintUserConfig()
+		return runPrintUserConfig(cmd, args)
 	case printDefaultConfig:
-		return runPrintDefaultConfig()
+		return runPrintDefaultConfig(cmd, args)
 	case printConfigPath:
-		return runPrintConfigPath()
+		return runPrintConfigPath(cmd, args)
 	default:
 		return runHistoryGui(cmd, args)
 	}
 }
 
-func runPrintUserConfig() error {
-	cfg, err := config.ReadUserConfig()
-	if err != nil {
-		return fmt.Errorf("Failed to read user config: %w", err)
-	}
-	return printConfig(cfg)
+func runPrintUserConfig(cmd *cobra.Command, args []string) error {
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	return printConfig(reg.GetConfig())
 }
 
-func runPrintDefaultConfig() error {
+func runPrintDefaultConfig(cmd *cobra.Command, args []string) error {
 	return printConfig(config.GetDefaultUserConfig())
 }
 
@@ -72,8 +69,9 @@ func printConfig(cfg *config.UserConfig) error {
 	return nil
 }
 
-func runPrintConfigPath() error {
-	fmt.Println(config.GetUserConfigPath())
+func runPrintConfigPath(cmd *cobra.Command, args []string) error {
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	fmt.Println(reg.GetConfigPath())
 	return nil
 }
 
@@ -81,7 +79,7 @@ func runHistoryGui(
 	cmd *cobra.Command,
 	args []string,
 ) error {
-	reg := registry.FromContext(cmd.Context())
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	cfg := reg.GetConfig()
 	svc := reg.GetService()
 

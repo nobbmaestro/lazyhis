@@ -2,21 +2,14 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
 
-var confPath string
-
-func init() {
-	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
-}
-
-func ReadUserConfig() (*UserConfig, error) {
+func ReadUserConfig(path string) (*UserConfig, error) {
 	cfg := GetDefaultUserConfig()
 
-	userConfig, err := os.Open(confPath)
+	userConfig, err := os.Open(path)
 	if err != nil {
 		return cfg, nil
 	}
@@ -28,8 +21,4 @@ func ReadUserConfig() (*UserConfig, error) {
 	}
 
 	return cfg, nil
-}
-
-func GetUserConfigPath() string {
-	return confPath
 }

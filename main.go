@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
@@ -18,8 +19,12 @@ var (
 	date    = "unknown"
 )
 
+var (
+	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
+)
+
 func main() {
-	cfg, err := config.ReadUserConfig()
+	cfg, err := config.ReadUserConfig(confPath)
 	if err != nil {
 		return
 	}
@@ -48,6 +53,7 @@ func main() {
 
 	reg := registry.NewRegistry(
 		registry.WithConfig(cfg),
+		registry.WithConfigPath(confPath),
 		registry.WithLogger(logger.Logger),
 		registry.WithService(historyService),
 	)
