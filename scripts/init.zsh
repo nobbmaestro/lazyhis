@@ -7,7 +7,7 @@ zmodload zsh/datetime 2>/dev/null
 # you'd like to override this, then add your config after the $(lazyhis init zsh)
 # in your .zshrc
 _zsh_autosuggest_strategy_lazyhis() {
-	suggestion=$(lazyhis search --limit 1 -- "$@")
+	suggestion=$(lazyhis search --exit-code 0 --limit 1 -- "$@")
 }
 
 if [ -n "${ZSH_AUTOSUGGEST_STRATEGY:-}" ]; then
