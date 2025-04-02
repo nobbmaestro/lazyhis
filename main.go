@@ -7,6 +7,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 	"github.com/nobbmaestro/lazyhis/pkg/log"
@@ -20,6 +21,7 @@ var (
 )
 
 var (
+	dbPath   = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
 	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
 )
 
@@ -29,16 +31,26 @@ func main() {
 		return
 	}
 
-	database, err := db.New()
-	if err != nil {
-		return
-	}
-
 	logger, err := log.New(cfg.Log)
 	if err != nil {
 		return
 	}
 	defer logger.Close()
+
+	database, err := db.New(
+		dbPath,
+		db.WithLogger(db.DefaultLogger()),
+		db.WithForeignKeysOn(),
+		db.WithAutoMigrate(
+			model.History{},
+			model.Command{},
+			model.Session{},
+			model.Path{},
+		),
+	)
+	if err != nil {
+		return
+	}
 
 	historyService := service.NewHistoryService(
 		&service.RepositoryProvider{
