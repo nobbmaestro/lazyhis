@@ -26,10 +26,7 @@ var (
 )
 
 func main() {
-	cfg, err := config.ReadUserConfig(confPath)
-	if err != nil {
-		return
-	}
+	cfg := config.ReadUserConfig(confPath)
 
 	logger, err := log.New(cfg.Log)
 	if err != nil {

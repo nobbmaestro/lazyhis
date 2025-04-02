@@ -6,19 +6,19 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func ReadUserConfig(path string) (*UserConfig, error) {
+func ReadUserConfig(path string) *UserConfig {
 	cfg := GetDefaultUserConfig()
 
 	userConfig, err := os.Open(path)
 	if err != nil {
-		return cfg, nil
+		return cfg
 	}
 	defer userConfig.Close()
 
 	err = yaml.NewDecoder(userConfig).Decode(cfg)
 	if err != nil {
-		return nil, err
+		return cfg
 	}
 
-	return cfg, nil
+	return cfg
 }
