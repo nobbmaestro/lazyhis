@@ -1,7 +1,7 @@
 package history
 
 import (
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -12,10 +12,10 @@ var historyPruneCmd = &cobra.Command{
 }
 
 func runHistoryPrune(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	svc := reg.GetService()
 
-	err := historyService.PruneHistory()
+	err := svc.PruneHistory()
 	if err != nil {
 		return err
 	}

@@ -9,6 +9,7 @@ const (
 	ColumnExecutedAt Column = "EXECUTED_AT"
 	ColumnExecutedIn Column = "EXECUTED_IN"
 	ColumnExitCode   Column = "EXIT_CODE"
+	ColumnID         Column = "ID"
 	ColumnPath       Column = "PATH"
 	ColumnSession    Column = "SESSION"
 )
@@ -41,6 +42,8 @@ type UserConfig struct {
 }
 
 type GuiConfig struct {
+	// Option for hiding column labels
+	ShowColumnLabels bool `yaml:"showColumnLabels"`
 	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
 	// Option for setting initial (cyclic) filter mode
@@ -49,6 +52,8 @@ type GuiConfig struct {
 	CyclicFilterModes []FilterMode `yaml:"cyclicFilterModes"`
 	// List of persistent filter modes
 	PersistentFilterModes []FilterMode `yaml:"persistentFilterModes"`
+	// Gui Theme
+	Theme GuiTheme `yaml:"theme"`
 }
 
 type DbConfig struct {
@@ -70,4 +75,20 @@ type LogConfig struct {
 	LogLevel LogLevel `yaml:"logLevel"`
 	// Path to the log file
 	LogFile path.Path `yaml:"logFile"`
+}
+
+type GuiTheme struct {
+	// Shared colors
+	BorderColor string `yaml:"borderColor"`
+	// Table colors
+	TableCursorBgColor string `yaml:"tableCursorBgColor"`
+	TableCursorFgColor string `yaml:"tableCursorFgColor"`
+	TableLabelsFgColor string `yaml:"tableLabelsFgColor"`
+	// Query input colors
+	FilterFgColor string `yaml:"filterFgColor"`
+	InputFgColor  string `yaml:"inputFgColor"`
+	// Footer colors
+	HelpAccentColor string `yaml:"helpAccentColor"`
+	HelpFgColor     string `yaml:"helpFgColor"`
+	VersionFgColor  string `yaml:"versionFgColor"`
 }

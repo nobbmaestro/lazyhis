@@ -5,7 +5,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
@@ -107,7 +106,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.height = msg.Height
 		m.width = msg.Width
-		m.updateTableWidth()
+		m.updateTableContent()
 	}
 	return m, nil
 }
@@ -198,20 +197,18 @@ func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) updateTableWidth() {
-	columns := formatters.GenerateTableColumnsFromColumns(m.columns, m.width)
-	m.table.SetColumns(columns)
-}
-
 func (m *Model) updateTableContent() {
 	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
 
-	content := formatters.NewHistoryTableContent(m.records, m.columns, m.width)
+	rows := m.formatter.HistoryToTableRows(m.records)
+	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width-4)
+
 	m.table = histable.New(
-		histable.WithColumns(content.Columns),
-		histable.WithRows(content.Rows),
+		histable.WithRows(rows),
+		histable.WithColumns(cols),
+		histable.WithGotoBottom(),
+		histable.WithStyles(histable.NewStyles(m.cfg.Theme)),
 	)
-	m.table.GotoBottom()
 }
 
 func (m *Model) setSelectedRecord() {

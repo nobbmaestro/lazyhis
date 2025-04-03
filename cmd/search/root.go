@@ -3,7 +3,7 @@ package search
 import (
 	"fmt"
 
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -26,10 +26,10 @@ var SearchCmd = &cobra.Command{
 }
 
 func runSearch(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	svc := reg.GetService()
 
-	records, err := historyService.SearchHistory(
+	records, err := svc.SearchHistory(
 		args,
 		searchOpts.exitCode,
 		searchOpts.path,

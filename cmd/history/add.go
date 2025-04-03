@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"github.com/spf13/cobra"
 )
@@ -20,9 +20,9 @@ var historyAddCmd = &cobra.Command{
 }
 
 func runHistoryAdd(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
-	config := context.GetConfig(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	cfg := reg.GetConfig()
+	svc := reg.GetService()
 
 	if historyAddOpts.path == "" {
 		if currentPath, err := os.Getwd(); err == nil {
@@ -31,13 +31,13 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	}
 
 	if historyAddOpts.session == "" {
-		cmd := strings.Fields(config.Os.FetchCurrentSessionCmd)
+		cmd := strings.Fields(cfg.Os.FetchCurrentSessionCmd)
 		if currentSession, err := utils.RunCommand(cmd); err == nil {
 			historyAddOpts.session = currentSession
 		}
 	}
 
-	record, err := historyService.AddHistory(
+	record, err := svc.AddHistory(
 		args,
 		&historyAddOpts.exitCode,
 		&historyAddOpts.executedIn,

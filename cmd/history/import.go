@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/nobbmaestro/lazyhis/pkg/context"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -30,8 +30,8 @@ func runImport(cmd *cobra.Command, args []string) error {
 }
 
 func importZshHistfile(cmd *cobra.Command, args []string) error {
-	ctx := cmd.Context()
-	historyService := context.GetService(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	svc := reg.GetService()
 
 	file, err := os.Open(args[0])
 	if err != nil {
@@ -46,7 +46,7 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 			continue
 		}
 
-		_, err = historyService.AddHistoryIfUnique(
+		_, err = svc.AddHistoryIfUnique(
 			command,
 			nil,
 			nil,

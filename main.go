@@ -2,14 +2,16 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
+	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 	"github.com/nobbmaestro/lazyhis/pkg/log"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 )
 
 var (
@@ -18,22 +20,34 @@ var (
 	date    = "unknown"
 )
 
-func main() {
-	cfg, err := config.ReadUserConfig()
-	if err != nil {
-		return
-	}
+var (
+	dbPath   = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
+	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
+)
 
-	database, err := db.New()
-	if err != nil {
-		return
-	}
+func main() {
+	cfg := config.ReadUserConfig(confPath)
 
 	logger, err := log.New(cfg.Log)
 	if err != nil {
 		return
 	}
 	defer logger.Close()
+
+	database, err := db.New(
+		dbPath,
+		db.WithLogger(db.DefaultLogger()),
+		db.WithForeignKeysOn(),
+		db.WithAutoMigrate(
+			model.History{},
+			model.Command{},
+			model.Session{},
+			model.Path{},
+		),
+	)
+	if err != nil {
+		return
+	}
 
 	historyService := service.NewHistoryService(
 		&service.RepositoryProvider{
@@ -46,12 +60,14 @@ func main() {
 		logger.Logger,
 	)
 
-	ctx := context.NewContext()
-	ctx = context.WithService(ctx, historyService)
-	ctx = context.WithConfig(ctx, cfg)
-	ctx = context.WithLogger(ctx, logger.Logger)
+	reg := registry.NewRegistry(
+		registry.WithConfig(cfg),
+		registry.WithConfigPath(confPath),
+		registry.WithLogger(logger.Logger),
+		registry.WithService(historyService),
+	)
 
-	cmd.SetContext(ctx)
+	cmd.SetContext(reg.Context)
 	cmd.SetVersionInfo(version, commit, date)
 
 	err = cmd.Execute()

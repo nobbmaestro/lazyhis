@@ -3,20 +3,30 @@ package histable
 import (
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 )
 
-func DefaultStyles() table.Styles {
-	return table.Styles{
-		Selected: lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#00e8c6")).
-			Background(lipgloss.Color("00FFAA")),
-		Header: lipgloss.NewStyle().Bold(true).Padding(0, 1),
-		Cell:   lipgloss.NewStyle().Padding(0, 1),
-	}
+const paddedRows = 100
+
+var tableColumnTitles = map[config.Column]string{
+	config.ColumnCommand:    "Command",
+	config.ColumnExecutedAt: "Executed",
+	config.ColumnExecutedIn: "Duration",
+	config.ColumnExitCode:   "Exit",
+	config.ColumnID:         "ID",
+	config.ColumnPath:       "Path",
+	config.ColumnSession:    "Session",
 }
 
-const paddedRows = 100
+var tableColumnWidth = map[config.Column]int{
+	config.ColumnCommand:    100,
+	config.ColumnExecutedAt: 10,
+	config.ColumnExecutedIn: 10,
+	config.ColumnExitCode:   5,
+	config.ColumnID:         5,
+	config.ColumnPath:       50,
+	config.ColumnSession:    15,
+}
 
 type Model struct {
 	table.Model
@@ -24,6 +34,43 @@ type Model struct {
 
 func New(opts ...table.Option) Model {
 	return Model{Model: table.New(opts...)}
+}
+
+func NewColumns(
+	columns []config.Column,
+	showLabels bool,
+	width int,
+) []table.Column {
+	tableColumns := make([]table.Column, len(columns))
+
+	newTableColumnWidth := calculateTableColumnWidth(columns, width)
+	for i, column := range columns {
+		columnTitle := tableColumnTitles[column]
+		if !showLabels {
+			columnTitle = ""
+		}
+		tableColumns[i].Title = columnTitle
+		tableColumns[i].Width = newTableColumnWidth[column]
+	}
+	return tableColumns
+
+}
+
+func NewStyles(theme config.GuiTheme) table.Styles {
+	return table.Styles{
+		Header: lipgloss.NewStyle().
+			Padding(0, 1).
+			Foreground(lipgloss.Color(theme.TableLabelsFgColor)).
+			Bold(true),
+
+		Cell: lipgloss.NewStyle().
+			Padding(0, 1),
+
+		Selected: lipgloss.NewStyle().
+			Foreground(lipgloss.Color(theme.TableCursorFgColor)).
+			Background(lipgloss.Color(theme.TableCursorBgColor)).
+			Bold(true),
+	}
 }
 
 func WithRows(rows []table.Row) table.Option {
@@ -81,4 +128,29 @@ func reverse[T any](rows []T) []T {
 		newRows[len(rows)-1-i] = row
 	}
 	return newRows
+}
+
+func calculateTableColumnWidth(
+	columns []config.Column,
+	totalWidth int,
+) map[config.Column]int {
+	newTableColumnWidth := make(map[config.Column]int)
+
+	totalStaticWidth := 0
+	for _, column := range columns {
+		totalStaticWidth += tableColumnWidth[column]
+	}
+
+	remainingWidth := totalWidth - totalStaticWidth - 5 + tableColumnWidth[config.ColumnCommand]
+	remainingWidth = max(remainingWidth, 0)
+
+	for _, column := range columns {
+		if column == config.ColumnCommand {
+			newTableColumnWidth[column] = remainingWidth
+		} else {
+			newTableColumnWidth[column] = tableColumnWidth[column]
+		}
+	}
+
+	return newTableColumnWidth
 }

@@ -9,6 +9,7 @@ func GetDefaultUserConfig() *UserConfig {
 			ExcludePrefix:   "\x20",
 		},
 		Gui: GuiConfig{
+			ShowColumnLabels: false,
 			ColumnLayout: []Column{
 				ColumnExitCode,
 				ColumnExecutedAt,
@@ -24,6 +25,17 @@ func GetDefaultUserConfig() *UserConfig {
 			},
 			PersistentFilterModes: []FilterMode{
 				UniqueFilter,
+			},
+			Theme: GuiTheme{
+				BorderColor:        "8",
+				FilterFgColor:      "7",
+				HelpAccentColor:    "6",
+				HelpFgColor:        "7",
+				InputFgColor:       "7",
+				TableCursorBgColor: "",
+				TableCursorFgColor: "6",
+				TableLabelsFgColor: "7",
+				VersionFgColor:     "6",
 			},
 		},
 		Os: OsConfig{

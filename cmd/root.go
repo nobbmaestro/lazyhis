@@ -14,9 +14,10 @@ import (
 	"github.com/nobbmaestro/lazyhis/cmd/initialize"
 	"github.com/nobbmaestro/lazyhis/cmd/search"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	ctxreg "github.com/nobbmaestro/lazyhis/pkg/context"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui"
+	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gopkg.in/yaml.v3"
 
@@ -39,25 +40,22 @@ var rootCmd = &cobra.Command{
 func runRoot(cmd *cobra.Command, args []string) error {
 	switch {
 	case printUserConfig:
-		return runPrintUserConfig()
+		return runPrintUserConfig(cmd, args)
 	case printDefaultConfig:
-		return runPrintDefaultConfig()
+		return runPrintDefaultConfig(cmd, args)
 	case printConfigPath:
-		return runPrintConfigPath()
+		return runPrintConfigPath(cmd, args)
 	default:
 		return runHistoryGui(cmd, args)
 	}
 }
 
-func runPrintUserConfig() error {
-	cfg, err := config.ReadUserConfig()
-	if err != nil {
-		return fmt.Errorf("Failed to read user config: %w", err)
-	}
-	return printConfig(cfg)
+func runPrintUserConfig(cmd *cobra.Command, args []string) error {
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	return printConfig(reg.GetConfig())
 }
 
-func runPrintDefaultConfig() error {
+func runPrintDefaultConfig(cmd *cobra.Command, args []string) error {
 	return printConfig(config.GetDefaultUserConfig())
 }
 
@@ -71,8 +69,9 @@ func printConfig(cfg *config.UserConfig) error {
 	return nil
 }
 
-func runPrintConfigPath() error {
-	fmt.Println(config.GetUserConfigPath())
+func runPrintConfigPath(cmd *cobra.Command, args []string) error {
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	fmt.Println(reg.GetConfigPath())
 	return nil
 }
 
@@ -80,13 +79,13 @@ func runHistoryGui(
 	cmd *cobra.Command,
 	args []string,
 ) error {
-	ctx := cmd.Context()
-	historyService := ctxreg.GetService(ctx)
-	cfg := ctxreg.GetConfig(ctx)
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	cfg := reg.GetConfig()
+	svc := reg.GetService()
 
 	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
-		records, err := historyService.SearchHistory(
-			append(args, keywords...),
+		records, err := svc.SearchHistory(
+			keywords,
 			applyExitCodeFilter(mode, cfg.Gui.PersistentFilterModes),
 			applyPathFilter(mode, cfg.Gui.PersistentFilterModes),
 			applySessionFilter(
@@ -105,11 +104,14 @@ func runHistoryGui(
 	}
 
 	p := tea.NewProgram(
-		gui.NewModel(
-			cfg.Gui,
+		gui.NewGui(
 			partialSearchHistory,
-			cmd.Version,
-			strings.Join(args, " "),
+			cfg.Gui,
+			gui.WithVersion(cmd.Version),
+			gui.WithInitialQuery(args),
+			gui.WithFormatter(
+				formatters.NewFmt(formatters.WithColumns(cfg.Gui.ColumnLayout)),
+			),
 		),
 		tea.WithAltScreen(),
 	)

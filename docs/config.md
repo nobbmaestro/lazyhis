@@ -15,6 +15,9 @@ db:
 
 # Config relating to the GUI
 gui:
+  # Option for hiding column labels
+  showColumnLabels: false
+
   # List of GUI Columns
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#gui-columns
   columnLayout:
@@ -38,6 +41,18 @@ gui:
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
   persitentFilterModes:
     - UNIQUE_FILTER
+
+  # Gui theme
+  theme:
+    borderColor: "8"
+    tableCursorBgColor: ""
+    tableCursorFgColor: "6"
+    tableLabelsFgColor: "7"
+    filterFgColor: "7"
+    inputFgColor: "7"
+    helpAccentColor: "6"
+    helpFgColor: "7"
+    versionFgColor: "6"
 
 # Config relating to things outside of LazyHis like how sessions are obtain etc
 os:
@@ -84,6 +99,7 @@ Available columns:
 
 | Column      | Description                        |
 | ----------- | ---------------------------------- |
+| ID          | The record ID                      |
 | COMMAND     | The command                        |
 | EXIT_CODE   | Exit code of the command           |
 | EXECUTED_AT | Execution timestamp of the command |

@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.4.0...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.4.0/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.5.0...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.5.0/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -88,8 +88,10 @@ lazyhis history import --zsh /path/to/histfile
 - [ ] Add export CLI command for exporting to HISTFILE
 - [ ] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
+- [ ] Add dry flag for prune CLI command
+- [ ] Add verbosity flag for prune and import CLI commands
 - [ ] Copy to clipboard via GUI
-- [ ] Customizable GUI theme
+- [x] Customizable GUI theme
 - [x] Customizable command exclusion by patterns
 - [x] Customizable command exclusion by prefix
 - [ ] Customizable keybindings
