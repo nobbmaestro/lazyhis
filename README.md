@@ -88,8 +88,8 @@ lazyhis history import --zsh /path/to/histfile
 - [ ] Add export CLI command for exporting to HISTFILE
 - [ ] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
-- [ ] Add dry flag for prune CLI command
-- [ ] Add verbosity flag for prune and import CLI commands
+- [x] Add dry flag for prune CLI command
+- [x] Add verbosity flag for prune and import CLI commands
 - [ ] Copy to clipboard via GUI
 - [x] Customizable GUI theme
 - [x] Customizable command exclusion by patterns
