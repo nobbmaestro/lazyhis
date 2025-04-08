@@ -25,10 +25,6 @@ gui:
     - EXECUTED_AT
     - COMMAND
 
-  # Option for setting initial (cyclic) filter mode
-  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
-  initialFilterMode: NO_FILTER
-
   # List of filter modes to cycle through
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
   cyclicFilterModes:
@@ -138,9 +134,8 @@ Available log levels:
 ## Filter Modes
 
 `LazyHis` stores various metadata associated with the history records, which can be used to filter
-search results. However, no filter is applied by default. You can specify the desired filter in the
-`initialFilterMode`. Additionally, modifying `cyclicFilterModes` allows you to select which filters
-to cycle through and define their order.
+search results. However, no filter is applied by default. Additionally, modifying `cyclicFilterModes`
+allows you to select which filters to cycle through and define their order.
 
 If you prefer persistent filters, add the desired filter(s) to `persistentFilterModes`.
 
