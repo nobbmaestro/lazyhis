@@ -11,6 +11,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisfilter"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisquery"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
+	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type QueryHistoryCallback func(query []string, mode config.FilterMode) []model.History
@@ -55,7 +56,10 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 		opt(&m)
 	}
 
-	m.records = m.queryHistory(m.initialQuery, m.cfg.InitialFilterMode)
+	m.records = m.queryHistory(
+		m.initialQuery,
+		utils.SafeIndex(m.cfg.CyclicFilterModes, 0),
+	)
 
 	m.input = hisquery.New(
 		hisquery.WithFocus(),
@@ -77,7 +81,10 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 	)
 
 	m.filter = hisfilter.New(
-		hisfilter.WithValues(m.cfg.InitialFilterMode, m.cfg.CyclicFilterModes),
+		hisfilter.WithValues(
+			utils.SafeIndex(m.cfg.CyclicFilterModes, 0),
+			m.cfg.CyclicFilterModes,
+		),
 		hisfilter.WithStyles(hisfilter.NewStyles(m.cfg.Theme)),
 	)
 

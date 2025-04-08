@@ -18,3 +18,14 @@ func Cycle[T comparable](current T, collection []T, isForward bool) T {
 	}
 	return collection[0]
 }
+
+func SafeIndex[T comparable](collection []T, idx int) T {
+	length := len(collection)
+
+	if length == 0 {
+		var zero T
+		return zero
+	}
+
+	return collection[idx]
+}
