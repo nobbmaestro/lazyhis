@@ -68,6 +68,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	executedIn *int,
 	path *string,
 	session *string,
+	dryRun bool,
 ) (*model.History, error) {
 	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
 		return nil, nil
@@ -79,6 +80,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 		executedIn,
 		path,
 		session,
+		dryRun,
 	)
 }
 
@@ -88,6 +90,7 @@ func (s *HistoryService) AddHistory(
 	executedIn *int,
 	path *string,
 	session *string,
+	dryRun bool,
 ) (*model.History, error) {
 	var (
 		commandID *uint
@@ -100,6 +103,16 @@ func (s *HistoryService) AddHistory(
 		s.config.ExcludePrefix,
 		s.config.ExcludeCommands,
 	) {
+		return nil, nil
+	}
+
+	s.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
+
+	if dryRun {
+		fmt.Println(strings.Join(command, " "))
+	}
+
+	if dryRun {
 		return nil, nil
 	}
 
