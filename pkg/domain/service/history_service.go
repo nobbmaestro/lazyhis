@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
 
@@ -180,7 +181,7 @@ func (s *HistoryService) EditHistory(
 	return s.repos.HistoryRepo.Update(history)
 }
 
-func (s *HistoryService) PruneHistory() error {
+func (s *HistoryService) PruneHistory(dryRun bool) error {
 	records, err := s.GetAllCommands()
 	if err != nil {
 		return err
@@ -188,7 +189,12 @@ func (s *HistoryService) PruneHistory() error {
 
 	for _, record := range records {
 		if utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
-			s.logger.Debug("Prune", "command", record.Command)
+			s.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
+			fmt.Println("Prune:", record.Command)
+
+			if dryRun {
+				continue
+			}
 
 			_, err := s.repos.CommandRepo.Delete(&record)
 			if err != nil {
