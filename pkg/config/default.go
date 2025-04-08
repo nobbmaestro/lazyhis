@@ -15,7 +15,6 @@ func GetDefaultUserConfig() *UserConfig {
 				ColumnExecutedAt,
 				ColumnCommand,
 			},
-			InitialFilterMode: NoFilter,
 			CyclicFilterModes: []FilterMode{
 				NoFilter,
 				WorkdirFilter,
