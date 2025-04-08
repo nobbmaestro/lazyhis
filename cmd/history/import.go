@@ -54,6 +54,7 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 			nil,
 			nil,
 			historyImportFlags.dryRun,
+			historyImportFlags.verbose,
 		)
 		if err != nil {
 			continue
@@ -94,4 +95,7 @@ func init() {
 	historyImportCmd.
 		Flags().
 		BoolVarP(&historyImportFlags.dryRun, "dry", "d", false, "list commands without performing actual import")
+	historyImportCmd.
+		Flags().
+		BoolVarP(&historyImportFlags.verbose, "verbose", "v", false, "increase verbosity")
 }

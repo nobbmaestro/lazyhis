@@ -69,6 +69,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 	path *string,
 	session *string,
 	dryRun bool,
+	verbose bool,
 ) (*model.History, error) {
 	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
 		return nil, nil
@@ -81,6 +82,7 @@ func (s *HistoryService) AddHistoryIfUnique(
 		path,
 		session,
 		dryRun,
+		verbose,
 	)
 }
 
@@ -91,6 +93,7 @@ func (s *HistoryService) AddHistory(
 	path *string,
 	session *string,
 	dryRun bool,
+	verbose bool,
 ) (*model.History, error) {
 	var (
 		commandID *uint
@@ -108,7 +111,7 @@ func (s *HistoryService) AddHistory(
 
 	s.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
 
-	if dryRun {
+	if verbose || dryRun {
 		fmt.Println(strings.Join(command, " "))
 	}
 
