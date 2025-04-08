@@ -181,21 +181,24 @@ func (s *HistoryService) EditHistory(
 	return s.repos.HistoryRepo.Update(history)
 }
 
-func (s *HistoryService) PruneHistory(dryRun bool) error {
+func (s *HistoryService) PruneHistory(dryRun bool, verboseMode bool) error {
 	records, err := s.GetAllCommands()
 	if err != nil {
 		return err
 	}
 
 	for _, record := range records {
-		if utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
-			s.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
-			fmt.Println("Prune:", record.Command)
+		if !utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
+			continue
+		}
 
-			if dryRun {
-				continue
-			}
+		s.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
 
+		if dryRun || verboseMode {
+			fmt.Println(record.Command)
+		}
+
+		if !dryRun {
 			_, err := s.repos.CommandRepo.Delete(&record)
 			if err != nil {
 				return err

@@ -12,7 +12,8 @@ type HistoryOptions struct {
 }
 
 type HistoryFlags struct {
-	dryRun bool
+	dryRun  bool
+	verbose bool
 }
 
 var HistoryCmd = &cobra.Command{

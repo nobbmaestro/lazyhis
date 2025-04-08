@@ -17,7 +17,10 @@ func runHistoryPrune(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	svc := reg.GetService()
 
-	err := svc.PruneHistory(historyPruneFlags.dryRun)
+	err := svc.PruneHistory(
+		historyPruneFlags.dryRun,
+		historyPruneFlags.verbose,
+	)
 	if err != nil {
 		return err
 	}
@@ -29,4 +32,7 @@ func init() {
 	historyPruneCmd.
 		Flags().
 		BoolVarP(&historyPruneFlags.dryRun, "dry", "d", false, "list matching commands without performing actual deletion")
+	historyPruneCmd.
+		Flags().
+		BoolVarP(&historyPruneFlags.verbose, "verbose", "v", false, "increase verbosity")
 }
