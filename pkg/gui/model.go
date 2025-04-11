@@ -6,7 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/help"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisfilter"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisquery"

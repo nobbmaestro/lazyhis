@@ -16,7 +16,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/gui"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gopkg.in/yaml.v3"
@@ -110,7 +110,10 @@ func runHistoryGui(
 			gui.WithVersion(cmd.Version),
 			gui.WithInitialQuery(args),
 			gui.WithFormatter(
-				formatters.NewFmt(formatters.WithColumns(cfg.Gui.ColumnLayout)),
+				formatters.NewFormatter(
+					formatters.WithColumns(cfg.Gui.ColumnLayout),
+					formatters.WithOptions(formatters.DefaultGuiFormatOptions()),
+				),
 			),
 		),
 		tea.WithAltScreen(),
