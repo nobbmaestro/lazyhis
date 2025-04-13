@@ -11,6 +11,11 @@ type HistoryOptions struct {
 	session    string
 }
 
+type HistoryFlags struct {
+	dryRun  bool
+	verbose bool
+}
+
 var HistoryCmd = &cobra.Command{
 	Use:   "history",
 	Short: "Manipulate history database",

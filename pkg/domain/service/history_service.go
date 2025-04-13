@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
 
@@ -67,6 +68,8 @@ func (s *HistoryService) AddHistoryIfUnique(
 	executedIn *int,
 	path *string,
 	session *string,
+	dryRun bool,
+	verbose bool,
 ) (*model.History, error) {
 	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
 		return nil, nil
@@ -78,6 +81,8 @@ func (s *HistoryService) AddHistoryIfUnique(
 		executedIn,
 		path,
 		session,
+		dryRun,
+		verbose,
 	)
 }
 
@@ -87,6 +92,8 @@ func (s *HistoryService) AddHistory(
 	executedIn *int,
 	path *string,
 	session *string,
+	dryRun bool,
+	verbose bool,
 ) (*model.History, error) {
 	var (
 		commandID *uint
@@ -99,6 +106,16 @@ func (s *HistoryService) AddHistory(
 		s.config.ExcludePrefix,
 		s.config.ExcludeCommands,
 	) {
+		return nil, nil
+	}
+
+	s.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
+
+	if verbose || dryRun {
+		fmt.Println(strings.Join(command, " "))
+	}
+
+	if dryRun {
 		return nil, nil
 	}
 
@@ -180,16 +197,24 @@ func (s *HistoryService) EditHistory(
 	return s.repos.HistoryRepo.Update(history)
 }
 
-func (s *HistoryService) PruneHistory() error {
+func (s *HistoryService) PruneHistory(dryRun bool, verboseMode bool) error {
 	records, err := s.GetAllCommands()
 	if err != nil {
 		return err
 	}
 
 	for _, record := range records {
-		if utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
-			s.logger.Debug("Prune", "command", record.Command)
+		if !utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
+			continue
+		}
 
+		s.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
+
+		if dryRun || verboseMode {
+			fmt.Println(record.Command)
+		}
+
+		if !dryRun {
 			_, err := s.repos.CommandRepo.Delete(&record)
 			if err != nil {
 				return err

@@ -43,6 +43,8 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 		&historyAddOpts.executedIn,
 		&historyAddOpts.path,
 		&historyAddOpts.session,
+		false, // dryRun
+		false, // verbose
 	)
 	if err != nil {
 		return err

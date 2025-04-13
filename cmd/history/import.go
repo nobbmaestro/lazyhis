@@ -12,6 +12,7 @@ import (
 )
 
 var isZshHistfile bool
+var historyImportFlags = &HistoryFlags{}
 
 var historyImportCmd = &cobra.Command{
 	Use:   "import [HISTFILE]",
@@ -52,6 +53,8 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 			nil,
 			nil,
 			nil,
+			historyImportFlags.dryRun,
+			historyImportFlags.verbose,
 		)
 		if err != nil {
 			continue
@@ -89,4 +92,10 @@ func init() {
 	historyImportCmd.
 		Flags().
 		BoolVar(&isZshHistfile, "zsh", false, "import zsh histfile")
+	historyImportCmd.
+		Flags().
+		BoolVarP(&historyImportFlags.dryRun, "dry", "d", false, "list commands without performing actual import")
+	historyImportCmd.
+		Flags().
+		BoolVarP(&historyImportFlags.verbose, "verbose", "v", false, "increase verbosity")
 }

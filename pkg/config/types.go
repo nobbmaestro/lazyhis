@@ -46,8 +46,6 @@ type GuiConfig struct {
 	ShowColumnLabels bool `yaml:"showColumnLabels"`
 	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
-	// Option for setting initial (cyclic) filter mode
-	InitialFilterMode FilterMode `yaml:"initialFilterMode"`
 	// List of filter modes to cycle through
 	CyclicFilterModes []FilterMode `yaml:"cyclicFilterModes"`
 	// List of persistent filter modes
