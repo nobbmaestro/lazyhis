@@ -40,9 +40,6 @@ autoload -U add-zsh-hook
 
 zmodload zsh/datetime 2>/dev/null
 
-# If zsh-autosuggestions is installed, configure it to use LazyHis's search. If
-# you'd like to override this, then add your config after the $(lazyhis init zsh)
-# in your .zshrc
 _zsh_autosuggest_strategy_lazyhis() {
 	suggestion=$(lazyhis search --exit-code 0 --limit 1 -- "$@")
 }
@@ -86,22 +83,20 @@ _lazyhis_search() {
 	emulate -L zsh
 	zle -I
 
-	local output
-	output=$(lazyhis $* -- "$BUFFER" 3>&1 1>&2 2>&3)
+	local SELECTED
+	SELECTED=$(lazyhis $* -- "$BUFFER" 3>&1 1>&2 2>&3)
 
 	zle reset-prompt
 
-	if [[ -n $output ]]; then
+	if [[ -n $SELECTED ]]; then
 		RBUFFER=""
-		LBUFFER=$output
-
-		case $LBUFFER in
+		case $SELECTED in
 		__lazyhis_accept__:*)
-			LBUFFER=${LBUFFER#__lazyhis_accept__:}
+			LBUFFER=${SELECTED#__lazyhis_accept__:}
 			zle accept-line
 			;;
 		__lazyhis_prefill__:*)
-			LBUFFER=${LBUFFER#__lazyhis_prefill__:}
+			LBUFFER=${SELECTED#__lazyhis_prefill__:}
 			;;
 		esac
 	fi
