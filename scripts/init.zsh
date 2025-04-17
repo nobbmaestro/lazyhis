@@ -95,12 +95,15 @@ _lazyhis_search() {
 		RBUFFER=""
 		LBUFFER=$output
 
-		if [[ $LBUFFER == __lazyhis_accept__:* ]]; then
+		case $LBUFFER in
+		__lazyhis_accept__:*)
 			LBUFFER=${LBUFFER#__lazyhis_accept__:}
 			zle accept-line
-		elif [[ $LBUFFER == __lazyhis_prefill__:* ]]; then
+			;;
+		__lazyhis_prefill__:*)
 			LBUFFER=${LBUFFER#__lazyhis_prefill__:}
-		fi
+			;;
+		esac
 	fi
 }
 _lazyhis_search_vicmd() {
