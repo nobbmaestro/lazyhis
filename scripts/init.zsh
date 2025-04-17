@@ -1,11 +1,45 @@
-# Source this in your ~/.zshrc
+#     __                      __  ___
+#    / /   ____ _____  __  __/ / / (_)____
+#   / /   / __ `/_  / / / / / /_/ / / ___/
+#  / /___/ /_/ / / /_/ /_/ / __  / (__  )
+# /_____/\__,_/ /___/\__, /_/ /_/_/____/
+#                   /____/
+#
+# init.zsh - Shell initialization for lazyhis history integration
+#
+# Add the following to the end of your ~/.zshrc:
+#     eval "$(lazyhis init zsh)"
+#
+# Inspired by atuin: https://github.com/atuinsh/atuin/blob/main/crates/atuin/src/shell/atuin.zsh
+#
+# ---
+#
+# MIT License (source: https://github.com/atuinsh/atuin/blob/main/LICENSE)
+#
+# Copyright (c) 2021 Ellie Huxtable
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 autoload -U add-zsh-hook
 
 zmodload zsh/datetime 2>/dev/null
 
-# If zsh-autosuggestions is installed, configure it to use LazyHis's search. If
-# you'd like to override this, then add your config after the $(lazyhis init zsh)
-# in your .zshrc
 _zsh_autosuggest_strategy_lazyhis() {
 	suggestion=$(lazyhis search --exit-code 0 --limit 1 -- "$@")
 }
@@ -49,21 +83,22 @@ _lazyhis_search() {
 	emulate -L zsh
 	zle -I
 
-	local output
-	output=$(lazyhis $* -- "$BUFFER" 3>&1 1>&2 2>&3)
+	local SELECTED
+	SELECTED=$(lazyhis $* -- "$BUFFER" 3>&1 1>&2 2>&3)
 
 	zle reset-prompt
 
-	if [[ -n $output ]]; then
+	if [[ -n $SELECTED ]]; then
 		RBUFFER=""
-		LBUFFER=$output
-
-		if [[ $LBUFFER == __lazyhis_accept__:* ]]; then
-			LBUFFER=${LBUFFER#__lazyhis_accept__:}
+		case $SELECTED in
+		__lazyhis_accept__:*)
+			LBUFFER=${SELECTED#__lazyhis_accept__:}
 			zle accept-line
-		elif [[ $LBUFFER == __lazyhis_prefill__:* ]]; then
-			LBUFFER=${LBUFFER#__lazyhis_prefill__:}
-		fi
+			;;
+		__lazyhis_prefill__:*)
+			LBUFFER=${SELECTED#__lazyhis_prefill__:}
+			;;
+		esac
 	fi
 }
 _lazyhis_search_vicmd() {
