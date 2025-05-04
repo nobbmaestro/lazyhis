@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/cmd"
+	"github.com/nobbmaestro/lazyhis/pkg/app"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
@@ -60,11 +61,17 @@ func main() {
 		logger.Logger,
 	)
 
+	app := app.NewApp(
+		app.WithService(historyService),
+		// app.WithPersitentFilters(cfg.Gui.PersistentFilterModes),
+	)
+
 	reg := registry.NewRegistry(
+		registry.WithApp(&app),
 		registry.WithConfig(cfg),
 		registry.WithConfigPath(confPath),
 		registry.WithLogger(logger.Logger),
-		registry.WithService(historyService),
+		registry.WithService(historyService), // FIXME: Remove this?...
 	)
 
 	cmd.SetContext(reg.Context)

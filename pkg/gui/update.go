@@ -5,6 +5,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
@@ -198,7 +199,10 @@ func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) updateTableContent() {
-	m.records = m.queryHistory(strings.Fields(m.input.Value()), m.filter.Mode)
+	m.records = m.doSearchHistory(
+		strings.Fields(m.input.Value()),
+		[]config.FilterMode{m.filter.Mode},
+	)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
 	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width-4)

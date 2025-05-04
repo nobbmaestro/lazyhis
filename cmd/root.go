@@ -5,8 +5,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"slices"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -14,11 +12,9 @@ import (
 	"github.com/nobbmaestro/lazyhis/cmd/initialize"
 	"github.com/nobbmaestro/lazyhis/cmd/search"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
-	"github.com/nobbmaestro/lazyhis/pkg/gui"
 	"github.com/nobbmaestro/lazyhis/pkg/formatters"
+	"github.com/nobbmaestro/lazyhis/pkg/gui"
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
@@ -81,32 +77,11 @@ func runHistoryGui(
 ) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	cfg := reg.GetConfig()
-	svc := reg.GetService()
-
-	partialSearchHistory := func(keywords []string, mode config.FilterMode) []model.History {
-		records, err := svc.SearchHistory(
-			keywords,
-			applyExitCodeFilter(mode, cfg.Gui.PersistentFilterModes),
-			applyPathFilter(mode, cfg.Gui.PersistentFilterModes),
-			applySessionFilter(
-				mode,
-				cfg.Gui.PersistentFilterModes,
-				cfg.Os.FetchCurrentSessionCmd,
-			),
-			-1, //maxNumSearchResults
-			-1, //offsetSearchResults
-			applyUniqueCommandFilter(mode, cfg.Gui.PersistentFilterModes),
-		)
-		if err != nil {
-			return nil
-		}
-		return records
-	}
 
 	p := tea.NewProgram(
 		gui.NewGui(
-			partialSearchHistory,
-			cfg.Gui,
+			reg.GetApp(),
+			&cfg.Gui,
 			gui.WithVersion(cmd.Version),
 			gui.WithInitialQuery(args),
 			gui.WithFormatter(
@@ -135,57 +110,6 @@ func runHistoryGui(
 	}
 
 	return nil
-}
-
-func applyPathFilter(
-	mode config.FilterMode,
-	persistent []config.FilterMode,
-) string {
-	if mode == config.WorkdirFilter ||
-		mode == config.WorkdirSessionFilter ||
-		slices.Contains(persistent, config.WorkdirFilter) ||
-		slices.Contains(persistent, config.WorkdirSessionFilter) {
-		if p, err := os.Getwd(); err == nil {
-			return p
-		}
-	}
-	return ""
-}
-
-func applySessionFilter(
-	mode config.FilterMode,
-	persistent []config.FilterMode,
-	sessionCmd string,
-) string {
-	if mode == config.SessionFilter ||
-		mode == config.WorkdirSessionFilter ||
-		slices.Contains(persistent, config.SessionFilter) {
-		if s, err := utils.RunCommand(strings.Split(sessionCmd, " ")); err == nil {
-			return s
-		}
-	}
-	return ""
-}
-
-func applyExitCodeFilter(
-	mode config.FilterMode,
-	persistent []config.FilterMode,
-) int {
-	if mode == config.SuccessFilter ||
-		slices.Contains(persistent, config.SuccessFilter) {
-		return 0
-	}
-	return -1
-}
-
-func applyUniqueCommandFilter(
-	mode config.FilterMode,
-	persistent []config.FilterMode,
-) bool {
-	if mode == config.UniqueFilter || slices.Contains(persistent, config.UniqueFilter) {
-		return true
-	}
-	return false
 }
 
 func SetVersionInfo(version, commit, date string) {
