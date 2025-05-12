@@ -48,20 +48,18 @@ var SearchCmd = &cobra.Command{
 
 func runSearch(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	svc := reg.GetService()
+	app := reg.GetApp()
 
-	records, err := svc.SearchHistory(
+	records := app.SearchHistory(
 		args,
 		searchOpts.exitCode,
 		searchOpts.path,
 		searchOpts.session,
+		-1,
 		searchOpts.maxNumSearchResults,
 		searchOpts.offsetSearchResults,
 		searchOpts.uniqueSearchResults,
 	)
-	if err != nil {
-		return err
-	}
 
 	formatter := formatters.NewFormatter(
 		formatters.WithOptions(formatters.DefaultTuiFormatOptions()),

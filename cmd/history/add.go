@@ -22,7 +22,7 @@ var historyAddCmd = &cobra.Command{
 func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	cfg := reg.GetConfig()
-	svc := reg.GetService()
+	app := reg.GetApp()
 
 	if historyAddOpts.path == "" {
 		if currentPath, err := os.Getwd(); err == nil {
@@ -37,7 +37,7 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	record, err := svc.AddHistory(
+	record, err := app.AddHistory(
 		args,
 		&historyAddOpts.exitCode,
 		&historyAddOpts.executedIn,
@@ -45,6 +45,7 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 		&historyAddOpts.session,
 		false, // dryRun
 		false, // verbose
+		false, // addUniqueOnly
 	)
 	if err != nil {
 		return err

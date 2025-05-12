@@ -18,7 +18,7 @@ var historyEditCmd = &cobra.Command{
 
 func runHistoryEdit(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	svc := reg.GetService()
+	app := reg.GetApp()
 
 	historyID, err := strconv.Atoi(args[0])
 	if err != nil {
@@ -45,7 +45,7 @@ func runHistoryEdit(cmd *cobra.Command, args []string) error {
 		session = &historyEditOpts.session
 	}
 
-	_, err = svc.EditHistory(
+	_, err = app.EditHistory(
 		historyID,
 		exitCode,
 		executedIn,

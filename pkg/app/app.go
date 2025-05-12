@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+	"log/slog"
 	"os"
 	"slices"
 	"strings"
@@ -12,11 +14,29 @@ import (
 )
 
 type App struct {
-	service    *service.HistoryService
+	Service    *service.HistoryService
 	sessionCmd string
+	config     *config.UserConfig
+	logger     *slog.Logger
 }
 
 type Option func(*App)
+
+type Params struct {
+	Command    []string
+	ExitCode   int
+	Path       string
+	Session    string
+	ExecutedIn int
+
+	MaxNumSearchResults int
+	OffsetSearchResults int
+	UniqueSearchResults bool
+	AddUniqueOnly       bool
+
+	DryRun  bool
+	Verbose bool
+}
 
 func NewApp(opts ...Option) App {
 	app := App{}
@@ -30,14 +50,55 @@ func NewApp(opts ...Option) App {
 
 func WithService(service *service.HistoryService) Option {
 	return func(app *App) {
-		app.service = service
+		app.Service = service
 	}
 }
 
-func (app App) SearchHistory(keywords []string, filters []config.FilterMode) []model.History {
-	records, err := app.service.SearchHistory(
+func WithLogger(logger *slog.Logger) Option {
+	return func(app *App) {
+		app.logger = logger
+	}
+}
+
+func WithConfig(config *config.UserConfig) Option {
+	return func(app *App) {
+		app.config = config
+	}
+}
+
+func (app App) SearchHistory(
+	keywords []string,
+	exitCode int,
+	path string,
+	session string,
+	executedIn int,
+	maxNumSearchResults int,
+	offsetSearchResults int,
+	uniqueSearchResults bool,
+) []model.History {
+	records, err := app.Service.SearchHistory(
 		keywords,
-		applyExitCodeFilter(filters),
+		exitCode,
+		path,
+		session,
+		maxNumSearchResults,
+		offsetSearchResults,
+		uniqueSearchResults,
+	)
+	if err != nil {
+		app.logger.Error(err.Error())
+		return []model.History{}
+	}
+	return records
+}
+
+func (app App) SearchHistoryWithFilters(
+	keywords []string,
+	filters []config.FilterMode,
+) []model.History {
+	records, err := app.Service.SearchHistory(
+		keywords,
+		applySuccessFilter(filters),
 		applyPathFilter(filters),
 		applySessionFilter(filters, app.sessionCmd),
 		-1, //maxNumSearchResults
@@ -45,23 +106,102 @@ func (app App) SearchHistory(keywords []string, filters []config.FilterMode) []m
 		applyUniqueCommandFilter(filters),
 	)
 	if err != nil {
+		app.logger.Error(err.Error())
 		return []model.History{}
 	}
 	return records
 }
 
-func (app App) AddHistory() {
+func (app App) AddHistory(
+	command []string,
+	exitCode *int,
+	executedIn *int,
+	path *string,
+	session *string,
+	dryRun bool,
+	verbose bool,
+	addUniqueOnly bool,
+) (*model.History, error) {
+	if utils.IsExcludedCommand(
+		command,
+		app.config.Db.ExcludePrefix,
+		app.config.Db.ExcludeCommands,
+	) {
+		return nil, nil
+	}
+
+	app.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
+
+	if verbose || dryRun {
+		fmt.Println(strings.Join(command, " "))
+	}
+
+	if dryRun {
+		return nil, nil
+	}
+
+	if addUniqueOnly && app.Service.CommandExists(command) {
+		return nil, nil
+	}
+
+	return app.Service.AddHistory(
+		command,
+		exitCode,
+		executedIn,
+		path,
+		session,
+	)
 }
 
-func (app App) EditHistory() {
+func (app App) EditHistory(
+	historyID int,
+	exitCode *int,
+	executedIn *int,
+	path *string,
+	session *string,
+) (*model.History, error) {
+	return app.Service.EditHistory(
+		historyID,
+		exitCode,
+		executedIn,
+		path,
+		session,
+	)
 }
 
 func (app App) DeleteHistory() {
 }
 
-func applyPathFilter(
-	filters []config.FilterMode,
-) string {
+func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
+	records, err := app.Service.GetAllCommands()
+	if err != nil {
+		return err
+	}
+
+	for _, record := range records {
+		if !utils.MatchesExclusionPatterns(record.Command, app.config.Db.ExcludeCommands) {
+			continue
+		}
+
+		app.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
+
+		if dryRun || verboseMode {
+			fmt.Println(record.Command)
+		}
+
+		if dryRun {
+			continue
+		}
+
+		err := app.Service.DeleteCommand(&record)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func applyPathFilter(filters []config.FilterMode) string {
 	if slices.Contains(filters, config.WorkdirFilter) ||
 		slices.Contains(filters, config.WorkdirSessionFilter) {
 		if p, err := os.Getwd(); err == nil {
@@ -84,7 +224,7 @@ func applySessionFilter(
 	return ""
 }
 
-func applyExitCodeFilter(filters []config.FilterMode) int {
+func applySuccessFilter(filters []config.FilterMode) int {
 	if slices.Contains(filters, config.SuccessFilter) {
 		return 0
 	}

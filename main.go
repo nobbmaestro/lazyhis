@@ -57,21 +57,18 @@ func main() {
 			PathRepo:    repository.NewPathRepository(database),
 			SessionRepo: repository.NewSessionRepository(database),
 		},
-		&cfg.Db,
-		logger.Logger,
 	)
 
 	app := app.NewApp(
 		app.WithService(historyService),
-		// app.WithPersitentFilters(cfg.Gui.PersistentFilterModes),
+		app.WithLogger(logger.Logger),
+		app.WithConfig(cfg),
 	)
 
 	reg := registry.NewRegistry(
 		registry.WithApp(&app),
 		registry.WithConfig(cfg),
 		registry.WithConfigPath(confPath),
-		registry.WithLogger(logger.Logger),
-		registry.WithService(historyService), // FIXME: Remove this?...
 	)
 
 	cmd.SetContext(reg.Context)

@@ -32,7 +32,7 @@ func runImport(cmd *cobra.Command, args []string) error {
 
 func importZshHistfile(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	svc := reg.GetService()
+	app := reg.GetApp()
 
 	file, err := os.Open(args[0])
 	if err != nil {
@@ -47,7 +47,7 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 			continue
 		}
 
-		_, err = svc.AddHistoryIfUnique(
+		_, err = app.AddHistory(
 			command,
 			nil,
 			nil,
@@ -55,6 +55,7 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 			nil,
 			historyImportFlags.dryRun,
 			historyImportFlags.verbose,
+			true,
 		)
 		if err != nil {
 			continue

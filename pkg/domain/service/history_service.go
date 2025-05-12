@@ -2,14 +2,10 @@ package service
 
 import (
 	"errors"
-	"fmt"
-	"log/slog"
 	"strings"
 
-	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/repository"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type RepositoryProvider struct {
@@ -20,21 +16,13 @@ type RepositoryProvider struct {
 }
 
 type HistoryService struct {
-	repos  *RepositoryProvider
-	config *config.DbConfig
-	logger *slog.Logger
+	repos *RepositoryProvider
 }
 
 func NewHistoryService(
 	repos *RepositoryProvider,
-	config *config.DbConfig,
-	logger *slog.Logger,
 ) *HistoryService {
-	return &HistoryService{
-		repos:  repos,
-		config: config,
-		logger: logger,
-	}
+	return &HistoryService{repos: repos}
 }
 
 func (s *HistoryService) SearchHistory(
@@ -56,34 +44,9 @@ func (s *HistoryService) SearchHistory(
 		unique,
 	)
 	if err != nil {
-		s.logger.Error(err.Error())
 		return nil, err
 	}
 	return results, nil
-}
-
-func (s *HistoryService) AddHistoryIfUnique(
-	command []string,
-	exitCode *int,
-	executedIn *int,
-	path *string,
-	session *string,
-	dryRun bool,
-	verbose bool,
-) (*model.History, error) {
-	if s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")}) {
-		return nil, nil
-	}
-
-	return s.AddHistory(
-		command,
-		exitCode,
-		executedIn,
-		path,
-		session,
-		dryRun,
-		verbose,
-	)
 }
 
 func (s *HistoryService) AddHistory(
@@ -92,32 +55,12 @@ func (s *HistoryService) AddHistory(
 	executedIn *int,
 	path *string,
 	session *string,
-	dryRun bool,
-	verbose bool,
 ) (*model.History, error) {
 	var (
 		commandID *uint
 		pathID    *uint
 		sessionID *uint
 	)
-
-	if utils.IsExcludedCommand(
-		command,
-		s.config.ExcludePrefix,
-		s.config.ExcludeCommands,
-	) {
-		return nil, nil
-	}
-
-	s.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
-
-	if verbose || dryRun {
-		fmt.Println(strings.Join(command, " "))
-	}
-
-	if dryRun {
-		return nil, nil
-	}
 
 	commandRecord, err := s.AddCommand(command)
 	if err != nil {
@@ -197,31 +140,9 @@ func (s *HistoryService) EditHistory(
 	return s.repos.HistoryRepo.Update(history)
 }
 
-func (s *HistoryService) PruneHistory(dryRun bool, verboseMode bool) error {
-	records, err := s.GetAllCommands()
-	if err != nil {
-		return err
-	}
-
-	for _, record := range records {
-		if !utils.MatchesExclusionPatterns(record.Command, s.config.ExcludeCommands) {
-			continue
-		}
-
-		s.logger.Debug("Prune", "dry", dryRun, "command", record.Command)
-
-		if dryRun || verboseMode {
-			fmt.Println(record.Command)
-		}
-
-		if !dryRun {
-			_, err := s.repos.CommandRepo.Delete(&record)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+func (s *HistoryService) DeleteCommand(record *model.Command) error {
+	_, err := s.repos.CommandRepo.Delete(record)
+	return err
 }
 
 func (s *HistoryService) AddCommand(command []string) (*model.Command, error) {
@@ -265,4 +186,8 @@ func (s *HistoryService) GetAllPaths() ([]model.Path, error) {
 
 func (s *HistoryService) GetLastHistory() (model.History, error) {
 	return s.repos.HistoryRepo.GetLast()
+}
+
+func (s HistoryService) CommandExists(command []string) bool {
+	return s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")})
 }

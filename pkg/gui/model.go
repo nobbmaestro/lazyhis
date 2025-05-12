@@ -112,5 +112,5 @@ func WithFormatter(fmt formatters.Formatter) Option {
 }
 
 func (m Model) doSearchHistory(query []string, filters []config.FilterMode) []model.History {
-	return m.app.SearchHistory(query, append(filters, m.cfg.PersistentFilterModes...))
+	return m.app.SearchHistoryWithFilters(query, append(filters, m.cfg.PersistentFilterModes...))
 }
