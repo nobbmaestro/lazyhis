@@ -3,10 +3,8 @@ package history
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -21,19 +19,11 @@ var historyAddCmd = &cobra.Command{
 
 func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	cfg := reg.GetConfig()
 	app := reg.GetApp()
 
 	if historyAddOpts.path == "" {
 		if currentPath, err := os.Getwd(); err == nil {
 			historyAddOpts.path = currentPath
-		}
-	}
-
-	if historyAddOpts.session == "" {
-		cmd := strings.Fields(cfg.Os.FetchCurrentSessionCmd)
-		if currentSession, err := utils.RunCommand(cmd); err == nil {
-			historyAddOpts.session = currentSession
 		}
 	}
 

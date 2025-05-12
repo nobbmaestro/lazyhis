@@ -14,10 +14,9 @@ import (
 )
 
 type App struct {
-	Service    *service.HistoryService
-	sessionCmd string
-	config     *config.UserConfig
-	logger     *slog.Logger
+	Service *service.HistoryService
+	config  *config.UserConfig
+	logger  *slog.Logger
 }
 
 type Option func(*App)
@@ -100,7 +99,7 @@ func (app App) SearchHistoryWithFilters(
 		keywords,
 		applySuccessFilter(filters),
 		applyPathFilter(filters),
-		applySessionFilter(filters, app.sessionCmd),
+		applySessionFilter(filters, app.config.Os.FetchCurrentSessionCmd),
 		-1, //maxNumSearchResults
 		-1, //offsetSearchResults
 		applyUniqueCommandFilter(filters),
@@ -142,6 +141,13 @@ func (app App) AddHistory(
 
 	if addUniqueOnly && app.Service.CommandExists(command) {
 		return nil, nil
+	}
+
+	if *session == "" {
+		cmd := strings.Fields(app.config.Os.FetchCurrentSessionCmd)
+		if currentSession, err := utils.RunCommand(cmd); err == nil {
+			*session = currentSession
+		}
 	}
 
 	return app.Service.AddHistory(
