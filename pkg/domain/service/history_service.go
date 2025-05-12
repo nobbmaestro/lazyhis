@@ -189,5 +189,7 @@ func (s *HistoryService) GetLastHistory() (model.History, error) {
 }
 
 func (s HistoryService) CommandExists(command []string) bool {
-	return s.repos.CommandRepo.Exists(&model.Command{Command: strings.Join(command, " ")})
+	return s.repos.CommandRepo.Exists(
+		&model.Command{Command: strings.Join(command, " ")},
+	)
 }

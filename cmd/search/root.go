@@ -3,6 +3,7 @@ package search
 import (
 	"fmt"
 
+	appopts "github.com/nobbmaestro/lazyhis/pkg/app"
 	"github.com/nobbmaestro/lazyhis/pkg/formatters"
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
@@ -51,14 +52,13 @@ func runSearch(cmd *cobra.Command, args []string) error {
 	app := reg.GetApp()
 
 	records := app.SearchHistory(
-		args,
-		searchOpts.exitCode,
-		searchOpts.path,
-		searchOpts.session,
-		-1,
-		searchOpts.maxNumSearchResults,
-		searchOpts.offsetSearchResults,
-		searchOpts.uniqueSearchResults,
+		appopts.WithQuery(args),
+		appopts.WithPath(searchOpts.path),
+		appopts.WithSession(searchOpts.session),
+		appopts.WithExitCode(searchOpts.exitCode),
+		appopts.WithMaxNumSearchResults(searchOpts.maxNumSearchResults),
+		appopts.WithOffsetSearchResults(searchOpts.offsetSearchResults),
+		appopts.WithUniqueSearchResults(searchOpts.uniqueSearchResults),
 	)
 
 	formatter := formatters.NewFormatter(

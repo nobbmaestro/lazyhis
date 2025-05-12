@@ -3,8 +3,6 @@ package app
 import (
 	"fmt"
 	"log/slog"
-	"os"
-	"slices"
 	"strings"
 
 	"github.com/nobbmaestro/lazyhis/pkg/config"
@@ -20,22 +18,6 @@ type App struct {
 }
 
 type Option func(*App)
-
-type Params struct {
-	Command    []string
-	ExitCode   int
-	Path       string
-	Session    string
-	ExecutedIn int
-
-	MaxNumSearchResults int
-	OffsetSearchResults int
-	UniqueSearchResults bool
-	AddUniqueOnly       bool
-
-	DryRun  bool
-	Verbose bool
-}
 
 func NewApp(opts ...Option) App {
 	app := App{}
@@ -65,44 +47,26 @@ func WithConfig(config *config.UserConfig) Option {
 	}
 }
 
-func (app App) SearchHistory(
-	keywords []string,
-	exitCode int,
-	path string,
-	session string,
-	executedIn int,
-	maxNumSearchResults int,
-	offsetSearchResults int,
-	uniqueSearchResults bool,
-) []model.History {
-	records, err := app.Service.SearchHistory(
-		keywords,
-		exitCode,
-		path,
-		session,
-		maxNumSearchResults,
-		offsetSearchResults,
-		uniqueSearchResults,
-	)
-	if err != nil {
-		app.logger.Error(err.Error())
-		return []model.History{}
-	}
-	return records
-}
+func (app App) SearchHistory(opts ...HistoryOption) []model.History {
+	historyOpts := defaultHistoryOptions()
 
-func (app App) SearchHistoryWithFilters(
-	keywords []string,
-	filters []config.FilterMode,
-) []model.History {
+	for _, opt := range opts {
+		opt(&historyOpts)
+	}
+
+	applyFilters(
+		&historyOpts,
+		app.config.Os.FetchCurrentSessionCmd,
+	)
+
 	records, err := app.Service.SearchHistory(
-		keywords,
-		applySuccessFilter(filters),
-		applyPathFilter(filters),
-		applySessionFilter(filters, app.config.Os.FetchCurrentSessionCmd),
-		-1, //maxNumSearchResults
-		-1, //offsetSearchResults
-		applyUniqueCommandFilter(filters),
+		historyOpts.Command,
+		*historyOpts.ExitCode,
+		*historyOpts.Path,
+		*historyOpts.Session,
+		*historyOpts.MaxNumSearchResults,
+		*historyOpts.OffsetSearchResults,
+		*historyOpts.UniqueSearchResults,
 	)
 	if err != nil {
 		app.logger.Error(err.Error())
@@ -112,70 +76,75 @@ func (app App) SearchHistoryWithFilters(
 }
 
 func (app App) AddHistory(
-	command []string,
-	exitCode *int,
-	executedIn *int,
-	path *string,
-	session *string,
 	dryRun bool,
 	verbose bool,
 	addUniqueOnly bool,
+	opts ...HistoryOption,
 ) (*model.History, error) {
+	historyOpts := HistoryOptions{}
+
+	for _, opt := range opts {
+		opt(&historyOpts)
+	}
+
 	if utils.IsExcludedCommand(
-		command,
+		historyOpts.Command,
 		app.config.Db.ExcludePrefix,
 		app.config.Db.ExcludeCommands,
 	) {
 		return nil, nil
 	}
 
-	app.logger.Debug("Add", "dry", dryRun, "command", strings.Join(command, " "))
+	if addUniqueOnly && app.Service.CommandExists(historyOpts.Command) {
+		return nil, nil
+	}
+
+	app.logger.Debug(
+		"Add",
+		"dry",
+		dryRun,
+		"command",
+		strings.Join(historyOpts.Command, " "),
+	)
 
 	if verbose || dryRun {
-		fmt.Println(strings.Join(command, " "))
+		fmt.Println(strings.Join(historyOpts.Command, " "))
 	}
 
 	if dryRun {
 		return nil, nil
 	}
 
-	if addUniqueOnly && app.Service.CommandExists(command) {
-		return nil, nil
-	}
-
-	if *session == "" {
-		cmd := strings.Fields(app.config.Os.FetchCurrentSessionCmd)
-		if currentSession, err := utils.RunCommand(cmd); err == nil {
-			*session = currentSession
-		}
+	if historyOpts.Session != nil && *historyOpts.Session == "" {
+		*historyOpts.Session = app.GetCurrentSession()
 	}
 
 	return app.Service.AddHistory(
-		command,
-		exitCode,
-		executedIn,
-		path,
-		session,
+		historyOpts.Command,
+		historyOpts.ExitCode,
+		historyOpts.ExecutedIn,
+		historyOpts.Path,
+		historyOpts.Session,
 	)
 }
 
 func (app App) EditHistory(
 	historyID int,
-	exitCode *int,
-	executedIn *int,
-	path *string,
-	session *string,
+	opts ...HistoryOption,
 ) (*model.History, error) {
+	historyOpts := defaultHistoryOptions()
+
+	for _, opt := range opts {
+		opt(&historyOpts)
+	}
+
 	return app.Service.EditHistory(
 		historyID,
-		exitCode,
-		executedIn,
-		path,
-		session,
+		historyOpts.ExitCode,
+		historyOpts.ExecutedIn,
+		historyOpts.Path,
+		historyOpts.Session,
 	)
-}
-
-func (app App) DeleteHistory() {
 }
 
 func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
@@ -185,7 +154,10 @@ func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
 	}
 
 	for _, record := range records {
-		if !utils.MatchesExclusionPatterns(record.Command, app.config.Db.ExcludeCommands) {
+		if !utils.MatchesExclusionPatterns(
+			record.Command,
+			app.config.Db.ExcludeCommands,
+		) {
 			continue
 		}
 
@@ -207,39 +179,13 @@ func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
 	return nil
 }
 
-func applyPathFilter(filters []config.FilterMode) string {
-	if slices.Contains(filters, config.WorkdirFilter) ||
-		slices.Contains(filters, config.WorkdirSessionFilter) {
-		if p, err := os.Getwd(); err == nil {
-			return p
-		}
+func (app App) DeleteHistory() {
+}
+
+func (app App) GetCurrentSession() string {
+	cmd := strings.Fields(app.config.Os.FetchCurrentSessionCmd)
+	if currentSession, err := utils.RunCommand(cmd); err == nil {
+		return currentSession
 	}
 	return ""
-}
-
-func applySessionFilter(
-	filters []config.FilterMode,
-	sessionCmd string,
-) string {
-	if slices.Contains(filters, config.WorkdirSessionFilter) ||
-		slices.Contains(filters, config.SessionFilter) {
-		if s, err := utils.RunCommand(strings.Split(sessionCmd, " ")); err == nil {
-			return s
-		}
-	}
-	return ""
-}
-
-func applySuccessFilter(filters []config.FilterMode) int {
-	if slices.Contains(filters, config.SuccessFilter) {
-		return 0
-	}
-	return -1
-}
-
-func applyUniqueCommandFilter(filters []config.FilterMode) bool {
-	if slices.Contains(filters, config.UniqueFilter) {
-		return true
-	}
-	return false
 }

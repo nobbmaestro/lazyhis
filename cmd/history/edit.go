@@ -3,6 +3,8 @@ package history
 import (
 	"strconv"
 
+	appopts "github.com/nobbmaestro/lazyhis/pkg/app"
+
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
@@ -47,10 +49,10 @@ func runHistoryEdit(cmd *cobra.Command, args []string) error {
 
 	_, err = app.EditHistory(
 		historyID,
-		exitCode,
-		executedIn,
-		path,
-		session,
+		appopts.WithExitCode(*exitCode),
+		appopts.WithExecutedIn(*executedIn),
+		appopts.WithPath(*path),
+		appopts.WithSession(*session),
 	)
 	if err != nil {
 		return err

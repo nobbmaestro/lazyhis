@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	appopts "github.com/nobbmaestro/lazyhis/pkg/app"
+
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
 	"github.com/spf13/cobra"
 )
@@ -28,14 +30,14 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	}
 
 	record, err := app.AddHistory(
-		args,
-		&historyAddOpts.exitCode,
-		&historyAddOpts.executedIn,
-		&historyAddOpts.path,
-		&historyAddOpts.session,
 		false, // dryRun
 		false, // verbose
 		false, // addUniqueOnly
+		appopts.WithQuery(args),
+		appopts.WithPath(historyAddOpts.path),
+		appopts.WithSession(historyAddOpts.session),
+		appopts.WithExitCode(historyAddOpts.exitCode),
+		appopts.WithExecutedIn(historyAddOpts.executedIn),
 	)
 	if err != nil {
 		return err
