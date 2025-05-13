@@ -38,7 +38,7 @@ type Model struct {
 
 	version      string
 	initialQuery []string
-	UserAction   Action
+	ExitCode     ExitCode
 }
 
 func (m Model) Init() tea.Cmd {
@@ -48,7 +48,7 @@ func (m Model) Init() tea.Cmd {
 func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	m := Model{
 		SelectedRecord: model.History{},
-		UserAction:     ActionNone,
+		ExitCode:       ExitNone,
 		height:         10,
 		width:          100,
 		app:            app,

@@ -9,20 +9,12 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
 )
 
-type Action int
+type ExitCode int
 
 const (
-	ActionNone Action = iota
-	ActionAcceptSelected
-	ActionPrefillSelected
-	ActionQuit
-	ActionMoveDown
-	ActionMoveUp
-	ActionJumpDown
-	ActionJumpUp
-	ActionNextFilter
-	ActionPrevFilter
-	ActionShowHelp
+	ExitNone ExitCode = iota
+	ExitAcceptSelected
+	ExitPrefillSelected
 )
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -103,19 +95,17 @@ func (m *Model) onUserActionPrevFilter() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionAcceptSelected() (tea.Model, tea.Cmd) {
-	m.setUserAction(ActionAcceptSelected)
 	m.setSelectedRecord()
-	return m, tea.Quit
+	return m.quit(ExitAcceptSelected)
 }
 
 func (m *Model) onUserActionPrefillSelected() (tea.Model, tea.Cmd) {
-	m.setUserAction(ActionPrefillSelected)
 	m.setSelectedRecord()
-	return m, tea.Quit
+	return m.quit(ExitPrefillSelected)
 }
 
 func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
-	return m, tea.Quit
+	return m.quit(ExitNone)
 }
 
 func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
@@ -146,6 +136,7 @@ func (m *Model) setSelectedRecord() {
 	}
 }
 
-func (m *Model) setUserAction(action Action) {
-	m.UserAction = action
+func (m *Model) quit(exitCode ExitCode) (tea.Model, tea.Cmd) {
+	m.ExitCode = exitCode
+	return m, tea.Quit
 }

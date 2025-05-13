@@ -101,10 +101,10 @@ func runHistoryGui(
 
 	if model, ok := result.(*gui.Model); ok && model.SelectedRecord.Command != nil {
 		command := model.SelectedRecord.Command.Command
-		switch model.UserAction {
-		case gui.ActionAcceptSelected:
+		switch model.ExitCode {
+		case gui.ExitAcceptSelected:
 			fmt.Fprintf(os.Stderr, "__lazyhis_accept__:%s\n", command)
-		case gui.ActionPrefillSelected:
+		case gui.ExitPrefillSelected:
 			fmt.Fprintf(os.Stderr, "__lazyhis_prefill__:%s\n", command)
 		}
 	}
