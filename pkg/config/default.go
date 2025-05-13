@@ -36,6 +36,18 @@ func GetDefaultUserConfig() *UserConfig {
 				TableLabelsFgColor: "7",
 				VersionFgColor:     "6",
 			},
+			KeyMap: GuiKeyMap{
+				AcceptSelected:  []string{"enter"},
+				PrefillSelected: []string{"ctrl+o"},
+				NextFilter:      []string{"tab"},
+				PrevFilter:      []string{"shift+tab"},
+				JumpDown:        []string{"ctrl+d"},
+				JumpUp:          []string{"ctrl+u"},
+				MoveDown:        []string{"ctrl+n", "down"},
+				MoveUp:          []string{"ctrl+p", "up"},
+				Quit:            []string{"ctrl+q", "ctrl+c", "esc"},
+				ShowHelp:        []string{"?"},
+			},
 		},
 		Os: OsConfig{
 			FetchCurrentSessionCmd: "tmux display-message -p '#S'",

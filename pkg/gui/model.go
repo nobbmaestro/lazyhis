@@ -34,6 +34,7 @@ type Model struct {
 	input  hisquery.Model
 	help   help.Model
 	filter hisfilter.Model
+	keys   keyMap
 
 	version      string
 	initialQuery []string
@@ -68,6 +69,8 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 		hisquery.WithValue(strings.Join(m.initialQuery, " ")),
 		hisquery.WithStyles(hisquery.NewStyles(m.cfg.Theme)),
 	)
+
+	m.keys = createKeyMap(cfg.KeyMap)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
 	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
