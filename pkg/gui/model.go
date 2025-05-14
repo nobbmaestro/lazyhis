@@ -70,7 +70,7 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 		hisquery.WithStyles(hisquery.NewStyles(m.cfg.Theme)),
 	)
 
-	m.keys = createKeyMap(cfg.KeyMap)
+	m.keys = createKeyMap(cfg.Keys)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
 	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)

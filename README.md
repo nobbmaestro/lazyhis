@@ -94,9 +94,9 @@ lazyhis history import --zsh /path/to/histfile
 - [x] Customizable GUI theme
 - [x] Customizable command exclusion by patterns
 - [x] Customizable command exclusion by prefix
-- [ ] Customizable keybindings
-- [ ] Delete history entries via GUI
-- [ ] Delete selected history entries via GUI
+- [x] Customizable keybindings
+- [x] Delete history entries via GUI
+- [ ] Delete multiple history entries via GUI
 - [ ] Edit history entries via GUI
 - [x] Filter history by context via GUI
 - [ ] Fuzzy-finder search strategy in GUI

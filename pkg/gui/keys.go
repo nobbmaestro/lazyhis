@@ -11,6 +11,7 @@ import (
 type keyMap struct {
 	ActionAcceptSelected  key.Binding
 	ActionPrefillSelected key.Binding
+	ActionDeleteSelected  key.Binding
 	ActionNextFilter      key.Binding
 	ActionPrevFilter      key.Binding
 	ActionJumpDown        key.Binding
@@ -21,7 +22,7 @@ type keyMap struct {
 	ActionShowHelp        key.Binding
 }
 
-func createKeyMap(keys config.GuiKeyMap) keyMap {
+func createKeyMap(keys config.GuiKeys) keyMap {
 	return keyMap{
 		ActionMoveUp: key.NewBinding(
 			key.WithKeys(keys.MoveUp...),
@@ -46,6 +47,10 @@ func createKeyMap(keys config.GuiKeyMap) keyMap {
 		ActionPrefillSelected: key.NewBinding(
 			key.WithKeys(keys.PrefillSelected...),
 			key.WithHelp(prettyKey(keys.PrefillSelected), "prefill"),
+		),
+		ActionDeleteSelected: key.NewBinding(
+			key.WithKeys(keys.DeleteSelected...),
+			key.WithHelp(prettyKey(keys.DeleteSelected), "delete"),
 		),
 		ActionQuit: key.NewBinding(
 			key.WithKeys(keys.Quit...),
@@ -82,6 +87,7 @@ func (k keyMap) FullHelp() [][]key.Binding {
 		{k.ActionMoveUp, k.ActionMoveDown},
 		{k.ActionJumpDown, k.ActionJumpUp},
 		{k.ActionShowHelp, k.ActionQuit},
+		{k.ActionDeleteSelected},
 	}
 }
 

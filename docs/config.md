@@ -50,6 +50,36 @@ gui:
     helpFgColor: "7"
     versionFgColor: "6"
 
+  # Gui keys
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/keybindings.md
+  keys:
+    acceptSelected:
+      - enter
+    prefillSelected:
+      - ctrl+o
+    deleteSelected:
+      - ctrl+x
+    nextFilter:
+      - tab
+    prevFilter:
+      - shift+tab
+    jumpDown:
+      - ctrl+d
+    jumpUp:
+      - ctrl+u
+    moveDown:
+      - ctrl+n
+      - down
+    moveUp:
+      - ctrl+p
+      - up
+    quit:
+      - ctrl+q
+      - ctrl+c
+      - esc
+    showHelp:
+      - "?"
+
 # Config relating to things outside of LazyHis like how sessions are obtain etc
 os:
   # Command for retrieving current session

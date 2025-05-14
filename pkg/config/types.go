@@ -52,8 +52,8 @@ type GuiConfig struct {
 	PersistentFilterModes []FilterMode `yaml:"persistentFilterModes"`
 	// Gui Theme
 	Theme GuiTheme `yaml:"theme"`
-	// Gui KeyMap
-	KeyMap GuiKeyMap `yaml:"keyMap"`
+	// Gui Keys
+	Keys GuiKeys `yaml:"keys"`
 }
 
 type DbConfig struct {
@@ -93,9 +93,10 @@ type GuiTheme struct {
 	VersionFgColor  string `yaml:"versionFgColor"`
 }
 
-type GuiKeyMap struct {
+type GuiKeys struct {
 	AcceptSelected  []string `yaml:"acceptSelected"`
 	PrefillSelected []string `yaml:"prefillSelected"`
+	DeleteSelected  []string `yaml:"deleteSelected"`
 	NextFilter      []string `yaml:"nextFilter"`
 	PrevFilter      []string `yaml:"prevFilter"`
 	JumpDown        []string `yaml:"jumpDown"`

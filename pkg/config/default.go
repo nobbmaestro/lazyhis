@@ -36,9 +36,10 @@ func GetDefaultUserConfig() *UserConfig {
 				TableLabelsFgColor: "7",
 				VersionFgColor:     "6",
 			},
-			KeyMap: GuiKeyMap{
+			Keys: GuiKeys{
 				AcceptSelected:  []string{"enter"},
 				PrefillSelected: []string{"ctrl+o"},
+				DeleteSelected:  []string{"ctrl+x"},
 				NextFilter:      []string{"tab"},
 				PrevFilter:      []string{"shift+tab"},
 				JumpDown:        []string{"ctrl+d"},

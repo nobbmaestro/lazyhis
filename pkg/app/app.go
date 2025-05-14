@@ -179,7 +179,9 @@ func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
 	return nil
 }
 
-func (app App) DeleteHistory() {
+func (app App) DeleteHistory(record *model.History) error {
+	app.logger.Debug("Delete", "command", record.Command)
+	return app.Service.DeleteCommand(record.Command)
 }
 
 func (app App) GetCurrentSession() string {

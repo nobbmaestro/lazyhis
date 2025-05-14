@@ -18,6 +18,8 @@ const (
 )
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	m.setSelectedRecord()
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		return m.onKeyMsg(msg)
@@ -35,6 +37,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onUserActionAcceptSelected()
 	case key.Matches(msg, m.keys.ActionPrefillSelected):
 		return m.onUserActionPrefillSelected()
+	case key.Matches(msg, m.keys.ActionDeleteSelected):
+		return m.onUserActionDeleteSelected()
 	case key.Matches(msg, m.keys.ActionMoveDown):
 		return m.onUserActionMoveDown()
 	case key.Matches(msg, m.keys.ActionMoveUp):
@@ -95,13 +99,18 @@ func (m *Model) onUserActionPrevFilter() (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) onUserActionAcceptSelected() (tea.Model, tea.Cmd) {
-	m.setSelectedRecord()
 	return m.quit(ExitAcceptSelected)
 }
 
 func (m *Model) onUserActionPrefillSelected() (tea.Model, tea.Cmd) {
-	m.setSelectedRecord()
 	return m.quit(ExitPrefillSelected)
+}
+
+func (m *Model) onUserActionDeleteSelected() (tea.Model, tea.Cmd) {
+	if err := m.app.DeleteHistory(&m.SelectedRecord); err == nil {
+		m.updateTableContent()
+	}
+	return m, nil
 }
 
 func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
