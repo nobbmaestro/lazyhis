@@ -4,14 +4,14 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/nobbmaestro/lazyhis/pkg/app"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/domain/service"
 )
 
 type ContextKey int
 
 const (
-	ServiceKey ContextKey = iota
+	AppKey ContextKey = iota
 	ConfigKey
 	ConfigPathKey
 	LoggerKey
@@ -37,9 +37,9 @@ func WithContext(context context.Context) Option {
 	}
 }
 
-func WithService(historyService *service.HistoryService) Option {
+func WithApp(app *app.App) Option {
 	return func(r *Registry) {
-		r.Context = context.WithValue(r.Context, ServiceKey, historyService)
+		r.Context = context.WithValue(r.Context, AppKey, app)
 	}
 }
 
@@ -61,8 +61,8 @@ func WithLogger(logger *slog.Logger) Option {
 	}
 }
 
-func (r Registry) GetService() *service.HistoryService {
-	if val, ok := r.Context.Value(ServiceKey).(*service.HistoryService); ok {
+func (r Registry) GetApp() *app.App {
+	if val, ok := r.Context.Value(AppKey).(*app.App); ok {
 		return val
 	}
 	return nil

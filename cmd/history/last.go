@@ -15,9 +15,9 @@ var historyLastCmd = &cobra.Command{
 
 func runHistoryLast(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	svc := reg.GetService()
+	app := reg.GetApp()
 
-	record, err := svc.GetLastHistory()
+	record, err := app.Service.GetLastHistory()
 	if err != nil {
 		return err
 	}

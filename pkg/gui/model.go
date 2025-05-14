@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/nobbmaestro/lazyhis/pkg/app"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/formatters"
@@ -14,12 +15,14 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
-type QueryHistoryCallback func(query []string, mode config.FilterMode) []model.History
+type QueryHistoryCallback func(query []string, filters []config.FilterMode) []model.History
 
 type Option func(*Model)
 
 type Model struct {
-	cfg            config.GuiConfig
+	app *app.App
+	cfg *config.GuiConfig
+
 	records        []model.History
 	SelectedRecord model.History
 	formatter      formatters.Formatter
@@ -31,24 +34,24 @@ type Model struct {
 	input  hisquery.Model
 	help   help.Model
 	filter hisfilter.Model
+	keys   keyMap
 
 	version      string
 	initialQuery []string
-	queryHistory QueryHistoryCallback
-	UserAction   Action
+	ExitCode     ExitCode
 }
 
 func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model {
+func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	m := Model{
 		SelectedRecord: model.History{},
-		UserAction:     ActionNone,
+		ExitCode:       ExitNone,
 		height:         10,
 		width:          100,
-		queryHistory:   cb,
+		app:            app,
 		cfg:            cfg,
 	}
 
@@ -56,9 +59,9 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 		opt(&m)
 	}
 
-	m.records = m.queryHistory(
+	m.records = m.doSearchHistory(
 		m.initialQuery,
-		utils.SafeIndex(m.cfg.CyclicFilterModes, 0),
+		[]config.FilterMode{utils.SafeIndex(m.cfg.CyclicFilterModes, 0)},
 	)
 
 	m.input = hisquery.New(
@@ -66,6 +69,8 @@ func NewGui(cb QueryHistoryCallback, cfg config.GuiConfig, opts ...Option) Model
 		hisquery.WithValue(strings.Join(m.initialQuery, " ")),
 		hisquery.WithStyles(hisquery.NewStyles(m.cfg.Theme)),
 	)
+
+	m.keys = createKeyMap(cfg.Keys)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
 	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
@@ -107,4 +112,14 @@ func WithFormatter(fmt formatters.Formatter) Option {
 	return func(m *Model) {
 		m.formatter = fmt
 	}
+}
+
+func (m Model) doSearchHistory(
+	query []string,
+	filters []config.FilterMode,
+) []model.History {
+	return m.app.SearchHistory(
+		app.WithQuery(query),
+		app.WithFilters(append(filters, m.cfg.PersistentFilterModes...)),
+	)
 }

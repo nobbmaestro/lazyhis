@@ -15,9 +15,9 @@ var historyPruneCmd = &cobra.Command{
 
 func runHistoryPrune(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	svc := reg.GetService()
+	app := reg.GetApp()
 
-	err := svc.PruneHistory(
+	err := app.PruneHistory(
 		historyPruneFlags.dryRun,
 		historyPruneFlags.verbose,
 	)

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/cmd"
+	"github.com/nobbmaestro/lazyhis/pkg/app"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/db"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
@@ -56,15 +57,18 @@ func main() {
 			PathRepo:    repository.NewPathRepository(database),
 			SessionRepo: repository.NewSessionRepository(database),
 		},
-		&cfg.Db,
-		logger.Logger,
+	)
+
+	app := app.NewApp(
+		app.WithService(historyService),
+		app.WithLogger(logger.Logger),
+		app.WithConfig(cfg),
 	)
 
 	reg := registry.NewRegistry(
+		registry.WithApp(&app),
 		registry.WithConfig(cfg),
 		registry.WithConfigPath(confPath),
-		registry.WithLogger(logger.Logger),
-		registry.WithService(historyService),
 	)
 
 	cmd.SetContext(reg.Context)

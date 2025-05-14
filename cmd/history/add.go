@@ -3,10 +3,10 @@ package history
 import (
 	"fmt"
 	"os"
-	"strings"
+
+	appopts "github.com/nobbmaestro/lazyhis/pkg/app"
 
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
-	"github.com/nobbmaestro/lazyhis/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -21,8 +21,7 @@ var historyAddCmd = &cobra.Command{
 
 func runHistoryAdd(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
-	cfg := reg.GetConfig()
-	svc := reg.GetService()
+	app := reg.GetApp()
 
 	if historyAddOpts.path == "" {
 		if currentPath, err := os.Getwd(); err == nil {
@@ -30,21 +29,15 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if historyAddOpts.session == "" {
-		cmd := strings.Fields(cfg.Os.FetchCurrentSessionCmd)
-		if currentSession, err := utils.RunCommand(cmd); err == nil {
-			historyAddOpts.session = currentSession
-		}
-	}
-
-	record, err := svc.AddHistory(
-		args,
-		&historyAddOpts.exitCode,
-		&historyAddOpts.executedIn,
-		&historyAddOpts.path,
-		&historyAddOpts.session,
+	record, err := app.AddHistory(
 		false, // dryRun
 		false, // verbose
+		false, // addUniqueOnly
+		appopts.WithQuery(args),
+		appopts.WithPath(historyAddOpts.path),
+		appopts.WithSession(historyAddOpts.session),
+		appopts.WithExitCode(historyAddOpts.exitCode),
+		appopts.WithExecutedIn(historyAddOpts.executedIn),
 	)
 	if err != nil {
 		return err
