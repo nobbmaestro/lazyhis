@@ -6,6 +6,11 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const (
+	BorderPadding = 2
+	BottomPadding = 5
+)
+
 func (m Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left,
 		m.renderTable(),
@@ -15,11 +20,9 @@ func (m Model) View() string {
 }
 
 func (m *Model) renderTable() string {
-	borderPadding := 2
-	bottomPadding := 5
 
-	m.table.SetWidth(m.width - borderPadding)
-	m.table.SetHeight(m.height - bottomPadding - borderPadding)
+	m.table.SetWidth(m.width - BorderPadding)
+	m.table.SetHeight(m.height - BottomPadding - BorderPadding)
 
 	return lipgloss.NewStyle().
 		PaddingBottom(1).
@@ -29,15 +32,13 @@ func (m *Model) renderTable() string {
 }
 
 func (m Model) renderInput() string {
-	borderPadding := 2
-
 	inputStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color(m.cfg.Theme.BorderColor))
 
 	return inputStyle.Render(
 		lipgloss.Place(
-			m.width-borderPadding,
+			m.width-BorderPadding,
 			1,
 			lipgloss.Left,
 			lipgloss.Bottom,
@@ -51,7 +52,7 @@ func (m Model) renderFooter() string {
 
 	help := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(m.width - versionWidth).
+		Width(m.width - versionWidth - BorderPadding).
 		Render(m.help.View(m.keys))
 
 	version := lipgloss.NewStyle().

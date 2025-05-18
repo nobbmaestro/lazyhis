@@ -24,8 +24,8 @@ var tableColumnWidth = map[config.Column]int{
 	config.ColumnExecutedIn: 10,
 	config.ColumnExitCode:   5,
 	config.ColumnID:         5,
-	config.ColumnPath:       50,
-	config.ColumnSession:    15,
+	config.ColumnPath:       25,
+	config.ColumnSession:    25,
 }
 
 type Model struct {
@@ -138,10 +138,12 @@ func calculateTableColumnWidth(
 
 	totalStaticWidth := 0
 	for _, column := range columns {
-		totalStaticWidth += tableColumnWidth[column]
+		if column != config.ColumnCommand {
+			totalStaticWidth += tableColumnWidth[column]
+		}
 	}
 
-	remainingWidth := totalWidth - totalStaticWidth - 5 + tableColumnWidth[config.ColumnCommand]
+	remainingWidth := totalWidth - totalStaticWidth - 4
 	remainingWidth = max(remainingWidth, 0)
 
 	for _, column := range columns {

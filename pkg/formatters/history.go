@@ -43,7 +43,7 @@ func DefaultGuiFormatOptions() FormatOptions {
 		ExecutedIn: func(i int) string { return utils.HumanizeDuration(int64(i)) },
 		ExitCode:   func(v int) string { return fmt.Sprintf("%3d", v) },
 		Id:         func(v uint) string { return strconv.FormatUint(uint64(v), 10) },
-		Path:       func(t string) string { return t },
+		Path:       func(t string) string { return utils.HumanizePath(t) },
 		Session:    func(t string) string { return t },
 	}
 }
