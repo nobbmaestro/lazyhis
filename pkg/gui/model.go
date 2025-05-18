@@ -49,8 +49,8 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	m := Model{
 		SelectedRecord: model.History{},
 		ExitCode:       ExitNone,
-		height:         10,
-		width:          100,
+		height:         1000,
+		width:          1000,
 		app:            app,
 		cfg:            cfg,
 	}
