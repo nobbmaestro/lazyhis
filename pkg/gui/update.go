@@ -140,7 +140,7 @@ func (m *Model) updateTableContent() {
 }
 
 func (m *Model) setSelectedRecord() {
-	if cursor := m.table.Cursor(); cursor < len(m.records) {
+	if cursor := m.table.Cursor(); cursor > 0 && cursor < len(m.records) {
 		m.SelectedRecord = m.records[cursor]
 	}
 }
