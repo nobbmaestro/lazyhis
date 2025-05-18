@@ -52,7 +52,7 @@ func (m Model) renderFooter() string {
 
 	help := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(m.width - versionWidth).
+		Width(m.width - versionWidth - BorderPadding).
 		Render(m.help.View(m.keys))
 
 	version := lipgloss.NewStyle().
