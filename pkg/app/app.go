@@ -15,6 +15,7 @@ type App struct {
 	service *service.HistoryService
 	config  *config.UserConfig
 	logger  *slog.Logger
+	version *string
 }
 
 type Option func(*App)
@@ -38,6 +39,12 @@ func WithService(service *service.HistoryService) Option {
 func WithLogger(logger *slog.Logger) Option {
 	return func(app *App) {
 		app.logger = logger
+	}
+}
+
+func WithVersion(version *string) Option {
+	return func(app *App) {
+		app.version = version
 	}
 }
 
@@ -194,4 +201,8 @@ func (app App) GetCurrentSession() string {
 
 func (app *App) GetService() *service.HistoryService {
 	return app.service
+}
+
+func (app *App) GetVersion() *string {
+	return app.version
 }

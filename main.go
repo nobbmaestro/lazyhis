@@ -63,6 +63,7 @@ func main() {
 		app.WithService(historyService),
 		app.WithLogger(logger.Logger),
 		app.WithConfig(cfg),
+		app.WithVersion(&version),
 	)
 
 	reg := registry.NewRegistry(

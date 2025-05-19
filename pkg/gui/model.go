@@ -36,7 +36,6 @@ type Model struct {
 	filter hisfilter.Model
 	keys   keyMap
 
-	version      string
 	initialQuery []string
 	ExitCode     ExitCode
 }
@@ -96,11 +95,6 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	return m
 }
 
-func WithVersion(ver string) Option {
-	return func(m *Model) {
-		m.version = ver
-	}
-}
 
 func WithInitialQuery(query []string) Option {
 	return func(m *Model) {
