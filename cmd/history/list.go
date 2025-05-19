@@ -17,7 +17,7 @@ func runHistoryList(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	app := reg.GetApp()
 
-	records, err := app.Service.GetAllHistory()
+	records, err := app.GetService().GetAllHistory()
 	if err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ func runHistoryLast(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	app := reg.GetApp()
 
-	record, err := app.Service.GetLastHistory()
+	record, err := app.GetService().GetLastHistory()
 	if err != nil {
 		return err
 	}
