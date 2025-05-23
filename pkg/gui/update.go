@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
+	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
 type ExitCode int
@@ -39,6 +40,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onUserActionPrefillSelected()
 	case key.Matches(msg, m.keys.ActionDeleteSelected):
 		return m.onUserActionDeleteSelected()
+	case key.Matches(msg, m.keys.ActionCopySelected):
+		return m.onUserActionCopySelected()
 	case key.Matches(msg, m.keys.ActionMoveDown):
 		return m.onUserActionMoveDown()
 	case key.Matches(msg, m.keys.ActionMoveUp):
@@ -110,6 +113,11 @@ func (m *Model) onUserActionDeleteSelected() (tea.Model, tea.Cmd) {
 	if err := m.app.DeleteHistory(&m.SelectedRecord); err == nil {
 		m.updateTableContent()
 	}
+	return m, nil
+}
+
+func (m *Model) onUserActionCopySelected() (tea.Model, tea.Cmd) {
+	utils.CopyToClipboard(m.SelectedRecord.Command.Command)
 	return m, nil
 }
 

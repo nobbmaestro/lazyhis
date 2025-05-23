@@ -40,6 +40,7 @@ func GetDefaultUserConfig() *UserConfig {
 				AcceptSelected:  []string{"enter"},
 				PrefillSelected: []string{"ctrl+o"},
 				DeleteSelected:  []string{"ctrl+x"},
+				CopySelected:    []string{"ctrl+y"},
 				NextFilter:      []string{"tab"},
 				PrevFilter:      []string{"shift+tab"},
 				JumpDown:        []string{"ctrl+d"},

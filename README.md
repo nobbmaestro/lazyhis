@@ -90,7 +90,7 @@ lazyhis history import --zsh /path/to/histfile
 - [x] Add prune CLI command for removing history based on ignore pattern
 - [x] Add dry flag for prune CLI command
 - [x] Add verbosity flag for prune and import CLI commands
-- [ ] Copy to clipboard via GUI
+- [x] Copy to clipboard via GUI
 - [x] Customizable GUI theme
 - [x] Customizable command exclusion by patterns
 - [x] Customizable command exclusion by prefix
