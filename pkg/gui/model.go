@@ -23,9 +23,9 @@ type Model struct {
 	app *app.App
 	cfg *config.GuiConfig
 
-	records        []model.History
-	SelectedRecord model.History
-	formatter      formatters.Formatter
+	initialQuery []string
+	records      []model.History
+	formatter    formatters.Formatter
 
 	height int
 	width  int
@@ -36,8 +36,8 @@ type Model struct {
 	filter hisfilter.Model
 	keys   keyMap
 
-	initialQuery []string
-	ExitCode     ExitCode
+	SelectedRecord model.History
+	ExitCode       ExitCode
 }
 
 func (m Model) Init() tea.Cmd {
@@ -46,12 +46,12 @@ func (m Model) Init() tea.Cmd {
 
 func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	m := Model{
-		SelectedRecord: model.History{},
-		ExitCode:       ExitNone,
-		height:         1000,
-		width:          1000,
 		app:            app,
 		cfg:            cfg,
+		height:         1000,
+		width:          1000,
+		ExitCode:       ExitNone,
+		SelectedRecord: model.History{},
 	}
 
 	for _, opt := range opts {
@@ -94,7 +94,6 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 
 	return m
 }
-
 
 func WithInitialQuery(query []string) Option {
 	return func(m *Model) {

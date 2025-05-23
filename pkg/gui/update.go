@@ -129,7 +129,11 @@ func (m *Model) updateTableContent() {
 	)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
-	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width-2*BorderPadding)
+	cols := histable.NewColumns(
+		m.cfg.ColumnLayout,
+		m.cfg.ShowColumnLabels,
+		m.width-2*BorderPadding,
+	)
 
 	m.table = histable.New(
 		histable.WithRows(rows),
