@@ -25,13 +25,13 @@
   <img src="demo.gif" alt="animated" width="80%" />
 </p>
 
-<!-- ## Why LazyHis? -->
+## Why LazyHis?
 
-<!-- LazyHis focuses on simplicity, speed, and a clean terminal UI. -->
+LazyHis focuses on simplicity, speed, and a clean terminal UI.
 
-<!-- - 🚀 **Fast**: Written in Go for maximum performance. -->
-<!-- - 🎨 **Customizable**: Supports themes and keybindings. -->
-<!-- - 🔍 **Powerful**: Advanced filtering, fuzzy search, and shell integration. -->
+- 🚀 **Fast**: Written in Go for maximum performance.
+- 🎨 **Customizable**: Supports themes and keybindings.
+- 🔍 **Powerful**: Advanced filtering, customizable, and shell integration.
 
 ## Table of contents
 
@@ -84,7 +84,6 @@ lazyhis history import --zsh /path/to/histfile
 
 ## Feature Roadmap
 
-- [ ] Add doctor CLI command for verifying configuration
 - [ ] Add export CLI command for exporting to HISTFILE
 - [ ] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
