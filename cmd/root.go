@@ -77,12 +77,12 @@ func runHistoryGui(
 ) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	cfg := reg.GetConfig()
+	app := reg.GetApp()
 
 	p := tea.NewProgram(
 		gui.NewGui(
-			reg.GetApp(),
+			app,
 			&cfg.Gui,
-			gui.WithVersion(cmd.Version),
 			gui.WithInitialQuery(args),
 			gui.WithFormatter(
 				formatters.NewFormatter(

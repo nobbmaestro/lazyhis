@@ -5,6 +5,7 @@
 | enter     | ActionAcceptSelected  | Select highlighted command and execute   |
 | ctrl+o    | ActionPrefillSelected | Select highlighted command and prefill   |
 | ctrl+x    | ActionDeleteSelected  | Delete highlighted command from database |
+| ctrl+y    | ActionCopySelected    | Copy highlighted command to clipboard    |
 | tab       | ActionNextFilter      | Select next filter mode                  |
 | shift+tab | ActionPrevFilter      | Select previous filter mode              |
 | ctrl+q    | ActionQuit            | Quit the application                     |

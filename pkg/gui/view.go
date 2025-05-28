@@ -60,7 +60,7 @@ func (m Model) renderFooter() string {
 		Width(versionWidth).
 		Bold(true).
 		Foreground(lipgloss.Color(m.cfg.Theme.VersionFgColor)).
-		Render(strings.Join([]string{"lazyhis", m.version}, " "))
+		Render(strings.Join([]string{"lazyhis", *m.app.GetVersion()}, " "))
 
 	return lipgloss.Place(
 		m.width,

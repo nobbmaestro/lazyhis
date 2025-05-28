@@ -97,6 +97,7 @@ type GuiKeys struct {
 	AcceptSelected  []string `yaml:"acceptSelected"`
 	PrefillSelected []string `yaml:"prefillSelected"`
 	DeleteSelected  []string `yaml:"deleteSelected"`
+	CopySelected    []string `yaml:"copySelected"`
 	NextFilter      []string `yaml:"nextFilter"`
 	PrevFilter      []string `yaml:"prevFilter"`
 	JumpDown        []string `yaml:"jumpDown"`

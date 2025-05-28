@@ -12,9 +12,10 @@ import (
 )
 
 type App struct {
-	Service *service.HistoryService
+	service *service.HistoryService
 	config  *config.UserConfig
 	logger  *slog.Logger
+	version *string
 }
 
 type Option func(*App)
@@ -31,13 +32,19 @@ func NewApp(opts ...Option) App {
 
 func WithService(service *service.HistoryService) Option {
 	return func(app *App) {
-		app.Service = service
+		app.service = service
 	}
 }
 
 func WithLogger(logger *slog.Logger) Option {
 	return func(app *App) {
 		app.logger = logger
+	}
+}
+
+func WithVersion(version *string) Option {
+	return func(app *App) {
+		app.version = version
 	}
 }
 
@@ -59,7 +66,7 @@ func (app App) SearchHistory(opts ...HistoryOption) []model.History {
 		app.config.Os.FetchCurrentSessionCmd,
 	)
 
-	records, err := app.Service.SearchHistory(
+	records, err := app.service.SearchHistory(
 		historyOpts.Command,
 		*historyOpts.ExitCode,
 		*historyOpts.Path,
@@ -95,7 +102,7 @@ func (app App) AddHistory(
 		return nil, nil
 	}
 
-	if addUniqueOnly && app.Service.CommandExists(historyOpts.Command) {
+	if addUniqueOnly && app.service.CommandExists(historyOpts.Command) {
 		return nil, nil
 	}
 
@@ -119,7 +126,7 @@ func (app App) AddHistory(
 		*historyOpts.Session = app.GetCurrentSession()
 	}
 
-	return app.Service.AddHistory(
+	return app.service.AddHistory(
 		historyOpts.Command,
 		historyOpts.ExitCode,
 		historyOpts.ExecutedIn,
@@ -138,7 +145,7 @@ func (app App) EditHistory(
 		opt(&historyOpts)
 	}
 
-	return app.Service.EditHistory(
+	return app.service.EditHistory(
 		historyID,
 		historyOpts.ExitCode,
 		historyOpts.ExecutedIn,
@@ -148,7 +155,7 @@ func (app App) EditHistory(
 }
 
 func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
-	records, err := app.Service.GetAllCommands()
+	records, err := app.service.GetAllCommands()
 	if err != nil {
 		return err
 	}
@@ -171,7 +178,7 @@ func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
 			continue
 		}
 
-		err := app.Service.DeleteCommand(&record)
+		err := app.service.DeleteCommand(&record)
 		if err != nil {
 			return err
 		}
@@ -181,7 +188,7 @@ func (app App) PruneHistory(dryRun bool, verboseMode bool) error {
 
 func (app App) DeleteHistory(record *model.History) error {
 	app.logger.Debug("Delete", "command", record.Command)
-	return app.Service.DeleteCommand(record.Command)
+	return app.service.DeleteCommand(record.Command)
 }
 
 func (app App) GetCurrentSession() string {
@@ -190,4 +197,12 @@ func (app App) GetCurrentSession() string {
 		return currentSession
 	}
 	return ""
+}
+
+func (app *App) GetService() *service.HistoryService {
+	return app.service
+}
+
+func (app *App) GetVersion() *string {
+	return app.version
 }
