@@ -27,33 +27,22 @@ func runHistoryEdit(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var (
-		exitCode   *int
-		executedIn *int
-		path       *string
-		session    *string
-	)
+	opts := []appopts.HistoryOption{}
 
 	if cmd.Flags().Changed("exit-code") {
-		exitCode = &historyEditOpts.exitCode
+		opts = append(opts, appopts.WithExitCode(historyEditOpts.exitCode))
 	}
 	if cmd.Flags().Changed("duration") {
-		executedIn = &historyEditOpts.executedIn
+		opts = append(opts, appopts.WithExecutedIn(historyEditOpts.executedIn))
 	}
 	if cmd.Flags().Changed("path") {
-		path = &historyEditOpts.path
+		opts = append(opts, appopts.WithPath(historyEditOpts.path))
 	}
 	if cmd.Flags().Changed("session") {
-		session = &historyEditOpts.session
+		opts = append(opts, appopts.WithSession(historyEditOpts.session))
 	}
 
-	_, err = app.EditHistory(
-		historyID,
-		appopts.WithExitCode(*exitCode),
-		appopts.WithExecutedIn(*executedIn),
-		appopts.WithPath(*path),
-		appopts.WithSession(*session),
-	)
+	_, err = app.EditHistory(historyID, opts...)
 	if err != nil {
 		return err
 	}
