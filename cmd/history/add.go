@@ -52,10 +52,10 @@ func runHistoryAdd(cmd *cobra.Command, args []string) error {
 func init() {
 	historyAddCmd.
 		Flags().
-		IntVarP(&historyAddOpts.exitCode, "exit-code", "e", 0, "exit code for the command")
+		IntVarP(&historyAddOpts.exitCode, "exit-code", "e", -1, "exit code for the command")
 	historyAddCmd.
 		Flags().
-		IntVarP(&historyAddOpts.executedIn, "duration", "d", 0, "execution duration of the CMD in milliseconds")
+		IntVarP(&historyAddOpts.executedIn, "duration", "d", -1, "execution duration of the CMD in milliseconds")
 	historyAddCmd.
 		Flags().
 		StringVarP(&historyAddOpts.path, "path", "p", "", "working directory context")
