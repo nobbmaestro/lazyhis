@@ -139,7 +139,7 @@ func (app App) EditHistory(
 	historyID int,
 	opts ...HistoryOption,
 ) (*model.History, error) {
-	historyOpts := defaultHistoryOptions()
+	historyOpts := HistoryOptions{}
 
 	for _, opt := range opts {
 		opt(&historyOpts)
