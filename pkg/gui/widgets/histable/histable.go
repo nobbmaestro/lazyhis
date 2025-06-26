@@ -143,7 +143,7 @@ func calculateTableColumnWidth(
 		}
 	}
 
-	remainingWidth := totalWidth - totalStaticWidth - 4
+	remainingWidth := totalWidth - totalStaticWidth - 2*(len(columns)-1)
 	remainingWidth = max(remainingWidth, 0)
 
 	for _, column := range columns {
