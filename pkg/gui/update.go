@@ -59,11 +59,8 @@ func (m Model) onKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case key.Matches(msg, m.keys.ActionShowHelp):
 		return m.onUserShowHelp()
 	default:
-		m.input, _ = m.input.Update(msg)
-		m.updateTableContent()
+		return m.onUserInput(msg)
 	}
-
-	return m, nil
 }
 
 func (m *Model) onUserActionMoveDown() (tea.Model, tea.Cmd) {
@@ -127,6 +124,12 @@ func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {
 
 func (m *Model) onUserShowHelp() (tea.Model, tea.Cmd) {
 	m.help.ShowAll = !m.help.ShowAll
+	return m, nil
+}
+
+func (m *Model) onUserInput(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	m.input, _ = m.input.Update(msg)
+	m.updateTableContent()
 	return m, nil
 }
 
