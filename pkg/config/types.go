@@ -46,6 +46,10 @@ type GuiConfig struct {
 	ShowColumnLabels bool `yaml:"showColumnLabels"`
 	// List of columns to render
 	ColumnLayout []Column `yaml:"columnLayout"`
+	// Map of columns to label
+	ColumnLabels map[Column]string `yaml:"columnLabels"`
+	// Map of columns to width
+	ColumnWidths map[Column]int `yaml:"columnWidths"`
 	// List of filter modes to cycle through
 	CyclicFilterModes []FilterMode `yaml:"cyclicFilterModes"`
 	// List of persistent filter modes

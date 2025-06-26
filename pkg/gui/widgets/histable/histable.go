@@ -8,26 +8,6 @@ import (
 
 const paddedRows = 100
 
-var tableColumnTitles = map[config.Column]string{
-	config.ColumnCommand:    "Command",
-	config.ColumnExecutedAt: "Executed",
-	config.ColumnExecutedIn: "Duration",
-	config.ColumnExitCode:   "Exit",
-	config.ColumnID:         "ID",
-	config.ColumnPath:       "Path",
-	config.ColumnSession:    "Session",
-}
-
-var tableColumnWidth = map[config.Column]int{
-	config.ColumnCommand:    100,
-	config.ColumnExecutedAt: 10,
-	config.ColumnExecutedIn: 10,
-	config.ColumnExitCode:   5,
-	config.ColumnID:         5,
-	config.ColumnPath:       25,
-	config.ColumnSession:    25,
-}
-
 type Model struct {
 	table.Model
 }
@@ -39,13 +19,15 @@ func New(opts ...table.Option) Model {
 func NewColumns(
 	columns []config.Column,
 	showLabels bool,
+	titles map[config.Column]string,
+	widths map[config.Column]int,
 	width int,
 ) []table.Column {
 	tableColumns := make([]table.Column, len(columns))
 
-	newTableColumnWidth := calculateTableColumnWidth(columns, width)
+	newTableColumnWidth := calculateTableColumnWidth(columns, width, widths)
 	for i, column := range columns {
-		columnTitle := tableColumnTitles[column]
+		columnTitle := titles[column]
 		if !showLabels {
 			columnTitle = ""
 		}
@@ -53,7 +35,6 @@ func NewColumns(
 		tableColumns[i].Width = newTableColumnWidth[column]
 	}
 	return tableColumns
-
 }
 
 func NewStyles(theme config.GuiTheme) table.Styles {
@@ -133,13 +114,14 @@ func reverse[T any](rows []T) []T {
 func calculateTableColumnWidth(
 	columns []config.Column,
 	totalWidth int,
+	widths map[config.Column]int,
 ) map[config.Column]int {
 	newTableColumnWidth := make(map[config.Column]int)
 
 	totalStaticWidth := 0
 	for _, column := range columns {
 		if column != config.ColumnCommand {
-			totalStaticWidth += tableColumnWidth[column]
+			totalStaticWidth += widths[column]
 		}
 	}
 
@@ -150,7 +132,7 @@ func calculateTableColumnWidth(
 		if column == config.ColumnCommand {
 			newTableColumnWidth[column] = remainingWidth
 		} else {
-			newTableColumnWidth[column] = tableColumnWidth[column]
+			newTableColumnWidth[column] = widths[column]
 		}
 	}
 

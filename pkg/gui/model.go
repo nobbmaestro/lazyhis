@@ -72,7 +72,13 @@ func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
 	m.keys = createKeyMap(cfg.Keys)
 
 	rows := m.formatter.HistoryToTableRows(m.records)
-	cols := histable.NewColumns(m.cfg.ColumnLayout, m.cfg.ShowColumnLabels, m.width)
+	cols := histable.NewColumns(
+		m.cfg.ColumnLayout,
+		m.cfg.ShowColumnLabels,
+		m.cfg.ColumnLabels,
+		m.cfg.ColumnWidths,
+		m.width,
+	)
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),

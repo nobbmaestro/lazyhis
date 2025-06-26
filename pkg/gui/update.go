@@ -143,6 +143,8 @@ func (m *Model) updateTableContent() {
 	cols := histable.NewColumns(
 		m.cfg.ColumnLayout,
 		m.cfg.ShowColumnLabels,
+		m.cfg.ColumnLabels,
+		m.cfg.ColumnWidths,
 		m.width-2*BorderPadding,
 	)
 

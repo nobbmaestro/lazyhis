@@ -19,11 +19,33 @@ gui:
   showColumnLabels: false
 
   # List of GUI Columns
-  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#gui-columns
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-layout
   columnLayout:
     - EXIT_CODE
     - EXECUTED_AT
     - COMMAND
+
+  # Map of GUI Column Labels
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-labels
+  columnLabels:
+    COMMAND: Command
+    EXECUTED_AT: Executed
+    EXECUTED_IN: Duration
+    EXIT_CODE: Exit
+    ID: ID
+    PATH: Path
+    SESSION: Session
+
+  # Map of GUI Column Widths
+  # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-widths
+  columnWidths:
+    COMMAND: -1
+    EXECUTED_AT: 10
+    EXECUTED_IN: 10
+    EXIT_CODE: 5
+    ID: 5
+    PATH: 25
+    SESSION: 25
 
   # List of filter modes to cycle through
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#filter-modes
