@@ -42,7 +42,7 @@ build: info
 	@mkdir -p $(BUILD_DIR)
 	go build \
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
-		-o $(BUILD_DIR)/lazyhis main.go
+		-o $(BUILD_DIR)/$(PACKAGE_NAME) main.go
 
 install: build
 	@echo "Installing $(PACKAGE_NAME)..."
