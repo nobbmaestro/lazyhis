@@ -50,6 +50,11 @@ else
 	ZSH_AUTOSUGGEST_STRATEGY=("lazyhis")
 fi
 
+if [[ -z "${_LAZYHIS_COMPLETION:-}" ]]; then
+	source <(lazyhis completion zsh)
+	_LAZYHIS_COMPLETION=1
+fi
+
 LAZYHIS_HISTORY_ID=""
 
 _lazyhis_preexec() {

@@ -85,7 +85,7 @@ lazyhis history import --zsh /path/to/histfile
 ## Feature Roadmap
 
 - [ ] Add export CLI command for exporting to HISTFILE
-- [ ] Add generate shell-completions CLI command
+- [x] Add generate shell-completions CLI command
 - [x] Add prune CLI command for removing history based on ignore pattern
 - [x] Add dry flag for prune CLI command
 - [x] Add verbosity flag for prune and import CLI commands
