@@ -44,7 +44,7 @@ _zsh_autosuggest_strategy_lazyhis() {
 	suggestion=$(lazyhis search --exit-code 0 --limit 1 -- "$@")
 }
 
-if [ -n "${ZSH_AUTOSUGGEST_STRATEGY:-}" ]; then
+if [[ -n "${ZSH_AUTOSUGGEST_STRATEGY:-}" ]]; then
 	ZSH_AUTOSUGGEST_STRATEGY=("lazyhis" "${ZSH_AUTOSUGGEST_STRATEGY[@]}")
 else
 	ZSH_AUTOSUGGEST_STRATEGY=("lazyhis")
