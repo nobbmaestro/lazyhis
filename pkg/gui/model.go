@@ -15,8 +15,6 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
-type QueryHistoryCallback func(query []string, filters []config.FilterMode) []model.History
-
 type Option func(*Model)
 
 type Model struct {
