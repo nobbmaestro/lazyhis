@@ -22,8 +22,10 @@ func runHistoryList(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	for _, record := range records {
-		fmt.Println(record.Command.Command)
+	for _, r := range records {
+		if cmd := r.Command; cmd != nil {
+			fmt.Println(cmd.Command)
+		}
 	}
 
 	return nil
