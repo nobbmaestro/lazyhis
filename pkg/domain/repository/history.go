@@ -66,6 +66,7 @@ func (r *HistoryRepository) GetLast() (model.History, error) {
 	var record model.History
 
 	err := r.db.
+		Where("exit_code != ?", -1). // skip pending (not yet terminated) commands
 		Preload("Command").
 		Preload("Path").
 		Preload("Session").
