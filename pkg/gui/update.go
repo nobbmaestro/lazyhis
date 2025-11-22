@@ -1,9 +1,11 @@
 package gui
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
@@ -151,9 +153,19 @@ func (m *Model) updateTableContent() {
 	m.table = histable.New(
 		histable.WithRows(rows),
 		histable.WithColumns(cols),
-		histable.WithGotoBottom(),
 		histable.WithStyles(histable.NewStyles(m.cfg.Theme)),
+		histable.WithCursor(m.cursorOfSelectedRecord(rows)),
 	)
+}
+
+func (m Model) cursorOfSelectedRecord(rows []table.Row) int {
+	target := m.SelectedRecord.Command.Command
+	for i, row := range rows {
+		if slices.Contains(row, target) {
+			return i
+		}
+	}
+	return min(m.table.Cursor(), max(0, len(rows)-1))
 }
 
 func (m *Model) setSelectedRecord() {

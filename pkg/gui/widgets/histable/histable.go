@@ -6,7 +6,7 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 )
 
-const paddedRows = 100
+const rowPadding = 100
 
 type Model struct {
 	table.Model
@@ -57,7 +57,7 @@ func NewStyles(theme config.GuiTheme) table.Styles {
 func WithRows(rows []table.Row) table.Option {
 	return func(m *table.Model) {
 		paddedRows := append(
-			make([]table.Row, paddedRows),
+			make([]table.Row, rowPadding),
 			reverse(rows)...,
 		)
 		m.SetRows(paddedRows)
@@ -76,6 +76,13 @@ func WithStyles(styles table.Styles) table.Option {
 	}
 }
 
+func WithCursor(cursor int) table.Option {
+	return func(m *table.Model) {
+		m.GotoBottom()
+		m.MoveUp(cursor)
+	}
+}
+
 func WithGotoBottom() table.Option {
 	return func(m *table.Model) {
 		m.GotoBottom()
@@ -83,12 +90,12 @@ func WithGotoBottom() table.Option {
 }
 
 func (m Model) Cursor() int {
-	return len(m.Rows()) - 1 - paddedRows - m.realCursor()
+	return len(m.Rows()) - 1 - rowPadding - m.realCursor()
 }
 
 // Non-reversed (Real) Curosr for internal usage
 func (m Model) realCursor() int {
-	return max(m.Model.Cursor()-paddedRows, 0)
+	return max(m.Model.Cursor()-rowPadding, 0)
 }
 
 func (m *Model) MoveUp(n int) {
