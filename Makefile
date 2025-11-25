@@ -35,7 +35,7 @@ test:
 info:
 	@echo "Version: $(VERSION)"
 	@echo "Commit:  $(COMMIT)"
-	@echo "Data:    $(DATE)"
+	@echo "Date:    $(DATE)"
 
 build: info
 	@echo "Building $(PACKAGE_NAME)..."
