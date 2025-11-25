@@ -1,4 +1,4 @@
-.PHONY: all clean build install uninstall check lint fmt vendor test
+.PHONY: all clean build install uninstall install-bin install-man uninstall-bin uninstall-man check lint fmt vendor test
 
 PACKAGE_NAME := lazyhis
 BUILD_DIR    := build
@@ -9,7 +9,7 @@ VERSION := $(shell git describe --tags --dirty)
 COMMIT  := $(shell git rev-parse --short HEAD)
 DATE    := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-all: install
+all: build
 
 ## CODE QUALITY & TESTS
 check: vendor fmt lint test
@@ -45,21 +45,29 @@ build: info
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
 		-o $(BUILD_DIR)/$(PACKAGE_NAME) main.go
 
-install: build
+install-bin: build
 	@echo "Installing $(PACKAGE_NAME)..."
 	@mkdir -p $(DST_DIR)
-	ln -sf $(PWD)/$(BUILD_DIR)/$(PACKAGE_NAME) $(DST_DIR)
+	install -m 755 $(PWD)/$(BUILD_DIR)/$(PACKAGE_NAME) $(DST_DIR)
 
-install-man: install
+install-man: build
 	@echo "Installing man pages..."
-	lazyhis gen man --dst $(DST_MAN_DIR)
+	@mkdir -p $(DST_MAN_DIR)
+	$(BUILD_DIR)/$(PACKAGE_NAME) gen man --dst $(DST_MAN_DIR)
+
+install: install-bin install-man
 
 ## CLEAN
-uninstall:
+uninstall-bin:
 	@echo "Uninstalling $(PACKAGE_NAME)..."
 	rm -f $(DST_DIR)/$(PACKAGE_NAME)
+
+uninstall-man:
+	@echo "Uninstalling man pages..."
 	rm -f $(DST_MAN_DIR)/$(PACKAGE_NAME)*.1
 
-clean: uninstall
+uninstall: uninstall-bin uninstall-man
+
+clean:
 	@echo "Cleaning $(BUILD_DIR) directory..."
 	rm -rf $(BUILD_DIR)
