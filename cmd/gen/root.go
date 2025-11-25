@@ -9,6 +9,7 @@ var GenCmd = &cobra.Command{
 
 func init() {
 	GenCmd.AddCommand(
+		CompletionCmd,
 		ManCmd,
 	)
 }

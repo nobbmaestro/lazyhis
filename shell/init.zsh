@@ -52,7 +52,7 @@ else
 fi
 
 if [[ -z "${LAZYHIS_NO_COMPLETION:-}" && -z "${_LAZYHIS_COMPLETION:-}" ]]; then
-	source <(lazyhis completion zsh)
+	source <(lazyhis gen completion zsh)
 	_LAZYHIS_COMPLETION=1
 fi
 

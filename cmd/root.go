@@ -32,6 +32,9 @@ var rootCmd = &cobra.Command{
 	Short: "lazyhis",
 	Args:  cobra.ArbitraryArgs,
 	RunE:  runRoot,
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	},
 }
 
 func runRoot(cmd *cobra.Command, args []string) error {
