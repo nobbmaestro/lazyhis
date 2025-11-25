@@ -8,6 +8,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/nobbmaestro/lazyhis/cmd/gen"
 	"github.com/nobbmaestro/lazyhis/cmd/history"
 	"github.com/nobbmaestro/lazyhis/cmd/initialize"
 	"github.com/nobbmaestro/lazyhis/cmd/search"
@@ -138,4 +139,5 @@ func init() {
 	rootCmd.AddCommand(history.HistoryCmd)
 	rootCmd.AddCommand(initialize.InitCmd)
 	rootCmd.AddCommand(search.SearchCmd)
+	rootCmd.AddCommand(gen.GenCmd)
 }

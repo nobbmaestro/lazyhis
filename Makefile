@@ -3,6 +3,7 @@
 PACKAGE_NAME := lazyhis
 BUILD_DIR    := build
 DST_DIR      ?= $(HOME)/.local/bin
+DST_MAN_DIR  ?= $(HOME)/.local/share/man/man1
 
 VERSION := $(shell git describe --tags --dirty)
 COMMIT  := $(shell git rev-parse --short HEAD)
@@ -49,10 +50,15 @@ install: build
 	@mkdir -p $(DST_DIR)
 	ln -sf $(PWD)/$(BUILD_DIR)/$(PACKAGE_NAME) $(DST_DIR)
 
+install-man: install
+	@echo "Installing man pages..."
+	lazyhis gen man --dst $(DST_MAN_DIR)
+
 ## CLEAN
 uninstall:
 	@echo "Uninstalling $(PACKAGE_NAME)..."
 	rm -f $(DST_DIR)/$(PACKAGE_NAME)
+	rm -f $(DST_MAN_DIR)/$(PACKAGE_NAME)*.1
 
 clean: uninstall
 	@echo "Cleaning $(BUILD_DIR) directory..."
