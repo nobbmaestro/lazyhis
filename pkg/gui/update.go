@@ -159,13 +159,20 @@ func (m *Model) updateTableContent() {
 }
 
 func (m Model) cursorOfSelectedRecord(rows []table.Row) int {
+	fallback := min(m.table.Cursor(), max(0, len(rows)-1))
+
+	if m.SelectedRecord.Command == nil {
+		return fallback
+	}
+
 	target := m.SelectedRecord.Command.Command
 	for i, row := range rows {
 		if slices.Contains(row, target) {
 			return i
 		}
 	}
-	return min(m.table.Cursor(), max(0, len(rows)-1))
+
+	return fallback
 }
 
 func (m *Model) setSelectedRecord() {
