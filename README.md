@@ -59,7 +59,7 @@ brew install lazyhis
 ```sh
 git clone git@github.com:nobbmaestro/lazyhis.git
 cd lazyhis
-make
+make install
 ```
 
 ### 2. Add the init script to your shell's config file:
