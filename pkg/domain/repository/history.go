@@ -126,7 +126,7 @@ func (r *HistoryRepository) QueryHistory(
 	if unique {
 		subQuery := r.db.Model(&model.History{}).
 			Select("MAX(id) as id").
-			Group("command_id")
+			Group("command_id, session_id, path_id")
 		query = query.Where("id IN (?)", subQuery)
 	}
 

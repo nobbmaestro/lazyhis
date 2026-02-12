@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.9.5...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.9.5/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.9.6...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.9.6/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -59,7 +59,7 @@ brew install lazyhis
 ```sh
 git clone git@github.com:nobbmaestro/lazyhis.git
 cd lazyhis
-make
+make install
 ```
 
 ### 2. Add the init script to your shell's config file:
