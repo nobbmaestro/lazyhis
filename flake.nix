@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
@@ -15,6 +16,9 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import systems;
+      imports = [
+        inputs.treefmt-nix.flakeModule
+      ];
 
       perSystem =
         {
@@ -72,6 +76,15 @@
               pkgs.gnumake
             ];
           };
+
+          treefmt = {
+            programs.nixfmt.enable = true;
+            programs.gofmt.enable = true;
+          };
+
+          checks.build = lazyhis;
+        };
+
       flake = {
         overlays.default = final: prev: {
           lazyhis = inputs.self.packages.${final.system}.lazyhis;
