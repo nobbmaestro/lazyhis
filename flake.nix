@@ -27,6 +27,19 @@
           ...
         }:
         let
+          goMod = builtins.readFile ./go.mod;
+          versionMatch = builtins.match ".*go[[:space:]]([0-9]+\\.[0-9]+)(\\.[0-9]+)?.*" goMod;
+
+          goVersion =
+            if versionMatch != null then
+              builtins.head versionMatch
+            else
+              throw "Could not extract Go version from go.mod";
+
+          goOverlay = final: prev: {
+            go = prev."go_${builtins.replaceStrings [ "." ] [ "_" ] goVersion}";
+          };
+
           lazyhis = pkgs.buildGoModule rec {
             pname = "lazyhis";
             version = "0.9.6";
@@ -61,6 +74,12 @@
           };
         in
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ goOverlay ];
+            config = { };
+          };
+
           packages = {
             default = lazyhis;
             inherit lazyhis;
