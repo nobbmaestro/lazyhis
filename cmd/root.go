@@ -63,7 +63,7 @@ func printConfig(cfg *config.UserConfig) error {
 	var buf bytes.Buffer
 	encoder := yaml.NewEncoder(&buf)
 	if err := encoder.Encode(cfg); err != nil {
-		return fmt.Errorf("Error encoding config: %w", err)
+		return fmt.Errorf("error encoding config: %w", err)
 	}
 	fmt.Printf("%s\n", buf.String())
 	return nil

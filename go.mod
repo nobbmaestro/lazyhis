@@ -1,6 +1,6 @@
 module github.com/nobbmaestro/lazyhis
 
-go 1.23.0
+go 1.25.0
 
 require (
 	github.com/charmbracelet/bubbles v0.20.0

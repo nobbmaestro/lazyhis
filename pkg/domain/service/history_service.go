@@ -147,7 +147,7 @@ func (s *HistoryService) DeleteCommand(record *model.Command) error {
 
 func (s *HistoryService) AddCommand(command []string) (*model.Command, error) {
 	if len(command) == 0 {
-		return nil, errors.New("Command cannot be empty")
+		return nil, errors.New("command cannot be empty")
 	}
 	return s.repos.CommandRepo.GetOrCreate(
 		&model.Command{Command: strings.Join(command, " ")},

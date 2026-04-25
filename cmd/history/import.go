@@ -28,7 +28,7 @@ func runImport(cmd *cobra.Command, args []string) error {
 	case isZshHistfile:
 		return importZshHistfile(cmd, args)
 	default:
-		return fmt.Errorf("Unsupported shell option")
+		return fmt.Errorf("unsupported shell option")
 	}
 }
 
@@ -40,7 +40,11 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			cmd.PrintErrf("failed to close file: %v\n", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -61,7 +65,7 @@ func importZshHistfile(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("Error reading file: %w", err)
+		return fmt.Errorf("error reading file: %w", err)
 	}
 
 	return nil
