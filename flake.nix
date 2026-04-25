@@ -42,7 +42,7 @@
 
           lazyhis = pkgs.buildGoModule rec {
             pname = "lazyhis";
-            version = "0.9.6";
+            version = "0.9.7";
 
             gitCommit = inputs.self.rev or inputs.self.dirtyRev or "dev";
 
