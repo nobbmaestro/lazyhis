@@ -52,6 +52,19 @@
 
             doCheck = true;
 
+            nativeBuildInputs = with pkgs; [
+              pkg-config
+            ];
+
+            buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux (
+              with pkgs;
+              [
+                libx11
+                libxi
+                libxfixes
+              ]
+            );
+
             ldflags = [
               "-X main.version=${version}"
               "-X main.commit=${gitCommit}"
