@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"io"
+	"log"
 	"log/slog"
 	"os"
 
@@ -50,6 +51,8 @@ func New(cfg config.LogConfig) (*Logger, error) {
 
 func (l *Logger) Close() {
 	if l.file != nil {
-		l.file.Close()
+		if err := l.file.Close(); err != nil {
+			log.Printf("failed to close file: %v\n", err)
+		}
 	}
 }

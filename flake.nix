@@ -90,6 +90,7 @@
 
             packages = [
               pkgs.go
+              pkgs.gotools
               pkgs.golangci-lint
               pkgs.golines
               pkgs.gnumake

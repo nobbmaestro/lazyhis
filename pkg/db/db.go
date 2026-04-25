@@ -36,7 +36,7 @@ func DefaultLogger() logger.Interface {
 
 func WithLogger(l logger.Interface) Option {
 	return func(db *gorm.DB) error {
-		db.Config.Logger = l
+		db.Logger = l
 		return nil
 	}
 }
