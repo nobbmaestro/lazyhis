@@ -75,11 +75,11 @@ func (r Registry) GetConfig() *config.UserConfig {
 	return nil
 }
 
-func (r Registry) GetConfigPath() *config.UserConfig {
-	if val, ok := r.Context.Value(ConfigPathKey).(*config.UserConfig); ok {
+func (r Registry) GetConfigPath() string {
+	if val, ok := r.Context.Value(ConfigPathKey).(string); ok {
 		return val
 	}
-	return nil
+	return ""
 }
 
 func (r Registry) GetLogger() *slog.Logger {
