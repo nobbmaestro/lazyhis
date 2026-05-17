@@ -55,6 +55,11 @@
             inherit lazyhis;
           };
 
+          apps.default = {
+            type = "app";
+            program = "${lazyhis}/bin/lazyhis";
+          };
+
           devShells.default = pkgs.mkShell {
             name = "lazyhis-dev";
 
