@@ -21,11 +21,7 @@
       ];
 
       perSystem =
-        {
-          pkgs,
-          system,
-          ...
-        }:
+        { system, ... }:
         let
           goMod = builtins.readFile ./go.mod;
           versionMatch = builtins.match ".*go[[:space:]]([0-9]+\\.[0-9]+)(\\.[0-9]+)?.*" goMod;
@@ -40,58 +36,19 @@
             go = prev."go_${builtins.replaceStrings [ "." ] [ "_" ] goVersion}";
           };
 
-          lazyhis = pkgs.buildGoModule rec {
-            pname = "lazyhis";
-            version = "0.9.7";
-
-            gitCommit = inputs.self.rev or inputs.self.dirtyRev or "dev";
-
-            src = inputs.self;
-
-            vendorHash = "sha256-8tQB9rQfk5iy5dJ6n8RemKiFIf5bToYXhLWWxx/y+dM=";
-
-            doCheck = true;
-
-            nativeBuildInputs = with pkgs; [
-              pkg-config
-            ];
-
-            buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux (
-              with pkgs;
-              [
-                libx11
-                libxi
-                libxfixes
-              ]
-            );
-
-            ldflags = [
-              "-X main.version=${version}"
-              "-X main.commit=${gitCommit}"
-            ];
-
-            postInstall = ''
-              export HOME=$(mktemp -d) 
-              mkdir -p $out/share/man/man1 
-              $out/bin/lazyhis gen man --dst $out/share/man/man1 
-            '';
-
-            meta = {
-              description = "A simple terminal UI for shell history, written in Go!";
-              homepage = "https://github.com/nobbmaestro/lazyhit";
-              license = pkgs.lib.licenses.mit;
-              maintainers = [ "nobbmaestro" ];
-              platforms = pkgs.lib.platforms.unix;
-              mainProgram = "lazyhis";
-            };
-          };
-        in
-        {
-          _module.args.pkgs = import inputs.nixpkgs {
+          pkgs = import inputs.nixpkgs {
             inherit system;
             overlays = [ goOverlay ];
             config = { };
           };
+
+          lazyhis = pkgs.callPackage ./default.nix {
+            src = inputs.self;
+            gitRevision = inputs.self.rev or inputs.self.dirtyRev or "dev";
+          };
+        in
+        {
+          _module.args.pkgs = pkgs;
 
           packages = {
             default = lazyhis;
