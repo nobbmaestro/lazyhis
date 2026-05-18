@@ -34,6 +34,8 @@ type Model struct {
 	filter hisfilter.Model
 	keys   keyMap
 
+	notification Notification
+
 	SelectedRecord model.History
 	ExitCode       ExitCode
 }

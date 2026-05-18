@@ -30,6 +30,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 		m.width = msg.Width
 		m.updateTableContent()
+	case Notification:
+		m.notification = msg
+	case ClearNotification:
+		if m.notification.createdAt.Equal(msg.createdAt) {
+			m.notification = Notification{}
+		}
 	}
 	return m, nil
 }
@@ -117,7 +123,7 @@ func (m *Model) onUserActionDeleteSelected() (tea.Model, tea.Cmd) {
 
 func (m *Model) onUserActionCopySelected() (tea.Model, tea.Cmd) {
 	utils.CopyToClipboard(m.SelectedRecord.Command.Command)
-	return m, nil
+	return m, Notify("Copied to clipboard")
 }
 
 func (m *Model) onUserActionQuit() (tea.Model, tea.Cmd) {

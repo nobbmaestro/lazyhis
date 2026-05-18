@@ -48,12 +48,24 @@ func (m Model) renderInput() string {
 }
 
 func (m Model) renderFooter() string {
-	versionWidth := 35
+	var (
+		versionWidth      = 35
+		notificationWidth = 35
+		helpWidth         = m.width - versionWidth - notificationWidth - BorderPadding
+	)
 
 	help := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(m.width - versionWidth - BorderPadding).
+		Width(helpWidth).
+		MaxWidth(helpWidth).
+		MaxHeight(1).
 		Render(m.help.View(m.keys))
+
+	message := lipgloss.NewStyle().
+		Align(lipgloss.Center).
+		Width(notificationWidth).
+		Foreground(lipgloss.Color(m.cfg.Theme.VersionFgColor)).
+		Render(m.notification.message)
 
 	version := lipgloss.NewStyle().
 		Align(lipgloss.Right).
@@ -67,6 +79,6 @@ func (m Model) renderFooter() string {
 		1,
 		lipgloss.Left,
 		lipgloss.Bottom,
-		lipgloss.JoinHorizontal(lipgloss.Bottom, help, version),
+		lipgloss.JoinHorizontal(lipgloss.Bottom, help, message, version),
 	)
 }
