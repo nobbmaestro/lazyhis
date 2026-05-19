@@ -92,9 +92,10 @@ type GuiTheme struct {
 	FilterFgColor string `yaml:"filterFgColor"`
 	InputFgColor  string `yaml:"inputFgColor"`
 	// Footer colors
-	HelpAccentColor string `yaml:"helpAccentColor"`
-	HelpFgColor     string `yaml:"helpFgColor"`
-	VersionFgColor  string `yaml:"versionFgColor"`
+	HelpAccentColor     string `yaml:"helpAccentColor"`
+	HelpFgColor         string `yaml:"helpFgColor"`
+	VersionFgColor      string `yaml:"versionFgColor"`
+	NotificationFgColor string `yaml:"notificationFgColor"`
 }
 
 type GuiKeys struct {

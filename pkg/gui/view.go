@@ -64,7 +64,7 @@ func (m Model) renderFooter() string {
 	message := lipgloss.NewStyle().
 		Align(lipgloss.Center).
 		Width(notificationWidth).
-		Foreground(lipgloss.Color(m.cfg.Theme.VersionFgColor)).
+		Foreground(lipgloss.Color(m.cfg.Theme.NotificationFgColor)).
 		Render(m.notification.message)
 
 	version := lipgloss.NewStyle().

@@ -71,6 +71,7 @@ gui:
     helpAccentColor: "6"
     helpFgColor: "7"
     versionFgColor: "6"
+    NotificationFgColor: "3"
 
   # Gui keys
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/keybindings.md
