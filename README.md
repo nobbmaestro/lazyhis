@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.9.7...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.9.7/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.10.0...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.10.0/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -47,11 +47,52 @@ LazyHis focuses on simplicity, speed, and a clean terminal UI.
 
 ### 1. Install the lazyhis binary:
 
-#### With [Homebrew](https://brew.sh) (Recommended)
+#### With [Homebrew](https://brew.sh)
 
 ```sh
 brew tap nobbmaestro/homebrew-tap
 brew install lazyhis
+```
+
+#### With Nix
+
+```sh
+nix build github:nobbmaestro/lazyhis
+# or from a local clone
+nix build
+```
+
+To integrate into your own flake, add lazyhis as an input and apply the overlay:
+
+```nix
+# flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    lazyhis.url = "github:nobbmaestro/lazyhis";
+  };
+
+  outputs = { nixpkgs, lazyhis, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        {
+          nixpkgs.overlays = [ lazyhis.overlays.default ];
+          environment.systemPackages = [ pkgs.lazyhis ];
+        }
+      ];
+    };
+  };
+}
+```
+
+The overlay works the same way with [Home Manager](https://github.com/nix-community/home-manager):
+
+```nix
+{
+  nixpkgs.overlays = [ lazyhis.overlays.default ];
+  home.packages = [ pkgs.lazyhis ];
+}
 ```
 
 #### Build from Source
