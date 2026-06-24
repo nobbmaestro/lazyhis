@@ -11,7 +11,7 @@
 }:
 buildGoModule rec {
   pname = "lazyhis";
-  version = "0.10.0";
+  version = "0.10.1";
 
   inherit src;
 
