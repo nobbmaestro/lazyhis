@@ -89,30 +89,21 @@ func (r *HistoryRepository) QueryHistory(
 ) ([]model.History, error) {
 	var histories []model.History
 
-	query := r.db.Model(&model.History{})
+	query := applyHistoryFilters(
+		r.db.Model(&model.History{}),
+		r.db,
+		keywords,
+		path,
+		session,
+		exitCode,
+	)
 
-	if len(keywords) > 0 {
-		keywordQuery := r.db.Model(&model.Command{}).Select("id")
-		for _, keyword := range keywords {
-			keywordQuery = keywordQuery.Where("command LIKE ?", "%"+keyword+"%")
-		}
-		query = query.Where("command_id IN (?)", keywordQuery)
-	}
-
-	if path != "" {
-		query = query.Where("path_id IN (?)", r.db.Model(&model.Path{}).
-			Select("id").
-			Where("path LIKE ?", path))
-	}
-
-	if session != "" {
-		query = query.Where("session_id IN (?)", r.db.Model(&model.Session{}).
-			Select("id").
-			Where("session LIKE ?", session))
-	}
-
-	if exitCode != -1 {
-		query = query.Where("exit_code = ?", exitCode)
+	if unique {
+		subQuery := applyHistoryFilters(
+			r.db.Model(&model.History{}).Select("MAX(id) as id").Group("command_id"),
+			r.db, keywords, path, session, exitCode,
+		)
+		query = query.Where("id IN (?)", subQuery)
 	}
 
 	if limit != -1 {
@@ -121,13 +112,6 @@ func (r *HistoryRepository) QueryHistory(
 
 	if offset != -1 {
 		query = query.Offset(offset)
-	}
-
-	if unique {
-		subQuery := r.db.Model(&model.History{}).
-			Select("MAX(id) as id").
-			Group("command_id, session_id, path_id")
-		query = query.Where("id IN (?)", subQuery)
 	}
 
 	err := query.
@@ -141,4 +125,40 @@ func (r *HistoryRepository) QueryHistory(
 	}
 
 	return histories, nil
+}
+
+func applyHistoryFilters(
+	q *gorm.DB,
+	db *gorm.DB,
+	keywords []string,
+	path, session string,
+	exitCode int,
+) *gorm.DB {
+	if len(keywords) > 0 {
+		kq := db.Model(&model.Command{}).Select("id")
+		for _, k := range keywords {
+			kq = kq.Where("command LIKE ?", "%"+k+"%")
+		}
+		q = q.Where("command_id IN (?)", kq)
+	}
+
+	if path != "" {
+		q = q.Where(
+			"path_id IN (?)",
+			db.Model(&model.Path{}).Select("id").Where("path LIKE ?", path),
+		)
+	}
+
+	if session != "" {
+		q = q.Where(
+			"session_id IN (?)",
+			db.Model(&model.Session{}).Select("id").Where("session LIKE ?", session),
+		)
+	}
+
+	if exitCode != -1 {
+		q = q.Where("exit_code = ?", exitCode)
+	}
+
+	return q
 }
