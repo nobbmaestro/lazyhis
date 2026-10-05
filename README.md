@@ -130,17 +130,17 @@ lazyhis history import --zsh /path/to/histfile
 - [x] Add prune CLI command for removing history based on ignore pattern
 - [x] Add dry flag for prune CLI command
 - [x] Add verbosity flag for prune and import CLI commands
-- [x] Copy to clipboard via GUI
-- [x] Customizable GUI theme
+- [x] Copy to clipboard via TUI
+- [x] Customizable TUI theme
 - [x] Customizable command exclusion by patterns
 - [x] Customizable command exclusion by prefix
 - [x] Customizable keybindings
-- [x] Delete history entries via GUI
-- [ ] Delete multiple history entries via GUI
-- [ ] Edit history entries via GUI
-- [x] Filter history by context via GUI
-- [ ] Fuzzy-finder search strategy in GUI
-- [ ] Support for inline GUI mode
+- [x] Delete history entries via TUI
+- [ ] Delete multiple history entries via TUI
+- [ ] Edit history entries via TUI
+- [x] Filter history by context via TUI
+- [ ] Fuzzy-finder search strategy in TUI
+- [ ] Support for inline TUI mode
 
 ## Customization
 

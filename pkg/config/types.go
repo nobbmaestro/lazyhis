@@ -36,12 +36,12 @@ const (
 
 type UserConfig struct {
 	Db  DbConfig  `yaml:"db"`
-	Gui GuiConfig `yaml:"gui"`
+	Ui  UiConfig  `yaml:"gui"`
 	Os  OsConfig  `yaml:"os"`
 	Log LogConfig `yaml:"log"`
 }
 
-type GuiConfig struct {
+type UiConfig struct {
 	// Option for hiding column labels
 	ShowColumnLabels bool `yaml:"showColumnLabels"`
 	// List of columns to render
@@ -54,10 +54,10 @@ type GuiConfig struct {
 	CyclicFilterModes []FilterMode `yaml:"cyclicFilterModes"`
 	// List of persistent filter modes
 	PersistentFilterModes []FilterMode `yaml:"persistentFilterModes"`
-	// Gui Theme
-	Theme GuiTheme `yaml:"theme"`
-	// Gui Keys
-	Keys GuiKeys `yaml:"keys"`
+	// UI theme
+	Theme UiTheme `yaml:"theme"`
+	// UI keys
+	Keys UiKeys `yaml:"keys"`
 }
 
 type DbConfig struct {
@@ -81,7 +81,7 @@ type LogConfig struct {
 	LogFile path.Path `yaml:"logFile"`
 }
 
-type GuiTheme struct {
+type UiTheme struct {
 	// Shared colors
 	BorderColor string `yaml:"borderColor"`
 	// Table colors
@@ -98,7 +98,7 @@ type GuiTheme struct {
 	NotificationFgColor string `yaml:"notificationFgColor"`
 }
 
-type GuiKeys struct {
+type UiKeys struct {
 	AcceptSelected  []string `yaml:"acceptSelected"`
 	PrefillSelected []string `yaml:"prefillSelected"`
 	DeleteSelected  []string `yaml:"deleteSelected"`

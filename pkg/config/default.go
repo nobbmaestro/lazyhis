@@ -8,7 +8,7 @@ func GetDefaultUserConfig() *UserConfig {
 			ExcludeCommands: []string{},
 			ExcludePrefix:   "\x20",
 		},
-		Gui: GuiConfig{
+		Ui: UiConfig{
 			ShowColumnLabels: false,
 			ColumnLayout: []Column{
 				ColumnExitCode,
@@ -43,7 +43,7 @@ func GetDefaultUserConfig() *UserConfig {
 			PersistentFilterModes: []FilterMode{
 				UniqueFilter,
 			},
-			Theme: GuiTheme{
+			Theme: UiTheme{
 				BorderColor:         "8",
 				FilterFgColor:       "7",
 				HelpAccentColor:     "6",
@@ -55,7 +55,7 @@ func GetDefaultUserConfig() *UserConfig {
 				VersionFgColor:      "6",
 				NotificationFgColor: "3",
 			},
-			Keys: GuiKeys{
+			Keys: UiKeys{
 				AcceptSelected:  []string{"enter"},
 				PrefillSelected: []string{"ctrl+o"},
 				DeleteSelected:  []string{"ctrl+x"},

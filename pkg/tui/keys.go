@@ -1,4 +1,4 @@
-package gui
+package tui
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ type keyMap struct {
 	ActionShowHelp        key.Binding
 }
 
-func createKeyMap(keys config.GuiKeys) keyMap {
+func createKeyMap(keys config.UiKeys) keyMap {
 	return keyMap{
 		ActionMoveUp: key.NewBinding(
 			key.WithKeys(keys.MoveUp...),

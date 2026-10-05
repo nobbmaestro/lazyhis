@@ -13,19 +13,19 @@ db:
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#exclude-commands-from-database
   excludeCommands: []
 
-# Config relating to the GUI
+# Config relating to the TUI
 gui:
   # Option for hiding column labels
   showColumnLabels: false
 
-  # List of GUI Columns
+  # List of TUI Columns
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-layout
   columnLayout:
     - EXIT_CODE
     - EXECUTED_AT
     - COMMAND
 
-  # Map of GUI Column Labels
+  # Map of TUI Column Labels
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-labels
   columnLabels:
     COMMAND: Command
@@ -36,7 +36,7 @@ gui:
     PATH: Path
     SESSION: Session
 
-  # Map of GUI Column Widths
+  # Map of TUI Column Widths
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/config.md#custom-column-widths
   columnWidths:
     COMMAND: -1
@@ -60,7 +60,7 @@ gui:
   persitentFilterModes:
     - UNIQUE_FILTER
 
-  # Gui theme
+  # TUI theme
   theme:
     borderColor: "8"
     tableCursorBgColor: ""
@@ -73,7 +73,7 @@ gui:
     versionFgColor: "6"
     NotificationFgColor: "3"
 
-  # Gui keys
+  # TUI keys
   # See https://github.com/nobbmaestro/lazyhis/blob/master/docs/keybindings.md
   keys:
     acceptSelected:
@@ -140,9 +140,9 @@ db:
 ## Custom Column Layout
 
 `LazyHis` stores various metadata associated to the history record. In order to preserve screen real
-estate, this metadata is hidden from GUI by default. The visibility and order of the columns can be
+estate, this metadata is hidden from TUI by default. The visibility and order of the columns can be
 easily customized by modifying the `columnLayout` configuration, allowing you to choose which
-columns to display and in what order they should appear in the GUI.
+columns to display and in what order they should appear in the TUI.
 
 Available columns:
 

@@ -35,7 +35,7 @@ func New(opts ...Option) Model {
 	return m
 }
 
-func NewStyles(theme config.GuiTheme) Styles {
+func NewStyles(theme config.UiTheme) Styles {
 	return Styles{
 		TextStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(theme.FilterFgColor)),
 	}

@@ -18,7 +18,7 @@ type Model struct {
 	textinput.Model
 }
 
-func NewStyles(theme config.GuiTheme) Style {
+func NewStyles(theme config.UiTheme) Style {
 	return Style{
 		Prompt:    "  ",
 		TextStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(theme.InputFgColor)),

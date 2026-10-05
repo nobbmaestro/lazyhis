@@ -24,7 +24,7 @@ func New(opts ...Option) Model {
 	return m
 }
 
-func NewStyles(theme config.GuiTheme) help.Styles {
+func NewStyles(theme config.UiTheme) help.Styles {
 	keyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.HelpAccentColor))
 	descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.HelpFgColor))
 	sepStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.BorderColor))

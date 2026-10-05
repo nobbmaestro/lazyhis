@@ -14,8 +14,8 @@ import (
 	"github.com/nobbmaestro/lazyhis/cmd/search"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/formatters"
-	"github.com/nobbmaestro/lazyhis/pkg/gui"
 	"github.com/nobbmaestro/lazyhis/pkg/registry"
+	"github.com/nobbmaestro/lazyhis/pkg/tui"
 	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
@@ -46,7 +46,7 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	case printConfigPath:
 		return runPrintConfigPath(cmd, args)
 	default:
-		return runHistoryGui(cmd, args)
+		return runHistoryTui(cmd, args)
 	}
 }
 
@@ -75,7 +75,7 @@ func runPrintConfigPath(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runHistoryGui(
+func runHistoryTui(
 	cmd *cobra.Command,
 	args []string,
 ) error {
@@ -84,14 +84,14 @@ func runHistoryGui(
 	app := reg.GetApp()
 
 	p := tea.NewProgram(
-		gui.NewGui(
+		tui.NewTui(
 			app,
-			&cfg.Gui,
-			gui.WithInitialQuery(args),
-			gui.WithFormatter(
+			&cfg.Ui,
+			tui.WithInitialQuery(args),
+			tui.WithFormatter(
 				formatters.NewFormatter(
-					formatters.WithColumns(cfg.Gui.ColumnLayout),
-					formatters.WithOptions(formatters.DefaultGuiFormatOptions()),
+					formatters.WithColumns(cfg.Ui.ColumnLayout),
+					formatters.WithOptions(formatters.DefaultUiFormatOptions()),
 				),
 			),
 		),
@@ -103,12 +103,12 @@ func runHistoryGui(
 		return err
 	}
 
-	if model, ok := result.(*gui.Model); ok && model.SelectedRecord.Command != nil {
+	if model, ok := result.(*tui.Model); ok && model.SelectedRecord.Command != nil {
 		command := model.SelectedRecord.Command.Command
 		switch model.ExitCode {
-		case gui.ExitAcceptSelected:
+		case tui.ExitAcceptSelected:
 			fmt.Fprintf(os.Stderr, "__lazyhis_accept__:%s\n", command)
-		case gui.ExitPrefillSelected:
+		case tui.ExitPrefillSelected:
 			fmt.Fprintf(os.Stderr, "__lazyhis_prefill__:%s\n", command)
 		}
 	}
