@@ -22,11 +22,11 @@ var (
 )
 
 var (
-	dbPath   = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
-	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
+	dbPath = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
 )
 
 func main() {
+	confPath := config.ResolveConfigPath()
 	cfg := config.ReadUserConfig(confPath)
 
 	logger, err := log.New(cfg.Log)

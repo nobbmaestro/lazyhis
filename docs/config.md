@@ -1,8 +1,10 @@
 # User Config
 
-Default path for the global configuration file:
+Path to the global configuration file, first match wins:
 
-- `~/.config/lazyhis/lazyhis.yml`
+1. `$LAZYHIS_CONFIG`
+2. `$XDG_CONFIG_HOME/lazyhis/lazyhis.yml`
+3. `~/.config/lazyhis/lazyhis.yml`
 
 ## Default
 

@@ -146,6 +146,12 @@ lazyhis history import --zsh /path/to/histfile
 
 Check out the [configuration docs](docs/config.md).
 
+The configuration file is loaded from the first available path, in this order:
+
+1. $LAZYHIS_CONFIG
+2. $XDG_CONFIG_HOME/lazyhis/lazyhis.yml
+3. ~/.config/lazyhis/lazyhis.yml
+
 ## Alternatives
 
 If `lazyhis` isn't quite what you're looking for, you might prefer:
