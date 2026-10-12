@@ -67,6 +67,7 @@ func main() {
 		registry.WithApp(&app),
 		registry.WithConfig(cfg),
 		registry.WithConfigPath(confPath),
+		registry.WithDbPath(dbPath),
 	)
 
 	cmd.SetContext(reg.Context)

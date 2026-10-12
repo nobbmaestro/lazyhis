@@ -14,6 +14,7 @@ const (
 	AppKey ContextKey = iota
 	ConfigKey
 	ConfigPathKey
+	DbPathKey
 	LoggerKey
 )
 
@@ -55,6 +56,12 @@ func WithConfigPath(path string) Option {
 	}
 }
 
+func WithDbPath(path string) Option {
+	return func(r *Registry) {
+		r.Context = context.WithValue(r.Context, DbPathKey, path)
+	}
+}
+
 func WithLogger(logger *slog.Logger) Option {
 	return func(r *Registry) {
 		r.Context = context.WithValue(r.Context, LoggerKey, logger)
@@ -77,6 +84,13 @@ func (r Registry) GetConfig() *config.UserConfig {
 
 func (r Registry) GetConfigPath() string {
 	if val, ok := r.Context.Value(ConfigPathKey).(string); ok {
+		return val
+	}
+	return ""
+}
+
+func (r Registry) GetDbPath() string {
+	if val, ok := r.Context.Value(DbPathKey).(string); ok {
 		return val
 	}
 	return ""

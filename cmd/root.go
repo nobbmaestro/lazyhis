@@ -25,6 +25,7 @@ var (
 	printUserConfig    bool
 	printDefaultConfig bool
 	printConfigPath    bool
+	printDbPath        bool
 )
 
 var rootCmd = &cobra.Command{
@@ -45,6 +46,8 @@ func runRoot(cmd *cobra.Command, args []string) error {
 		return runPrintDefaultConfig(cmd, args)
 	case printConfigPath:
 		return runPrintConfigPath(cmd, args)
+	case printDbPath:
+		return runPrintDbPath(cmd, args)
 	default:
 		return runHistoryTui(cmd, args)
 	}
@@ -72,6 +75,12 @@ func printConfig(cfg *config.UserConfig) error {
 func runPrintConfigPath(cmd *cobra.Command, args []string) error {
 	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
 	fmt.Println(reg.GetConfigPath())
+	return nil
+}
+
+func runPrintDbPath(cmd *cobra.Command, args []string) error {
+	reg := registry.NewRegistry(registry.WithContext(cmd.Context()))
+	fmt.Println(reg.GetDbPath())
 	return nil
 }
 
@@ -138,6 +147,9 @@ func init() {
 	rootCmd.
 		Flags().
 		BoolVarP(&printConfigPath, "config-path", "p", false, "print the config file path")
+	rootCmd.
+		Flags().
+		BoolVarP(&printDbPath, "db-path", "P", false, "print the database file path")
 
 	rootCmd.AddCommand(history.HistoryCmd)
 	rootCmd.AddCommand(initialize.InitCmd)
