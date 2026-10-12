@@ -137,7 +137,7 @@ func init() {
 		BoolVarP(&printDefaultConfig, "default-config", "C", false, "print the default config")
 	rootCmd.
 		Flags().
-		BoolVarP(&printConfigPath, "config-dir", "d", false, "print the config directory")
+		BoolVarP(&printConfigPath, "config-path", "p", false, "print the config file path")
 
 	rootCmd.AddCommand(history.HistoryCmd)
 	rootCmd.AddCommand(initialize.InitCmd)
