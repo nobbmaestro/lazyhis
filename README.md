@@ -152,6 +152,12 @@ The configuration file is loaded from the first available path, in this order:
 2. $XDG_CONFIG_HOME/lazyhis/lazyhis.yml
 3. ~/.config/lazyhis/lazyhis.yml
 
+The database is loaded from the first available path, in this order:
+
+1. $LAZYHIS_DB
+2. $XDG_DATA_HOME/lazyhis/lazyhis.db
+3. ~/.lazyhis.db
+
 ## Alternatives
 
 If `lazyhis` isn't quite what you're looking for, you might prefer:

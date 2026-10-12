@@ -6,6 +6,12 @@ Path to the global configuration file, first match wins:
 2. `$XDG_CONFIG_HOME/lazyhis/lazyhis.yml`
 3. `~/.config/lazyhis/lazyhis.yml`
 
+Path to the database file, first match wins:
+
+1. `$LAZYHIS_DB`
+2. `$XDG_DATA_HOME/lazyhis/lazyhis.db`
+3. `~/.lazyhis.db`
+
 ## Default
 
 ```yml
