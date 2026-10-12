@@ -1,4 +1,4 @@
-package gui
+package tui
 
 import (
 	"strings"
@@ -8,10 +8,10 @@ import (
 	"github.com/nobbmaestro/lazyhis/pkg/config"
 	"github.com/nobbmaestro/lazyhis/pkg/domain/model"
 	"github.com/nobbmaestro/lazyhis/pkg/formatters"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/help"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisfilter"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/hisquery"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
+	"github.com/nobbmaestro/lazyhis/pkg/tui/widgets/help"
+	"github.com/nobbmaestro/lazyhis/pkg/tui/widgets/hisfilter"
+	"github.com/nobbmaestro/lazyhis/pkg/tui/widgets/hisquery"
+	"github.com/nobbmaestro/lazyhis/pkg/tui/widgets/histable"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 
@@ -19,7 +19,7 @@ type Option func(*Model)
 
 type Model struct {
 	app *app.App
-	cfg *config.GuiConfig
+	cfg *config.UiConfig
 
 	initialQuery []string
 	records      []model.History
@@ -44,7 +44,7 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func NewGui(app *app.App, cfg *config.GuiConfig, opts ...Option) Model {
+func NewTui(app *app.App, cfg *config.UiConfig, opts ...Option) Model {
 	m := Model{
 		app:            app,
 		cfg:            cfg,

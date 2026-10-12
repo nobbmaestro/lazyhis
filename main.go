@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/nobbmaestro/lazyhis/cmd"
 	"github.com/nobbmaestro/lazyhis/pkg/app"
@@ -21,12 +20,10 @@ var (
 	date    = "unknown"
 )
 
-var (
-	dbPath   = filepath.Join(os.Getenv("HOME"), ".lazyhis.db")
-	confPath = filepath.Join(os.Getenv("HOME"), ".config", "lazyhis", "lazyhis.yml")
-)
-
 func main() {
+	dbPath := db.ResolveDbPath()
+	confPath := config.ResolveConfigPath()
+
 	cfg := config.ReadUserConfig(confPath)
 
 	logger, err := log.New(cfg.Log)
@@ -70,6 +67,7 @@ func main() {
 		registry.WithApp(&app),
 		registry.WithConfig(cfg),
 		registry.WithConfigPath(confPath),
+		registry.WithDbPath(dbPath),
 	)
 
 	cmd.SetContext(reg.Context)

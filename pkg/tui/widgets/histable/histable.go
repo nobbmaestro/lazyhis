@@ -37,7 +37,7 @@ func NewColumns(
 	return tableColumns
 }
 
-func NewStyles(theme config.GuiTheme) table.Styles {
+func NewStyles(theme config.UiTheme) table.Styles {
 	return table.Styles{
 		Header: lipgloss.NewStyle().
 			Padding(0, 1).

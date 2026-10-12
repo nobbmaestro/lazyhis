@@ -13,8 +13,8 @@
   <a href="https://github.com/nobbmaestro/lazyhis/commits/development">
       <img src="https://img.shields.io/github/last-commit/nobbmaestro/lazyhis/development" alt="GitHub Last Commit" />
   </a>
-  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.10.0...development">
-      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.10.0/development" alt="GitHub Commits Since" />
+  <a href="https://github.com/nobbmaestro/nvim-andromeda/compare/0.11.0...development">
+      <img src="https://img.shields.io/github/commits-since/nobbmaestro/lazyhis/0.11.0/development" alt="GitHub Commits Since" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" />
@@ -130,21 +130,33 @@ lazyhis history import --zsh /path/to/histfile
 - [x] Add prune CLI command for removing history based on ignore pattern
 - [x] Add dry flag for prune CLI command
 - [x] Add verbosity flag for prune and import CLI commands
-- [x] Copy to clipboard via GUI
-- [x] Customizable GUI theme
+- [x] Copy to clipboard via TUI
+- [x] Customizable TUI theme
 - [x] Customizable command exclusion by patterns
 - [x] Customizable command exclusion by prefix
 - [x] Customizable keybindings
-- [x] Delete history entries via GUI
-- [ ] Delete multiple history entries via GUI
-- [ ] Edit history entries via GUI
-- [x] Filter history by context via GUI
-- [ ] Fuzzy-finder search strategy in GUI
-- [ ] Support for inline GUI mode
+- [x] Delete history entries via TUI
+- [ ] Delete multiple history entries via TUI
+- [ ] Edit history entries via TUI
+- [x] Filter history by context via TUI
+- [ ] Fuzzy-finder search strategy in TUI
+- [ ] Support for inline TUI mode
 
 ## Customization
 
 Check out the [configuration docs](docs/config.md).
+
+The configuration file is loaded from the first available path, in this order:
+
+1. $LAZYHIS_CONFIG
+2. $XDG_CONFIG_HOME/lazyhis/lazyhis.yml
+3. ~/.config/lazyhis/lazyhis.yml
+
+The database is loaded from the first available path, in this order:
+
+1. $LAZYHIS_DB
+2. $XDG_DATA_HOME/lazyhis/lazyhis.db
+3. ~/.lazyhis.db
 
 ## Alternatives
 

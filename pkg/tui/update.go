@@ -1,4 +1,4 @@
-package gui
+package tui
 
 import (
 	"slices"
@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/nobbmaestro/lazyhis/pkg/config"
-	"github.com/nobbmaestro/lazyhis/pkg/gui/widgets/histable"
+	"github.com/nobbmaestro/lazyhis/pkg/tui/widgets/histable"
 	"github.com/nobbmaestro/lazyhis/pkg/utils"
 )
 

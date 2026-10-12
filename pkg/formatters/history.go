@@ -36,7 +36,7 @@ func DefaultTuiFormatOptions() FormatOptions {
 	}
 }
 
-func DefaultGuiFormatOptions() FormatOptions {
+func DefaultUiFormatOptions() FormatOptions {
 	return FormatOptions{
 		Command:    func(s string) string { return s },
 		ExecutedAt: func(t time.Time) string { return utils.HumanizeTimeAgo(t) },
